@@ -1,0 +1,23 @@
+# Environment
+.env
+
+# Sessions (gitignored per AGORA_PROJECT.md)
+sessions/*.json
+!sessions/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
