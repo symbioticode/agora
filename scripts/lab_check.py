@@ -6,10 +6,12 @@ Exit code : 0 si tout passe, 1 sinon.
 Source de référence : DECISIONS.md + Architecture section mindsets.
 """
 import sys, os, json, pathlib, argparse
+from dotenv import load_dotenv
 
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
 
+load_dotenv()
 REPO = pathlib.Path(__file__).parent.parent
 _RUN_API = False
 
