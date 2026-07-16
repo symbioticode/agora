@@ -34,20 +34,20 @@ section_names = {
 def _():
     f = REPO/"README.md"
     assert f.exists(), "README.md absent"
-    assert len(f.read_text().splitlines()) >= 10, "README.md trop court"
+    assert len(f.read_text(encoding="utf-8").splitlines()) >= 10, "README.md trop court"
 
 @check("A", "orchestrator.py substantiel (>= 30 lignes)")
 def _():
     f = REPO/"orchestrator.py"
     assert f.exists(), "orchestrator.py absent"
-    assert len(f.read_text().splitlines()) >= 30, "orchestrator.py placeholder ?"
+    assert len(f.read_text(encoding="utf-8").splitlines()) >= 30, "orchestrator.py placeholder ?"
 
 @check("A", "requirements.txt contient anthropic et openai")
 def _():
     # PCA-V4 : empêche la régression requirements.txt vidé par merge
     f = REPO/"requirements.txt"
     assert f.exists(), "requirements.txt absent"
-    c = f.read_text()
+    c = f.read_text(encoding="utf-8")
     assert "anthropic" in c, "anthropic absent"
     assert "openai" in c, "openai absent"
 
@@ -59,7 +59,7 @@ def _():
 def _():
     gi = REPO/".gitignore"
     if not gi.exists(): return
-    assert ".env" in gi.read_text(), ".env non gitignored — risque de commiter les clés"
+    assert ".env" in gi.read_text(encoding="utf-8"), ".env non gitignored — risque de commiter les clés"
 
 @check("A", "sessions/ et results/ existent")
 def _():
@@ -72,20 +72,20 @@ def _():
 def _():
     f = REPO/"mindsets"/"empiricist.md"
     assert f.exists(), "empiricist.md absent"
-    assert len(f.read_text().split()) >= 50, "empiricist.md trop court — placeholder ?"
+    assert len(f.read_text(encoding="utf-8").split()) >= 50, "empiricist.md trop court — placeholder ?"
 
 @check("B", "rationalist.md substantiel (>= 50 mots)")
 def _():
     f = REPO/"mindsets"/"rationalist.md"
     assert f.exists(), "rationalist.md absent"
-    assert len(f.read_text().split()) >= 50, "rationalist.md trop court — placeholder ?"
+    assert len(f.read_text(encoding="utf-8").split()) >= 50, "rationalist.md trop court — placeholder ?"
 
 @check("B", "Les deux mindsets sont distincts (Jaccard < 0.70)")
 def _():
     # PCA-V4 : Jaccard > 0.70 = mindsets quasi-identiques = chambre d'écho
     # même avec deux providers différents (D-AGO-001)
-    emp = set((REPO/"mindsets"/"empiricist.md").read_text().lower().split())
-    rat = set((REPO/"mindsets"/"rationalist.md").read_text().lower().split())
+    emp = set((REPO/"mindsets"/"empiricist.md").read_text(encoding="utf-8").lower().split())
+    rat = set((REPO/"mindsets"/"rationalist.md").read_text(encoding="utf-8").lower().split())
     if not emp or not rat: return
     j = len(emp & rat) / len(emp | rat)
     assert j < 0.70, f"Mindsets trop similaires (Jaccard={j:.2f}) — chambre d'écho probable"
@@ -94,18 +94,18 @@ def _():
 
 @check("C", "orchestrator.py importe anthropic et openai")
 def _():
-    c = (REPO/"orchestrator.py").read_text()
+    c = (REPO/"orchestrator.py").read_text(encoding="utf-8")
     assert "anthropic" in c, "anthropic non importé"
     assert "openai" in c, "openai non importé"
 
 @check("C", "orchestrator.py paramètre rounds configurable")
 def _():
-    assert "rounds" in (REPO/"orchestrator.py").read_text().lower(), \
+    assert "rounds" in (REPO/"orchestrator.py").read_text(encoding="utf-8").lower(), \
         "paramètre 'rounds' absent — bornage des tours non configurable"
 
 @check("C", "orchestrator.py produit un champ verdict")
 def _():
-    c = (REPO/"orchestrator.py").read_text()
+    c = (REPO/"orchestrator.py").read_text(encoding="utf-8")
     assert "verdict" in c, \
         "champ 'verdict' absent — résultat non gradué"
 
@@ -117,7 +117,7 @@ def _():
     bad = []
     for jf in (REPO/"sessions").glob("*.json"):
         try:
-            d = json.loads(jf.read_text())
+            d = json.loads(jf.read_text(encoding="utf-8"))
             miss = required - set(d.keys())
             if miss: bad.append(f"{jf.name}: manque {miss}")
         except json.JSONDecodeError as e:
@@ -132,7 +132,7 @@ def _():
     bad = []
     for jf in (REPO/"sessions").glob("*.json"):
         try:
-            d = json.loads(jf.read_text())
+            d = json.loads(jf.read_text(encoding="utf-8"))
             v = d.get("verdict", {})
             vs = v.get("verdict") if isinstance(v, dict) else str(v)
             if vs and vs not in allowed:
@@ -153,7 +153,7 @@ def _():
     total_sessions = 0
     for jf in (REPO/"sessions").glob("*.json"):
         try:
-            d = json.loads(jf.read_text())
+            d = json.loads(jf.read_text(encoding="utf-8"))
             models = d.get("models", {})
             judge = models.get("judge", "")
             agent_a = models.get("A", "")
@@ -179,7 +179,7 @@ def _():
     bad = []
     for jf in (REPO/"sessions").glob("*.json"):
         try:
-            d = json.loads(jf.read_text())
+            d = json.loads(jf.read_text(encoding="utf-8"))
             v = d.get("verdict", {})
             if isinstance(v, dict):
                 if v.get("verdict") == "NUANCED":

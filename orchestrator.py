@@ -4,7 +4,7 @@ orchestrator.py — Agora / Orchestrateur principal (~90 lignes)
 Usage: python orchestrator.py --hypothesis "..." --rounds 3
 """
 import os, json, re, argparse, sys, hashlib, time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from anthropic import Anthropic
@@ -58,17 +58,33 @@ Règles:
 """
 
 
-def call_anthropic(model, system, user, temp):
-    r = ANTHROPIC.messages.create(model=model, max_tokens=2000, temperature=temp,
-                                   system=system, messages=[{"role": "user", "content": user}])
-    return r.content[0].text
+def call_anthropic(model, system, user, temp, max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            r = ANTHROPIC.messages.create(model=model, max_tokens=2000, temperature=temp,
+                                           system=system, messages=[{"role": "user", "content": user}])
+            return r.content[0].text, attempt
+        except Exception as e:
+            if attempt == max_retries - 1:
+                raise
+            wait = 2 ** attempt
+            print(f"Retry {attempt+1}/{max_retries} après {wait}s ({e})")
+            time.sleep(wait)
 
 
-def call_deepseek(model, system, user, temp):
-    r = DEEPSEEK.chat.completions.create(model=model, max_tokens=2000, temperature=temp,
-                                          messages=[{"role": "system", "content": system},
-                                                    {"role": "user", "content": user}])
-    return r.choices[0].message.content
+def call_deepseek(model, system, user, temp, max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            r = DEEPSEEK.chat.completions.create(model=model, max_tokens=2000, temperature=temp,
+                                                  messages=[{"role": "system", "content": system},
+                                                            {"role": "user", "content": user}])
+            return r.choices[0].message.content, attempt
+        except Exception as e:
+            if attempt == max_retries - 1:
+                raise
+            wait = 2 ** attempt
+            print(f"Retry {attempt+1}/{max_retries} après {wait}s ({e})")
+            time.sleep(wait)
 
 
 def agent_turn(agent_id, hypothesis, history, round_num):
@@ -111,14 +127,15 @@ def judge_verdict(hypothesis, transcript):
     judge_provider = pick_judge()
     if judge_provider == "anthropic":
         model = MODEL_A
-        raw = call_anthropic(model, JUDGE_PROMPT, user, TEMP_JUDGE)
+        raw, retries = call_anthropic(model, JUDGE_PROMPT, user, TEMP_JUDGE)
     else:
         model = MODEL_B
-        raw = call_deepseek(model, JUDGE_PROMPT, user, TEMP_JUDGE)
-    return extract_json(raw), f"{judge_provider}:{model}"
+        raw, retries = call_deepseek(model, JUDGE_PROMPT, user, TEMP_JUDGE)
+    return extract_json(raw), f"{judge_provider}:{model}", retries
 
 
 def main():
+    sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser()
     parser.add_argument("--hypothesis", required=True)
     parser.add_argument("--rounds", type=int, default=DEFAULT_ROUNDS)
@@ -126,28 +143,32 @@ def main():
 
     history = []
     transcript = []
+    retries = {"A": 0, "B": 0, "judge": 0}
 
     for r in range(args.rounds + 1):
         for agent in ("A", "B"):
-            resp = agent_turn(agent, args.hypothesis, history, r)
+            resp, agent_retries = agent_turn(agent, args.hypothesis, history, r)
+            retries[agent] += agent_retries
             if r == 0:
                 history.append({"A": resp if agent == "A" else "", "B": resp if agent == "B" else ""})
             else:
                 history[-1][agent] = resp
             transcript.append({"round": r, "agent": agent, "content": resp})
 
-    verdict, judge_model = judge_verdict(args.hypothesis, transcript)
+    verdict, judge_model, judge_retries = judge_verdict(args.hypothesis, transcript)
+    retries["judge"] = judge_retries
 
     session = {
         "hypothesis": args.hypothesis,
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "models": {"A": MODEL_A, "B": MODEL_B, "judge": judge_model},
+        "retries": retries,
         "transcript": transcript,
         "verdict": verdict,
     }
 
-    fname = f"{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
-    (SESSIONS / fname).write_text(json.dumps(session, indent=2, ensure_ascii=False))
+    fname = f"{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.json"
+    (SESSIONS / fname).write_text(json.dumps(session, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(json.dumps(verdict, indent=2, ensure_ascii=False))
     print(f"\nSession saved: sessions/{fname}")

@@ -30,6 +30,7 @@ La convergence est non planifiée. Elle est documentée ici pour deux raisons :
 | Invariant bloquant | Exit code 1 sur format invalide | `lab_check.py` Section D |
 | Invariant avertissement | Warning terminal | `lab_status.sh` niveau `[!!]` |
 | Limite non résolue (P6) | Points ouverts déclarés | `AGORA_PROJECT.md §Points ouverts` |
+| Résilience réseau tracée | Compteur de tentatives par appel | `retries{}` (optionnel, si >0) |
 
 ## Ce qu'une session JSON est, au sens de TI-360
 
@@ -44,6 +45,7 @@ Une session Agora est un atome TI-360 si et seulement si :
     "B": "provider:model-version",
     "judge": "provider:model-version"
   },
+  "retries": {"A": 0, "B": 0, "judge": 0},
   "transcript": [
     {"round": 0, "agent": "A", "content": "..."},
     {"round": 0, "agent": "B", "content": "..."},
