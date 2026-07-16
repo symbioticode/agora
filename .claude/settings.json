@@ -1,0 +1,7 @@
+{
+  "sandbox": {
+    "network": {
+      "allowedDomains": ["api.anthropic.com", "api.deepseek.com"]
+    }
+  }
+}
