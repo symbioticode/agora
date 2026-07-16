@@ -45,3 +45,9 @@
 **Cause** : Python sous Windows utilise cp1252 par défaut au lieu d'UTF-8 pour les I/O texte.
 **Fix** : TOUT `read_text()` / `write_text()` doit spécifier `encoding="utf-8"` explicitement. Pour `print()` sur stdout, ajouter `sys.stdout.reconfigure(encoding="utf-8")` en haut du fichier sous `if sys.platform == "win32"`.
 **Non-régression** : check lab_check.py Section A vérifie l'absence d'I/O sans encoding.
+
+## 11. sessions/ est éphémère — données perdues sans results/ (2026-07-16)
+**Symptôme** : données de session (disagreement[], rounds, transcripts) inaccessibles après changement d'environnement.
+**Cause** : sessions/ est gitignored par design (données volumineuses, clés potentielles). Un changement de machine, de workspace ou de session Claude efface tout.
+**Règle** : toute donnée destinée à survivre à un changement d'environnement doit être résumée dans results/YYYYMMDD_<slug>.md au moment du run, pas après coup. Le format results/ doit inclure : hypothèse, verdicts, disagreement[] complets, configuration (modèles, rounds).
+**Leçon** : 15 sessions H2/H3/H4 perdues — seuls verdict/confidence agrégés restent dans HYPOTHESES.md, pas les données brutes.

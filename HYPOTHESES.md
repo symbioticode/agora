@@ -182,6 +182,10 @@ Source : scripts/extract_metrics.py + lecture directe des JSON dans sessions/.
 
 **Note** : les fichiers JSON de H2, H3, H4 ne sont plus disponibles dans le filesystem (sessions/ gitignored, jamais commité). Les métriques ci-dessous ne couvrent que H1.
 
+### Métriques H2/H3/H4
+
+**Non calculables** — sessions JSON perdues (sessions/ gitignored, jamais commitées, environnement d'origine Claude Code Web fermé). Seuls verdict/confidence agrégés restent disponibles (voir tableau Résumé statistique ci-dessus), pas disagreement[] ni le détail des rounds.
+
 ### 1. Taux de désaccord persistant
 
 Définition : sessions avec `disagreement[]` non vide / total sessions.
@@ -189,20 +193,20 @@ Définition : sessions avec `disagreement[]` non vide / total sessions.
 | Hypothèse | Sessions avec désaccord | Total | Taux |
 |-----------|------------------------|-------|------|
 | H1 (Eau/100°C) | 5 | 5 | 100% |
-| H2 (Terre/Soleil) | — | 5 | *données non disponibles* |
-| H3 (Éthique mensonge) | — | 5 | *données non disponibles* |
-| H4 (Débat multi-agent) | — | 5 | *données non disponibles* |
+| H2 (Terre/Soleil) | — | 5 | *non calculable (sessions perdues)* |
+| H3 (Éthique mensonge) | — | 5 | *non calculable (sessions perdues)* |
+| H4 (Débat multi-agent) | — | 5 | *non calculable (sessions perdues)* |
 
 H1 détail : les 5 sessions ont `disagreement[]` non vide (2-3 items chacune).
 
 ### 2. Objectif ≥ 40% désaccord persistant sur H2
 
-H2 : *données non disponibles* (fichiers JSON absents du filesystem).
+H2 : *non calculable (sessions perdues)*.
 
 ### 3. Seuil déclencheur "convergence < 2 tours" sur H2
 
 Définition : un run a convergé en < 2 tours si les deux agents n'ont pas tous les deux participé au tour 1.
 
-H2 : *données non disponibles* (fichiers JSON absents du filesystem).
+H2 : *non calculable (sessions perdues)*.
 
 Pour H1 (information complémentaire) : tous les 5 runs ont les deux agents présents aux tours 0, 1, 2 et 3 — aucun n'a convergé en < 2 tours.

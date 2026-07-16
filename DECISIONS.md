@@ -51,4 +51,4 @@ Règle : `pick_judge()` alterne aléatoirement entre Anthropic et DeepSeek
 à chaque run. Check `lab_check.py` Section D vérifie : aucune session
 n'a `judge == Agent A` (Claude). Si futur 3e provider ajouté (OpenAI),
 P4 strict réactivable.
-Référence : AGORA_PROJECT.md §Points ouverts #1 ; docs/ti360_mapping.md §P4
+Référence : AGORA_PROJECT.md §Points ouverts #1 ; docs/ti360_mapping.md §P4 (assoupli + "Ce qu'Agora ne couvre pas")
