@@ -81,11 +81,6 @@
 | 3 | Il est éthiquement acceptable de mentir pour protéger les sentiments d'autrui. | Ouverte | PENDING | 5/5 ✅ |
 | 4 (optionnelle) | Le débat multi-agent améliore la factualité des LLM. | Méta | — | 5/5 ✅ |
 
-> **Note** : Les critères de succès auto-générés ci-dessous sont marqués `[NON VALIDÉ]` — ils n'ont pas été approuvés par l'humain et ne doivent pas être utilisés pour conclure.
-> - ~~Métrique `taux_désaccord_persistant`~~ → [NON VALIDÉ — proposition auto-générée]
-> - ~~Objectif ≥ 40% sur H2~~ → [NON VALIDÉ — proposition auto-générée]
-> - ~~Seuil déclencheur "convergence < 2 tours → durcir mindsets"~~ → [NON VALIDÉ — proposition auto-générée]
-
 ---
 
 ## Résultats bruts — Étape 1 (5 runs homogènes par hypothèse, pick_judge() actif)
@@ -178,3 +173,36 @@
 | H2 (Terre/Soleil) | Factuelle | 5 | [NUANCED, CONFIRMED, CONFIRMED, NUANCED, CONFIRMED] | 0.930 ± 0.055 | CONFIRMED 3, NUANCED 2 |
 | H3 (Éthique mensonge) | Ouverte | 5 | [NUANCED ×5] | 0.684 ± 0.035 | NUANCED 5 |
 | H4 (Débat multi-agent) | Méta | 5 | [NUANCED ×4, PENDING] | 0.708 ± 0.018 | NUANCED 4, PENDING 1 |
+
+---
+
+## Métriques Étape 1 (validées)
+
+Source : scripts/extract_metrics.py + lecture directe des JSON dans sessions/.
+
+**Note** : les fichiers JSON de H2, H3, H4 ne sont plus disponibles dans le filesystem (sessions/ gitignored, jamais commité). Les métriques ci-dessous ne couvrent que H1.
+
+### 1. Taux de désaccord persistant
+
+Définition : sessions avec `disagreement[]` non vide / total sessions.
+
+| Hypothèse | Sessions avec désaccord | Total | Taux |
+|-----------|------------------------|-------|------|
+| H1 (Eau/100°C) | 5 | 5 | 100% |
+| H2 (Terre/Soleil) | — | 5 | *données non disponibles* |
+| H3 (Éthique mensonge) | — | 5 | *données non disponibles* |
+| H4 (Débat multi-agent) | — | 5 | *données non disponibles* |
+
+H1 détail : les 5 sessions ont `disagreement[]` non vide (2-3 items chacune).
+
+### 2. Objectif ≥ 40% désaccord persistant sur H2
+
+H2 : *données non disponibles* (fichiers JSON absents du filesystem).
+
+### 3. Seuil déclencheur "convergence < 2 tours" sur H2
+
+Définition : un run a convergé en < 2 tours si les deux agents n'ont pas tous les deux participé au tour 1.
+
+H2 : *données non disponibles* (fichiers JSON absents du filesystem).
+
+Pour H1 (information complémentaire) : tous les 5 runs ont les deux agents présents aux tours 0, 1, 2 et 3 — aucun n'a convergé en < 2 tours.
