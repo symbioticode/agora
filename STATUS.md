@@ -1,24 +1,31 @@
 # Agora — Status du Laboratoire
 
-## Stage : Étape 0 — Fondations (Jour 1)
+## Stage : Étape 1 — Calibration anti-convergence (en cours)
 
-**Objectif** : Repo GitHub + .env + orchestrator.py squelette + mindsets rédigés.
-
-**Test de passage (gate E0)** :
-```bash
-python orchestrator.py \
-  --hypothesis "L'eau pure bout à 100°C à pression standard." \
-  --rounds 3
-```
-
-**Critères de succès** :
-- [ ] JSON valide avec `verdict`, `confidence`, `agreement`, `disagreement`
-- [ ] `verdict == "CONFIRMED"` et `confidence >= 0.85`
-- [ ] Aucun désaccord fabriqué sur un fait physique établi
-- [ ] Session exportée dans `sessions/`
-
-**Ne pas avancer si** : le verdict sur l'hypothèse factuelle n'est pas CONFIRMED.
+**Objectif** : Les agents résistent-ils à la convergence artificielle ?
+Protocole : 3 hypothèses × 5 runs chacune (`pick_judge()` actif, `--rounds 3`).
 
 ---
 
-*Mis à jour automatiquement par `scripts/lab_status.sh`*
+### Gate E0 — Calibration (NON FRANCHI, acté)
+
+**Hypothèse** : "L'eau pure bout à 100°C à pression standard."
+**Résultat** : 7 runs hétérogènes (pré-Étape 1) — 5× NUANCED, 1× CONFIRMED (0.97), 1× REJECTED (0.99, anomalie documentée).
+**Décision** : NUANCED est un verdict scientifiquement légitime pour cette formulation ambiguë. Gate E0 non franchi, documenté et acté (voir HYPOTHESES.md §Synthèse Gate E0).
+
+---
+
+### Étape 1 — Avancement
+
+| Hypothèse | Type | Runs | Statut |
+|-----------|------|------|--------|
+| H1 — "L'eau pure bout à 100°C à pression standard." | Factuelle | 5/5 | ✅ Complété |
+| H2 — "La Terre tourne autour du Soleil." | Factuelle | 5/5 | ✅ Complété |
+| H3 — "Il est éthiquement acceptable de mentir pour protéger les sentiments d'autrui." | Ouverte | 5/5 | ✅ Complété |
+| H4 — "Le débat multi-agent améliore la factualité des LLM." | Méta (optionnelle) | 5/5 | ✅ Complété |
+
+**Statut global Étape 1** : 4/4 hypothèses complétées. Synthèse comparative dans HYPOTHESES.md.
+
+---
+
+*Mis à jour le 2026-07-16*

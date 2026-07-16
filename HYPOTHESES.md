@@ -76,7 +76,7 @@
 
 | # | Hypothèse | Type | Attendu (AGORA_PROJECT.md) | Runs exécutés |
 |---|-----------|------|----------------------------|---------------|
-| 1 | L'eau pure bout à 100°C à pression standard. | Factuelle | CONFIRMED ≥0.85 | 7/7 (pré-Étape 1) |
+| 1 | L'eau pure bout à 100°C à pression standard. | Factuelle | CONFIRMED ≥0.85 | 5/5 ✅ (Étape 1) + 7 pré-Étape 1 |
 | 2 | La Terre tourne autour du Soleil. | Factuelle | CONFIRMED ≥0.85 | 5/5 ✅ |
 | 3 | Il est éthiquement acceptable de mentir pour protéger les sentiments d'autrui. | Ouverte | PENDING | 5/5 ✅ |
 | 4 (optionnelle) | Le débat multi-agent améliore la factualité des LLM. | Méta | — | 5/5 ✅ |
@@ -92,7 +92,7 @@
 
 ### H1 — "L'eau pure bout à 100°C à pression standard." (Factuelle)
 
-> **Note** : Ces 5 runs datent d'avant la formalisation Étape 1 (juge non systématiquement alterné pour les 2 premiers). Les 5 runs Étape 1 officiels pour H1 restent à exécuter.
+#### Runs pré-Étape 1 (hétérogènes, juge non systématiquement alterné)
 
 | Run | Fichier | Verdict | Confidence | Juge |
 |-----|---------|---------|------------|------|
@@ -102,8 +102,23 @@
 | 4 | sessions/20260716_061918.json | NUANCED | 0.78 | anthropic:claude-sonnet-4-5 |
 | 5 | sessions/20260716_062158.json | REJECTED | 0.99 | deepseek:deepseek-v4-flash |
 
-**Verdicts** : [NUANCED, NUANCED, CONFIRMED, NUANCED, REJECTED]  
-**Confidence** : mean = 0.842, std = 0.128 *(run #5 REJECTED inclus — à confirmer)*
+**Verdicts** : [NUANCED, NUANCED, CONFIRMED, NUANCED, REJECTED]
+**Confidence** : mean = 0.842, std = 0.128
+
+#### Runs Étape 1 officiels (homogènes, pick_judge() actif, --rounds 3)
+
+| Run | Fichier | Verdict | Confidence | Juge | Retries |
+|-----|---------|---------|------------|------|---------|
+| 1 | sessions/20260716_190426.json | NUANCED | 0.85 | deepseek:deepseek-v4-flash | A=0, B=0, J=0 |
+| 2 | sessions/20260716_191105.json | CONFIRMED | 0.92 | anthropic:claude-sonnet-4-5 | A=1, B=0, J=0 |
+| 3 | sessions/20260716_194136.json | NUANCED | 0.65 | deepseek:deepseek-v4-flash | A=1, B=0, J=0 |
+| 4 | sessions/20260716_194609.json | CONFIRMED | 0.92 | anthropic:claude-sonnet-4-5 | A=3, B=0, J=0 |
+| 5 | sessions/20260716_194938.json | NUANCED | 0.85 | deepseek:deepseek-v4-flash | A=1, B=0, J=0 |
+
+**Verdicts** : [NUANCED, CONFIRMED, NUANCED, CONFIRMED, NUANCED]
+**Confidence** : mean = 0.838, std = 0.113
+**Distribution** : NUANCED 3/5, CONFIRMED 2/5
+**Note** : Agent A (Claude) a nécessité des retries sur 4/5 runs (service Anthropic surchargé 529). Tous les retries ont abouti.
 
 ---
 
@@ -155,12 +170,11 @@
 
 ---
 
-## Résumé statistique — Runs Étape 1 officiels (H2, H3, H4)
+## Résumé statistique — Runs Étape 1 officiels (H1, H2, H3, H4)
 
-| Hypothèse | Runs | Verdicts | Confidence mean±std | Distribution verdicts |
-|-----------|------|----------|---------------------|---------------------|
-| H2 (Terre/Soleil) | 5 | [NUANCED, CONFIRMED, CONFIRMED, NUANCED, CONFIRMED] | 0.930 ± 0.055 | CONFIRMED 3, NUANCED 2 |
-| H3 (Éthique mensonge) | 5 | [NUANCED ×5] | 0.684 ± 0.035 | NUANCED 5 |
-| H4 (Débat multi-agent) | 5 | [NUANCED ×4, PENDING] | 0.708 ± 0.018 | NUANCED 4, PENDING 1 |
-
-**H1** : 5 runs officiels Étape 1 restant à exécuter (conditions `pick_judge()` homogènes).
+| Hypothèse | Type | Runs | Verdicts | Confidence mean±std | Distribution |
+|-----------|------|------|----------|---------------------|--------------|
+| H1 (Eau/100°C) | Factuelle | 5 | [NUANCED, CONFIRMED, NUANCED, CONFIRMED, NUANCED] | 0.838 ± 0.113 | NUANCED 3, CONFIRMED 2 |
+| H2 (Terre/Soleil) | Factuelle | 5 | [NUANCED, CONFIRMED, CONFIRMED, NUANCED, CONFIRMED] | 0.930 ± 0.055 | CONFIRMED 3, NUANCED 2 |
+| H3 (Éthique mensonge) | Ouverte | 5 | [NUANCED ×5] | 0.684 ± 0.035 | NUANCED 5 |
+| H4 (Débat multi-agent) | Méta | 5 | [NUANCED ×4, PENDING] | 0.708 ± 0.018 | NUANCED 4, PENDING 1 |
