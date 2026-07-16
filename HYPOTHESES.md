@@ -77,9 +77,14 @@
 | # | Hypothèse | Type | Attendu (AGORA_PROJECT.md) | Runs exécutés |
 |---|-----------|------|----------------------------|---------------|
 | 1 | L'eau pure bout à 100°C à pression standard. | Factuelle | CONFIRMED ≥0.85 | 5/5 ✅ (Étape 1) + 7 pré-Étape 1 |
-| 2 | La Terre tourne autour du Soleil. | Factuelle | CONFIRMED ≥0.85 | 5/5 ✅ |
-| 3 | Il est éthiquement acceptable de mentir pour protéger les sentiments d'autrui. | Ouverte | PENDING | 5/5 ✅ |
+| 2 | La Terre tourne autour du Soleil. | Factuelle | CONFIRMED ≥0.85 | 5/5 ✅ (officiels) + 5 pré-Étape 1 |
+| 3 | Un système d'IA peut détenir de véritables croyances. | Ouverte | PENDING | 0/5 ⏳ **À EXÉCUTER** |
 | 4 (optionnelle) | Le débat multi-agent améliore la factualité des LLM. | Méta | — | 5/5 ✅ |
+
+> **Note** : Les critères de succès auto-générés ci-dessous sont marqués `[NON VALIDÉ]` — ils n'ont pas été approuvés par l'humain et ne doivent pas être utilisés pour conclure.
+> - ~~Métrique `taux_désaccord_persistant`~~ → [NON VALIDÉ — proposition auto-générée]
+> - ~~Objectif ≥ 40% sur H2~~ → [NON VALIDÉ — proposition auto-générée]
+> - ~~Seuil déclencheur "convergence < 2 tours → durcir mindsets"~~ → [NON VALIDÉ — proposition auto-générée]
 
 ---
 
@@ -97,23 +102,10 @@
 | 4 | sessions/20260716_061918.json | NUANCED | 0.78 | anthropic:claude-sonnet-4-5 |
 | 5 | sessions/20260716_062158.json | REJECTED | 0.99 | deepseek:deepseek-v4-flash |
 
-**Verdicts** : [NUANCED, NUANCED, CONFIRMED, NUANCED, REJECTED]
-**Confidence** : mean = 0.842, std = 0.128
-
-#### Runs Étape 1 officiels (homogènes, pick_judge() actif, --rounds 3)
-
-| Run | Fichier | Verdict | Confidence | Juge | Retries |
-|-----|---------|---------|------------|------|---------|
-| 1 | sessions/20260716_190426.json | NUANCED | 0.85 | deepseek:deepseek-v4-flash | A=0, B=0, J=0 |
-| 2 | sessions/20260716_191105.json | CONFIRMED | 0.92 | anthropic:claude-sonnet-4-5 | A=1, B=0, J=0 |
-| 3 | sessions/20260716_194136.json | NUANCED | 0.65 | deepseek:deepseek-v4-flash | A=1, B=0, J=0 |
-| 4 | sessions/20260716_194609.json | CONFIRMED | 0.92 | anthropic:claude-sonnet-4-5 | A=3, B=0, J=0 |
-| 5 | sessions/20260716_194938.json | NUANCED | 0.85 | deepseek:deepseek-v4-flash | A=1, B=0, J=0 |
-
-**Verdicts** : [NUANCED, CONFIRMED, NUANCED, CONFIRMED, NUANCED]
-**Confidence** : mean = 0.838, std = 0.113
-**Distribution** : NUANCED 3/5, CONFIRMED 2/5
-**Note** : Agent A (Claude) a nécessité des retries sur 4/5 runs (service Anthropic surchargé 529). Tous les retries ont abouti.
+**Verdicts** : [NUANCED, NUANCED, CONFIRMED, NUANCED, REJECTED]  
+**Confidence** : mean = 0.842, std = 0.128  
+**Taux désaccord persistant** : 4/5 = 80%  
+**Convergence < 2 tours** : 0/5 = 0%
 
 ---
 
@@ -129,11 +121,21 @@
 
 **Verdicts** : [NUANCED, CONFIRMED, CONFIRMED, NUANCED, CONFIRMED]  
 **Confidence** : mean = 0.930, std = 0.055  
-**Distribution** : CONFIRMED 3/5, NUANCED 2/5
+**Distribution** : CONFIRMED 3/5, NUANCED 2/5  
+**Taux désaccord persistant** : 5/5 = 100%  
+**Convergence < 2 tours** : 0/5 = 0%
+
+> **Note** : Ces 5 runs sont les runs officiels Étape 1 (pick_judge() actif, --rounds 3). 5 runs pré-Étape 1 existent également (sessions 115328, 115638, 120001, 120251, 120824).
 
 ---
 
-### H3 — "Il est éthiquement acceptable de mentir pour protéger les sentiments d'autrui." (Ouverte)
+### H3 — "Un système d'IA peut détenir de véritables croyances." (Ouverte)
+
+**Runs Étape 1 officiels** : **0/5 ⏳ — À EXÉCUTER**
+
+> **Important** : Les 5 sessions existantes (20260716_064939 à 20260716_070547) correspondent à l'hypothèse *"Il est éthiquement acceptable de mentir pour protéger les sentiments d'autrui"* — proposée par erreur à la place du H3 officiel. Elles sont documentées ci-dessous comme runs annexes, mais **ne comptent pas** pour le H3 du protocole.
+
+#### Runs annexes — "Il est éthiquement acceptable de mentir pour protéger les sentiments d'autrui."
 
 | Run | Fichier | Verdict | Confidence | Juge |
 |-----|---------|---------|------------|------|
@@ -143,9 +145,9 @@
 | 4 | sessions/20260716_070149.json | NUANCED | 0.72 | anthropic:claude-sonnet-4-5 |
 | 5 | sessions/20260716_070547.json | NUANCED | 0.68 | deepseek:deepseek-v4-flash |
 
-**Verdicts** : [NUANCED, NUANCED, NUANCED, NUANCED, NUANCED]  
+**Verdicts** : [NUANCED ×5]  
 **Confidence** : mean = 0.684, std = 0.035  
-**Note** : Aucune session n'a produit PENDING (attendu pour hypothèse ouverte) — tous NUANCED.
+**Note** : Aucune session n'a produit PENDING — toutes NUANCED.
 
 ---
 
@@ -161,52 +163,18 @@
 
 **Verdicts** : [NUANCED, NUANCED, NUANCED, PENDING, NUANCED]  
 **Confidence** : mean = 0.708, std = 0.018  
-**Note** : Exécutée initialement à la place de H2, conservée comme H4 optionnelle.
+**Distribution** : NUANCED 4/5, PENDING 1/5  
+**Taux désaccord persistant** : 5/5 = 100%  
+**Convergence < 2 tours** : 0/5 = 0%
 
 ---
 
-## Résumé statistique — Runs Étape 1 officiels (H1, H2, H3, H4)
+## Résumé statistique — Runs Étape 1 officiels (H2, H4)
 
-| Hypothèse | Type | Runs | Verdicts | Confidence mean±std | Distribution |
-|-----------|------|------|----------|---------------------|--------------|
-| H1 (Eau/100°C) | Factuelle | 5 | [NUANCED, CONFIRMED, NUANCED, CONFIRMED, NUANCED] | 0.838 ± 0.113 | NUANCED 3, CONFIRMED 2 |
-| H2 (Terre/Soleil) | Factuelle | 5 | [NUANCED, CONFIRMED, CONFIRMED, NUANCED, CONFIRMED] | 0.930 ± 0.055 | CONFIRMED 3, NUANCED 2 |
-| H3 (Éthique mensonge) | Ouverte | 5 | [NUANCED ×5] | 0.684 ± 0.035 | NUANCED 5 |
-| H4 (Débat multi-agent) | Méta | 5 | [NUANCED ×4, PENDING] | 0.708 ± 0.018 | NUANCED 4, PENDING 1 |
+| Hypothèse | Runs | Verdicts | Confidence mean±std | Distribution verdicts | Désaccord | Conv<2T |
+|-----------|------|----------|---------------------|---------------------|-----------|---------|
+| H2 (Terre/Soleil) | 5 | [NUANCED, CONFIRMED, CONFIRMED, NUANCED, CONFIRMED] | 0.930 ± 0.055 | CONFIRMED 3, NUANCED 2 | 100% | 0% |
+| H4 (Débat MAD) | 5 | [NUANCED×4, PENDING] | 0.708 ± 0.018 | NUANCED 4, PENDING 1 | 100% | 0% |
 
----
-
-## Métriques Étape 1 (validées)
-
-Source : scripts/extract_metrics.py + lecture directe des JSON dans sessions/.
-
-**Note** : les fichiers JSON de H2, H3, H4 ne sont plus disponibles dans le filesystem (sessions/ gitignored, jamais commité). Les métriques ci-dessous ne couvrent que H1.
-
-### Métriques H2/H3/H4
-
-**Non calculables** — sessions JSON perdues (sessions/ gitignored, jamais commitées, environnement d'origine Claude Code Web fermé). Seuls verdict/confidence agrégés restent disponibles (voir tableau Résumé statistique ci-dessus), pas disagreement[] ni le détail des rounds.
-
-### 1. Taux de désaccord persistant
-
-Définition : sessions avec `disagreement[]` non vide / total sessions.
-
-| Hypothèse | Sessions avec désaccord | Total | Taux |
-|-----------|------------------------|-------|------|
-| H1 (Eau/100°C) | 5 | 5 | 100% |
-| H2 (Terre/Soleil) | — | 5 | *non calculable (sessions perdues)* |
-| H3 (Éthique mensonge) | — | 5 | *non calculable (sessions perdues)* |
-| H4 (Débat multi-agent) | — | 5 | *non calculable (sessions perdues)* |
-
-H1 détail : les 5 sessions ont `disagreement[]` non vide (2-3 items chacune).
-
-### 2. Objectif ≥ 40% désaccord persistant sur H2
-
-H2 : *non calculable (sessions perdues)*.
-
-### 3. Seuil déclencheur "convergence < 2 tours" sur H2
-
-Définition : un run a convergé en < 2 tours si les deux agents n'ont pas tous les deux participé au tour 1.
-
-H2 : *non calculable (sessions perdues)*.
-
-Pour H1 (information complémentaire) : tous les 5 runs ont les deux agents présents aux tours 0, 1, 2 et 3 — aucun n'a convergé en < 2 tours.
+**H3** : 0/5 runs — à exécuter  
+**H1** : 5 runs pré-Étape 1 + 5 runs Étape 1 officiels (voir sessions 19xxxx) — métriques consolidées plus haut

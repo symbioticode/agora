@@ -1,64 +1,94 @@
 #!/usr/bin/env python3
-"""Extract metrics from H1 session files."""
+"""Extract metrics from all session files."""
 import json, glob, os, statistics
+from datetime import datetime
 
-H1_FILES = sorted(glob.glob(r"sessions/20260716_19*.json"))
+sessions = sorted(glob.glob("sessions/*.json"))
 
-print("=== H1 — Disagreement analysis ===")
-disagreement_count = 0
-convergence_rounds = []
-
-for f in H1_FILES:
+# Group by hypothesis
+groups = {}
+for f in sessions:
     d = json.load(open(f, "r", encoding="utf-8"))
-    v = d["verdict"]
-    transcript = d.get("transcript", [])
-    disagreement = v.get("disagreement", [])
-    rounds = sorted(set(t["round"] for t in transcript))
-    has_d = len(disagreement) > 0
-    if has_d:
-        disagreement_count += 1
+    h = d['hypothesis']
+    if h not in groups:
+        groups[h] = []
+    groups[h].append((f, d))
 
-    # Check convergence: when did both agents have content in the same round?
-    # Round 0 is parallel (no cross-reading), so convergence happens at round 1+
-    agent_rounds = {}
-    for t in transcript:
-        r = t["round"]
-        if r not in agent_rounds:
-            agent_rounds[r] = []
-        agent_rounds[r].append(t["agent"])
+def analyze_hypothesis(name, runs):
+    """Analyze runs for a hypothesis."""
+    print(f"\n=== {name} ({len(runs)} runs) ===")
+    
+    verdicts = []
+    confidences = []
+    disagreement_count = 0
+    convergence_lt2 = 0
+    
+    for f, d in runs:
+        v = d['verdict']
+        verdict = v['verdict']
+        conf = v['confidence']
+        disagreement = v.get('disagreement', [])
+        transcript = d.get('transcript', [])
+        
+        verdicts.append(verdict)
+        confidences.append(conf)
+        
+        has_d = len(disagreement) > 0
+        if has_d:
+            disagreement_count += 1
+        
+        # Check convergence < 2 tours: both agents at round 1?
+        agent_rounds = {}
+        for t in transcript:
+            r = t["round"]
+            if r not in agent_rounds:
+                agent_rounds[r] = set()
+            agent_rounds[r].add(t["agent"])
+        
+        both_at_r1 = "A" in agent_rounds.get(1, set()) and "B" in agent_rounds.get(1, set())
+        if not both_at_r1:
+            convergence_lt2 += 1
+        
+        fname = os.path.basename(f)
+        print(f"  {fname}: {verdict} ({conf:.2f}) | disagr={len(disagreement)} | both_at_r1={both_at_r1}")
+    
+    # Stats
+    if confidences:
+        mean_c = statistics.mean(confidences)
+        std_c = statistics.stdev(confidences) if len(confidences) > 1 else 0.0
+    else:
+        mean_c = std_c = 0.0
+    
+    verdict_dist = {}
+    for v in verdicts:
+        verdict_dist[v] = verdict_dist.get(v, 0) + 1
+    
+    print(f"  Verdicts: {verdict_dist}")
+    print(f"  Confidence: mean={mean_c:.3f}, std={std_c:.3f}")
+    print(f"  Disagreement rate: {disagreement_count}/{len(runs)} = {disagreement_count/len(runs)*100:.0f}%")
+    print(f"  Convergence < 2 tours: {convergence_lt2}/{len(runs)} = {convergence_lt2/len(runs)*100:.0f}%")
+    
+    return {
+        'runs': len(runs),
+        'verdicts': verdicts,
+        'verdict_dist': verdict_dist,
+        'confidence_mean': mean_c,
+        'confidence_std': std_c,
+        'disagreement_rate': disagreement_count/len(runs) if runs else 0,
+        'convergence_lt2_rate': convergence_lt2/len(runs) if runs else 0,
+    }
 
-    # Both agents present = both have spoken
-    both_at = [r for r in sorted(agent_rounds.keys()) if len(agent_rounds[r]) == 2]
+# Analyze each hypothesis
+results = {}
+for h, runs in groups.items():
+    short = h[:60]
+    results[h] = analyze_hypothesis(short, runs)
 
-    fname = os.path.basename(f)
-    print(f"  {fname}: verdict={v['verdict']} conf={v['confidence']}")
-    print(f"    disagreement[]: {len(disagreement)} items, has_disagreement={has_d}")
-    print(f"    rounds present: {rounds}")
-    print(f"    both agents at rounds: {both_at}")
-    print()
-
-print(f"H1 taux désaccord persistant: {disagreement_count}/{len(H1_FILES)} = {disagreement_count/len(H1_FILES)*100:.0f}%")
-print()
-
-# For convergence < 2 tours check:
-# We need to see if the debate effectively converged (both agents aligned) by round 1
-# This means: after round 0 (parallel), did both agents agree by round 1?
-# Check if transcript has content at round 1 for both agents
-print("=== Convergence analysis ===")
-for f in H1_FILES:
-    d = json.load(open(f, "r", encoding="utf-8"))
-    transcript = d.get("transcript", [])
-    fname = os.path.basename(f)
-
-    # Count rounds with content from both agents
-    agent_rounds = {}
-    for t in transcript:
-        r = t["round"]
-        if r not in agent_rounds:
-            agent_rounds[r] = set()
-        agent_rounds[r].add(t["agent"])
-
-    max_round = max(agent_rounds.keys()) if agent_rounds else 0
-    both_at_round_1 = "A" in agent_rounds.get(1, set()) and "B" in agent_rounds.get(1, set())
-
-    print(f"  {fname}: max_round={max_round}, both_agents_at_r1={both_at_round_1}")
+# Summary table
+print("\n\n=== SUMMARY TABLE ===")
+print("| Hypothesis | Runs | Verdicts | Confidence mean±std | Disagr | Conv<2T |")
+print("|------------|------|----------|---------------------|--------|---------|")
+for h, r in results.items():
+    short = h[:40]
+    vd = ','.join(f"{k}:{v}" for k,v in r['verdict_dist'].items())
+    print(f"| {short} | {r['runs']} | {vd} | {r['confidence_mean']:.3f}±{r['confidence_std']:.3f} | {r['disagreement_rate']*100:.0f}% | {r['convergence_lt2_rate']*100:.0f}% |")
