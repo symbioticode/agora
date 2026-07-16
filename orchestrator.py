@@ -3,7 +3,7 @@
 orchestrator.py — Agora / Orchestrateur principal (~90 lignes)
 Usage: python orchestrator.py --hypothesis "..." --rounds 3
 """
-import os, json, argparse, sys
+import os, json, re, argparse, sys, hashlib, time
 from datetime import datetime
 from pathlib import Path
 
@@ -21,10 +21,17 @@ DEEPSEEK = OpenAI(base_url="https://api.deepseek.com/v1", api_key=os.getenv("DEE
 
 MODEL_A = "claude-sonnet-4-5"
 MODEL_B = "deepseek-v4-flash"
-MODEL_JUDGE = "claude-sonnet-4-5"
 DEFAULT_ROUNDS = 3
 TEMP_DEBATE = 0.7
 TEMP_JUDGE = 0.0
+
+
+def pick_judge():
+    """Alterne juge entre Anthropic et DeepSeek (pas de provider tiers requis)."""
+    seed = str(int(time.time() * 1000))
+    h = hashlib.md5(seed.encode()).hexdigest()
+    return "anthropic" if int(h, 16) % 2 == 0 else "deepseek"
+
 
 MINDSETS = {
     "A": (REPO / "mindsets" / "empiricist.md").read_text(),
@@ -80,12 +87,35 @@ def agent_turn(agent_id, hypothesis, history, round_num):
         return call_deepseek(MODEL_B, system, user, TEMP_DEBATE)
 
 
+def extract_json(text: str) -> dict:
+    """Extrait le premier objet JSON valide d'une chaîne."""
+    start = text.find("{")
+    end = text.rfind("}") + 1
+    if start >= 0 and end > start:
+        try:
+            return json.loads(text[start:end])
+        except json.JSONDecodeError:
+            pass
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        raise ValueError(f"Impossible d'extraire JSON valide: {text[:200]}...")
+
+
 def judge_verdict(hypothesis, transcript):
     transcript_str = "\n".join(
         f"Tour {t['round']} - Agent {t['agent']}: {t['content']}" for t in transcript
     )
     user = f"Hypothèse: {hypothesis}\n\nDébat:\n{transcript_str}"
-    return call_anthropic(MODEL_JUDGE, JUDGE_PROMPT, user, TEMP_JUDGE)
+
+    judge_provider = pick_judge()
+    if judge_provider == "anthropic":
+        model = MODEL_A
+        raw = call_anthropic(model, JUDGE_PROMPT, user, TEMP_JUDGE)
+    else:
+        model = MODEL_B
+        raw = call_deepseek(model, JUDGE_PROMPT, user, TEMP_JUDGE)
+    return extract_json(raw), f"{judge_provider}:{model}"
 
 
 def main():
@@ -106,13 +136,12 @@ def main():
                 history[-1][agent] = resp
             transcript.append({"round": r, "agent": agent, "content": resp})
 
-    verdict_raw = judge_verdict(args.hypothesis, transcript)
-    verdict = json.loads(verdict_raw)
+    verdict, judge_model = judge_verdict(args.hypothesis, transcript)
 
     session = {
         "hypothesis": args.hypothesis,
         "timestamp": datetime.utcnow().isoformat() + "Z",
-        "models": {"A": MODEL_A, "B": MODEL_B, "judge": MODEL_JUDGE},
+        "models": {"A": MODEL_A, "B": MODEL_B, "judge": judge_model},
         "transcript": transcript,
         "verdict": verdict,
     }

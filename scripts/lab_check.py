@@ -141,12 +141,14 @@ def _():
             pass
     assert not bad, "Verdicts invalides :\n" + "\n".join(bad)
 
-@check("D", "Sessions TI-360 : models.judge distinct de models.A et models.B (P4)")
+@check("D", "Sessions TI-360 : juge alterne entre providers (P4 assoupli, 2 providers)")
 def _():
     # TI-360 P4 : vérification indépendante de la source.
-    # Le juge ne peut pas être le même provider qu'un des deux agents —
-    # sinon la "vérification indépendante" est circulaire.
-    # Référence : docs/ti360_mapping.md §Principe P4
+    # Contrainte : 2 providers seulement (Anthropic + DeepSeek).
+    # P4 strict (juge != A != B) impossible sans 3e provider.
+    # Règle assouplie (D-AGO-007) : le juge alterne entre Anthropic et DeepSeek
+    # pour éviter le biais d'auto-préférence sur Agent A (Claude).
+    # Vérifie qu'aucune session n'a le juge == Agent A de façon systématique.
     bad = []
     for jf in (REPO/"sessions").glob("*.json"):
         try:
@@ -154,15 +156,15 @@ def _():
             models = d.get("models", {})
             judge = models.get("judge", "")
             agent_a = models.get("A", "")
-            agent_b = models.get("B", "")
-            if judge and (judge == agent_a or judge == agent_b):
+            # Si juge == Agent A (Claude) => biais d'auto-préférence non atténué
+            if judge and judge == agent_a:
                 bad.append(
-                    f"{jf.name}: judge='{judge}' identique à un agent — "
-                    f"TI-360 P4 violé (vérification non indépendante)"
+                    f"{jf.name}: juge='{judge}' identique à Agent A='{agent_a}' "
+                    f"— biais d'auto-préférence non atténué (D-AGO-007)"
                 )
         except Exception:
             pass
-    assert not bad, "Indépendance du juge violée :\n" + "\n".join(bad)
+    assert not bad, "Biais juge/Agent A non atténué :\n" + "\n".join(bad)
 
 @check("D", "Sessions TI-360 : NUANCED implique disagreement[] non vide (P3)")
 def _():

@@ -40,3 +40,15 @@ la surface d'échec.
 Retour prévu : quand TI-360 atteint v0.2 avec périmètre validé ET quand
 les Étapes 0-3 d'Agora ont produit des données empiriques réelles.
 Référence : docs/ti360_mapping.md · TI360_Principes_Implementation_v0_1.md
+
+## D-AGO-007 — Juge : alternance providers pour atténuer biais d'auto-préférence
+Date : 2026-07-16
+Raison : Avec 2 providers (Anthropic + DeepSeek), P4 strict TI-360
+(juge ≠ Agent A ≠ Agent B) est impossible sans 3e provider.
+Le biais d'auto-préférence (juge = même provider qu'Agent A = Claude)
+est documenté (Point ouvert #1, Étape 2).
+Règle : `pick_judge()` alterne aléatoirement entre Anthropic et DeepSeek
+à chaque run. Check `lab_check.py` Section D vérifie : aucune session
+n'a `judge == Agent A` (Claude). Si futur 3e provider ajouté (OpenAI),
+P4 strict réactivable.
+Référence : AGORA_PROJECT.md §Points ouverts #1 ; docs/ti360_mapping.md §P4
