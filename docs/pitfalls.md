@@ -39,3 +39,9 @@
 ## 9. Requirements.txt vidé par merge
 **Symptôme** : anthropic/openai disparaissent.
 **Fix** : lab_check.py Section A check explicite.
+
+## 10. Encodage cp1252 vs UTF-8 sous Windows (3 occurrences le 2026-07-16)
+**Symptôme** : `UnicodeEncodeError` sur `write_text()`, `print()`, ou `read_text()` avec caractères non-ASCII (ex: `→`, `₂`).
+**Cause** : Python sous Windows utilise cp1252 par défaut au lieu d'UTF-8 pour les I/O texte.
+**Fix** : TOUT `read_text()` / `write_text()` doit spécifier `encoding="utf-8"` explicitement. Pour `print()` sur stdout, ajouter `sys.stdout.reconfigure(encoding="utf-8")` en haut du fichier sous `if sys.platform == "win32"`.
+**Non-régression** : check lab_check.py Section A vérifie l'absence d'I/O sans encoding.

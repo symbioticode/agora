@@ -53,7 +53,7 @@ def test_session_format():
     """Vérifie le format JSON des sessions."""
     sessions = list((REPO / "sessions").glob("*.json"))
     for s in sessions:
-        d = json.loads(s.read_text())
+        d = json.loads(s.read_text(encoding="utf-8"))
         required = {"hypothesis", "timestamp", "models", "transcript", "verdict"}
         assert required.issubset(d.keys()), f"{s.name}: champs manquants {required - set(d.keys())}"
         assert d["verdict"]["verdict"] in {"CONFIRMED", "NUANCED", "REJECTED", "PENDING"}

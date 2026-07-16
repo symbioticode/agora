@@ -7,6 +7,9 @@ Source de référence : DECISIONS.md + Architecture section mindsets.
 """
 import sys, os, json, pathlib, argparse
 
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+
 REPO = pathlib.Path(__file__).parent.parent
 _RUN_API = False
 
@@ -60,6 +63,19 @@ def _():
     gi = REPO/".gitignore"
     if not gi.exists(): return
     assert ".env" in gi.read_text(encoding="utf-8"), ".env non gitignored — risque de commiter les clés"
+
+@check("A", "Aucun I/O texte sans encoding explicite (régression Windows cp1252, 3 occurrences 2026-07-16)")
+def _():
+    import re
+    bad = []
+    for pyfile in REPO.rglob("*.py"):
+        if "venv" in pyfile.parts: continue
+        content = pyfile.read_text(encoding="utf-8")
+        for i, line in enumerate(content.splitlines(), 1):
+            for m in re.finditer(r'\.(read_text|write_text)\(', line):
+                if "encoding=" not in line[m.start():]:
+                    bad.append(f"{pyfile.relative_to(REPO)}:{i}: {m.group()} sans encoding=")
+    assert not bad, "I/O sans encoding UTF-8 explicite :\n" + "\n".join(bad)
 
 @check("A", "sessions/ et results/ existent")
 def _():

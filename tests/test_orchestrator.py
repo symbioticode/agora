@@ -13,14 +13,14 @@ def test_orchestrator_exists():
 
 
 def test_orchestrator_imports():
-    content = (REPO / "orchestrator.py").read_text()
+    content = (REPO / "orchestrator.py").read_text(encoding="utf-8")
     assert "anthropic" in content, "import anthropic manquant"
     assert "openai" in content, "import openai manquant"
     assert "dotenv" in content, "import dotenv manquant"
 
 
 def test_orchestrator_structure():
-    content = (REPO / "orchestrator.py").read_text()
+    content = (REPO / "orchestrator.py").read_text(encoding="utf-8")
     assert "def main()" in content, "fonction main manquante"
     assert "argparse" in content, "argparse manquant"
     assert "--hypothesis" in content, "argument --hypothesis manquant"
@@ -44,15 +44,15 @@ def test_mindsets_exist():
 
 
 def test_mindsets_substantial():
-    emp = (REPO / "mindsets" / "empiricist.md").read_text()
-    rat = (REPO / "mindsets" / "rationalist.md").read_text()
+    emp = (REPO / "mindsets" / "empiricist.md").read_text(encoding="utf-8")
+    rat = (REPO / "mindsets" / "rationalist.md").read_text(encoding="utf-8")
     assert len(emp.split()) >= 50, "empiricist.md trop court"
     assert len(rat.split()) >= 50, "rationalist.md trop court"
 
 
 def test_mindsets_distinct():
-    emp = set((REPO / "mindsets" / "empiricist.md").read_text().lower().split())
-    rat = set((REPO / "mindsets" / "rationalist.md").read_text().lower().split())
+    emp = set((REPO / "mindsets" / "empiricist.md").read_text(encoding="utf-8").lower().split())
+    rat = set((REPO / "mindsets" / "rationalist.md").read_text(encoding="utf-8").lower().split())
     jaccard = len(emp & rat) / len(emp | rat)
     assert jaccard < 0.70, f"Mindsets trop similaires (Jaccard={jaccard:.2f})"
 
@@ -63,7 +63,7 @@ def test_scripts_exist():
 
 
 def test_requirements():
-    content = (REPO / "requirements.txt").read_text()
+    content = (REPO / "requirements.txt").read_text(encoding="utf-8")
     assert "anthropic" in content
     assert "openai" in content
 
@@ -73,7 +73,7 @@ def test_env_example():
 
 
 def test_gitignore():
-    gi = (REPO / ".gitignore").read_text()
+    gi = (REPO / ".gitignore").read_text(encoding="utf-8")
     assert ".env" in gi, ".env non gitignored"
 
 

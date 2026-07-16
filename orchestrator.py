@@ -7,6 +7,9 @@ import os, json, re, argparse, sys, hashlib, time
 from datetime import datetime, timezone
 from pathlib import Path
 
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+
 from anthropic import Anthropic
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -34,8 +37,8 @@ def pick_judge():
 
 
 MINDSETS = {
-    "A": (REPO / "mindsets" / "empiricist.md").read_text(),
-    "B": (REPO / "mindsets" / "rationalist.md").read_text(),
+    "A": (REPO / "mindsets" / "empiricist.md").read_text(encoding="utf-8"),
+    "B": (REPO / "mindsets" / "rationalist.md").read_text(encoding="utf-8"),
 }
 
 JUDGE_PROMPT = """Tu es un juge impartial à temperature=0.
@@ -135,7 +138,6 @@ def judge_verdict(hypothesis, transcript):
 
 
 def main():
-    sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser()
     parser.add_argument("--hypothesis", required=True)
     parser.add_argument("--rounds", type=int, default=DEFAULT_ROUNDS)
