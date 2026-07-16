@@ -70,7 +70,10 @@ def _():
 def _():
     import re
     bad = []
+    EXCLUDE_DIRS = {".venv", "venv", "node_modules", ".git", "__pycache__"}
     for pyfile in REPO.rglob("*.py"):
+        if any(part in EXCLUDE_DIRS for part in pyfile.parts):
+            continue
         if "venv" in pyfile.parts: continue
         content = pyfile.read_text(encoding="utf-8")
         for i, line in enumerate(content.splitlines(), 1):
