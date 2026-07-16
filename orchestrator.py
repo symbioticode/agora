@@ -27,10 +27,10 @@ TEMP_JUDGE = 0.0
 
 
 def pick_judge():
-    """Alterne juge entre Anthropic et DeepSeek (pas de provider tiers requis)."""
-    seed = str(int(time.time() * 1000))
-    h = hashlib.md5(seed.encode()).hexdigest()
-    return "anthropic" if int(h, 16) % 2 == 0 else "deepseek"
+    """Alterne juge entre Anthropic et DeepSeek de façon déterministe.
+    Utilise le nombre de sessions existantes pour assurer l'alternance."""
+    existing = list(SESSIONS.glob("*.json"))
+    return "deepseek" if len(existing) % 2 == 0 else "anthropic"
 
 
 MINDSETS = {
