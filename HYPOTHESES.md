@@ -81,11 +81,6 @@
 | 3 | Un système d'IA peut détenir de véritables croyances. | Ouverte | PENDING | 0/5 ⏳ **À EXÉCUTER** |
 | 4 (optionnelle) | Le débat multi-agent améliore la factualité des LLM. | Méta | — | 5/5 ✅ |
 
-> **Note** : Les critères de succès auto-générés ci-dessous sont marqués `[NON VALIDÉ]` — ils n'ont pas été approuvés par l'humain et ne doivent pas être utilisés pour conclure.
-> - ~~Métrique `taux_désaccord_persistant`~~ → [NON VALIDÉ — proposition auto-générée]
-> - ~~Objectif ≥ 40% sur H2~~ → [NON VALIDÉ — proposition auto-générée]
-> - ~~Seuil déclencheur "convergence < 2 tours → durcir mindsets"~~ → [NON VALIDÉ — proposition auto-générée]
-
 ---
 
 ## Résultats bruts — Étape 1 (5 runs homogènes par hypothèse, pick_judge() actif)
