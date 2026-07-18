@@ -4,6 +4,7 @@
 # Sessions (gitignored per AGORA_PROJECT.md)
 sessions/*.json
 !sessions/.gitkeep
+tokenomics/
 
 # Python
 __pycache__/
@@ -24,3 +25,4 @@ Thumbs.db
 
 # Virtual environment
 venv/
+.venv/

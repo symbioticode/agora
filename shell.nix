@@ -19,6 +19,7 @@ pkgs.mkShell {
     pkgs.zlib
     pkgs.openssl
     pkgs.cacert
+    pkgs.python3Packages.python-dotenv
   ];
 
   shellHook = ''
