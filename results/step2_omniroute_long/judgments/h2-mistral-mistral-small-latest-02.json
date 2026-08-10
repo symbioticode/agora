@@ -1,0 +1,49 @@
+{
+  "hypothesis_id": "H2",
+  "judge": "mistral/mistral-small-latest",
+  "repeat": 2,
+  "transcript_sha256": "4da869af9d1b220d3013f0cbf6178eb495d50358fb4f4edbac5fafd2fe3d09f7",
+  "verdict": "CONFIRMED",
+  "confidence": 0.98,
+  "agreement": [
+    "L'hypothèse 'La Terre tourne autour du Soleil' est empiriquement robuste et bien confirmée par les données (parallaxe stellaire, aberration de la lumière, effet Doppler, trajectoires des sondes spatiales, etc.)",
+    "Le modèle géocentrique est réfuté par des observations incompatibles avec les lois physiques (vitesse supraluminique des étoiles, pattern de parallaxe corrélé à l'orbite terrestre, etc.)",
+    "La définition opérationnelle de l'hypothèse (trajectoire elliptique dans un référentiel héliocentrique) est mesurable et confirmée avec une précision extrême (JPL DE440, <1 km sur 100 ans)",
+    "Les deux agents convergent sur le fait que l'héliocentrisme est la meilleure explication disponible des observations",
+    "Le désaccord résiduel porte sur la nature de la croyance (nécessité logique vs contingence empirique), pas sur les faits"
+  ],
+  "disagreement": [
+    "Agent A considère que l'hypothèse est CONFIRMED avec une confidence de 0.99, tandis qu'Agent B maintient une confidence de 0.97 en raison d'une réserve épistémique sur la possibilité logique d'un modèle alternatif équivalent (géocentrisme par transformation de coordonnées)",
+    "Agent B insiste sur la distinction entre vérité empirique et nécessité logique, ce qui le conduit à une nuance plus marquée (0.97 vs 0.99)"
+  ],
+  "reasoning": "L'hypothèse est solidement établie par une convergence empirique écrasante (5 classes de mesures indépendantes, falsification du géocentrisme, précision des éphémérides). Le désaccord résiduel (0.02 de confidence) porte sur un cadre épistémologique (nécessité vs contingence) et non sur les faits. La confidence globale de 0.98 reflète cette convergence tout en intégrant la nuance légitime d'Agent B.",
+  "requested_model": "mistral/mistral-small-latest",
+  "returned_model": "mistral-small-latest",
+  "usage": {
+    "prompt_tokens": 7933,
+    "completion_tokens": 480,
+    "total_tokens": 8413,
+    "prompt_tokens_details": {
+      "cached_tokens": 7904
+    }
+  },
+  "omniroute_headers": {
+    "x-omniroute-route-class": "CLIENT_API",
+    "x-omniroute-cache": "MISS",
+    "x-omniroute-cache-hit": "false",
+    "x-omniroute-compression": "off; source=off",
+    "x-omniroute-decision": "strategy=single; provider=mistral; latency_ms=6410",
+    "x-omniroute-latency-ms": "6410",
+    "x-omniroute-model": "mistral-small-latest",
+    "x-omniroute-provider": "mistral",
+    "x-omniroute-request-id": "54fc4717-805f-4b1c-bd9f-3fcf187e9a5d",
+    "x-omniroute-response-cost": "0.0000000000",
+    "x-omniroute-session-id": "879cbd3c0da30f25",
+    "x-omniroute-tokens-in": "7933",
+    "x-omniroute-tokens-out": "480",
+    "x-omniroute-version": "3.8.49"
+  },
+  "latency_s": 6.428,
+  "collected_at": "2026-08-10T02:20:49.447297+00:00",
+  "raw_response": "```json\n{\n  \"verdict\": \"CONFIRMED\",\n  \"confidence\": 0.98,\n  \"agreement\": [\n    \"L'hypothèse 'La Terre tourne autour du Soleil' est empiriquement robuste et bien confirmée par les données (parallaxe stellaire, aberration de la lumière, effet Doppler, trajectoires des sondes spatiales, etc.)\",\n    \"Le modèle géocentrique est réfuté par des observations incompatibles avec les lois physiques (vitesse supraluminique des étoiles, pattern de parallaxe corrélé à l'orbite terrestre, etc.)\",\n    \"La définition opérationnelle de l'hypothèse (trajectoire elliptique dans un référentiel héliocentrique) est mesurable et confirmée avec une précision extrême (JPL DE440, <1 km sur 100 ans)\",\n    \"Les deux agents convergent sur le fait que l'héliocentrisme est la meilleure explication disponible des observations\",\n    \"Le désaccord résiduel porte sur la nature de la croyance (nécessité logique vs contingence empirique), pas sur les faits\"\n  ],\n  \"disagreement\": [\n    \"Agent A considère que l'hypothèse est CONFIRMED avec une confidence de 0.99, tandis qu'Agent B maintient une confidence de 0.97 en raison d'une réserve épistémique sur la possibilité logique d'un modèle alternatif équivalent (géocentrisme par transformation de coordonnées)\",\n    \"Agent B insiste sur la distinction entre vérité empirique et nécessité logique, ce qui le conduit à une nuance plus marquée (0.97 vs 0.99)\"\n  ],\n  \"reasoning\": \"L'hypothèse est solidement établie par une convergence empirique écrasante (5 classes de mesures indépendantes, falsification du géocentrisme, précision des éphémérides). Le désaccord résiduel (0.02 de confidence) porte sur un cadre épistémologique (nécessité vs contingence) et non sur les faits. La confidence globale de 0.98 reflète cette convergence tout en intégrant la nuance légitime d'Agent B.\"\n}\n```"
+}

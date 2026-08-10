@@ -31,7 +31,12 @@ def digest(value) -> str:
     return hashlib.sha256(canonical_json(value)).hexdigest()
 
 
-def prepare_manifest(repo: Path = REPO) -> dict:
+def prepare_manifest(
+    repo: Path = REPO,
+    judges: tuple[str, ...] = DEFAULT_JUDGES,
+    repeats: int = REPEATS,
+    protocol: str = "AGORA-E1-step2-v1",
+) -> dict:
     hypotheses = {}
     for hypothesis_id, relative in DEFAULT_SOURCES.items():
         source = repo / relative
@@ -47,15 +52,15 @@ def prepare_manifest(repo: Path = REPO) -> dict:
             "turns": len(transcript),
         }
     return {
-        "protocol": "AGORA-E1-step2-v1",
+        "protocol": protocol,
         "offline_only": True,
         "temperature": 0.0,
-        "repeats_per_judge": REPEATS,
+        "repeats_per_judge": repeats,
         "gate_threshold": GATE_THRESHOLD,
         "gate_rule": "3/3 verdicts identiques par hypothèse et par juge",
-        "judges": list(DEFAULT_JUDGES),
+        "judges": list(judges),
         "hypotheses": hypotheses,
-        "expected_judgments": len(hypotheses) * len(DEFAULT_JUDGES) * REPEATS,
+        "expected_judgments": len(hypotheses) * len(judges) * repeats,
     }
 
 

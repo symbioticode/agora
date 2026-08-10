@@ -82,6 +82,20 @@ Le manifeste fige par SHA-256 une transcription H2 et une H3. L'analyse exige
 3 répétitions à température 0 pour chacun des deux juges et refuse toute dérive
 de transcription. Ces commandes ne font aucun appel LLM.
 
+### Variante prolongée via Omniroute
+
+```bash
+python scripts/step2_omniroute.py \
+  --repeats 10 --interval 10 \
+  --models mistral/mistral-small-latest,mistral/magistral-small-latest \
+  --output results/step2_omniroute_long/judgments
+```
+
+Le runner désactive explicitement le cache et la mémoire Omniroute. Résultats
+du 2026-08-10 : 40/40 appels réels (`cache=MISS`, coût déclaré $0), stabilité
+de verdict 100 % pour H2 et H3. Voir
+`docs/KB-ETAPE2-OMNIROUTE-LONGUE.md` pour les limites d'interprétation.
+
 ## Tracking
 
 ```bash

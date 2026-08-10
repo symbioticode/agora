@@ -1,0 +1,92 @@
+{
+  "protocol": "AGORA-E1-step2-omniroute-v1",
+  "judgments_received": 40,
+  "judgments_expected": 40,
+  "gate_e1_passed": true,
+  "groups": [
+    {
+      "hypothesis_id": "H2",
+      "judge": "mistral/mistral-small-latest",
+      "runs": 10,
+      "verdicts": [
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED"
+      ],
+      "modal_verdict": "CONFIRMED",
+      "agreement_rate": 1.0,
+      "complete": true,
+      "passed": true
+    },
+    {
+      "hypothesis_id": "H2",
+      "judge": "mistral/magistral-small-latest",
+      "runs": 10,
+      "verdicts": [
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED"
+      ],
+      "modal_verdict": "CONFIRMED",
+      "agreement_rate": 1.0,
+      "complete": true,
+      "passed": true
+    },
+    {
+      "hypothesis_id": "H3",
+      "judge": "mistral/mistral-small-latest",
+      "runs": 10,
+      "verdicts": [
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED"
+      ],
+      "modal_verdict": "NUANCED",
+      "agreement_rate": 1.0,
+      "complete": true,
+      "passed": true
+    },
+    {
+      "hypothesis_id": "H3",
+      "judge": "mistral/magistral-small-latest",
+      "runs": 10,
+      "verdicts": [
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED",
+        "NUANCED"
+      ],
+      "modal_verdict": "NUANCED",
+      "agreement_rate": 1.0,
+      "complete": true,
+      "passed": true
+    }
+  ]
+}

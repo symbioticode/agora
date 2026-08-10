@@ -41,6 +41,12 @@ analyseur disponibles dans `scripts/step2_stability.py`. Deux transcriptions
 réelles sont figées; aucun jugement Étape 2 n'a été exécuté. Le Gate E1 reste
 ouvert et exige des appels explicitement autorisés.
 
+**Variante E1-O Omniroute prolongée (2026-08-10)** : 40 jugements sur 10 min
+17 s, deux modèles Mistral distincts, 100 % de stabilité sur H2/H3, cache
+désactivé et coût Omniroute déclaré $0. **E1-O franchi**, mais le Gate E1 direct
+Anthropic↔DeepSeek reste ouvert : les deux modèles E1-O partagent le provider
+Mistral et ne mesurent donc pas l'effet inter-provider.
+
 ---
 
 ### Métriques clés Étape 1 (runs officiels)

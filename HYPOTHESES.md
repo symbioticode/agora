@@ -48,6 +48,20 @@
 
 **À faire** : Exécuter Étape 2 (stabilité verdict) avant toute hypothèse de recherche réelle.
 
+### Variante E1-O via Omniroute — série prolongée
+
+| Hypothèse | Modèle | Runs | Verdict modal | Accord |
+|---|---|---:|---|---:|
+| H2 | `mistral/mistral-small-latest` | 10 | CONFIRMED (0.98) | 100 % |
+| H2 | `mistral/magistral-small-latest` | 10 | CONFIRMED (0.98) | 100 % |
+| H3 | `mistral/mistral-small-latest` | 10 | NUANCED (0.85) | 100 % |
+| H3 | `mistral/magistral-small-latest` | 10 | NUANCED (0.85) | 100 % |
+
+**Verdict E1-O** : franchi sur les 4 groupes (40/40 jugements, seuil ≥80 %).
+Fenêtre UTC 02:19:45→02:30:02; 40 cache MISS; coût déclaré $0. Cette variante
+mesure deux LLM mais un seul provider Mistral. Elle ne remplace pas le test
+inter-provider Anthropic↔DeepSeek prévu initialement.
+
 ---
 
 ## Anomalie technique — Run H1 #7 (REJECTED 0.99)
