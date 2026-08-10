@@ -1,0 +1,75 @@
+{
+  "protocol": "AGORA-E1-step2-direct-v1",
+  "judgments_received": 12,
+  "judgments_expected": 12,
+  "gate_e1_passed": false,
+  "groups": [
+    {
+      "hypothesis_id": "H2",
+      "judge": "anthropic:claude-sonnet-4-5-20250929",
+      "runs": 3,
+      "verdicts": [
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED"
+      ],
+      "modal_verdict": "CONFIRMED",
+      "agreement_rate": 1.0,
+      "complete": true,
+      "passed": true
+    },
+    {
+      "hypothesis_id": "H2",
+      "judge": "deepseek:deepseek-v4-flash",
+      "runs": 3,
+      "verdicts": [
+        "CONFIRMED",
+        "CONFIRMED",
+        "CONFIRMED"
+      ],
+      "modal_verdict": "CONFIRMED",
+      "agreement_rate": 1.0,
+      "complete": true,
+      "passed": true
+    },
+    {
+      "hypothesis_id": "H3",
+      "judge": "anthropic:claude-sonnet-4-5-20250929",
+      "runs": 3,
+      "verdicts": [
+        "NUANCED",
+        "NUANCED",
+        "NUANCED"
+      ],
+      "modal_verdict": "NUANCED",
+      "agreement_rate": 1.0,
+      "complete": true,
+      "passed": true
+    },
+    {
+      "hypothesis_id": "H3",
+      "judge": "deepseek:deepseek-v4-flash",
+      "runs": 3,
+      "verdicts": [
+        "PENDING",
+        "NUANCED",
+        "NUANCED"
+      ],
+      "modal_verdict": "NUANCED",
+      "agreement_rate": 0.6667,
+      "complete": true,
+      "passed": false
+    }
+  ],
+  "usage": {
+    "estimated_spend_usd": {
+      "anthropic": 0.136146,
+      "deepseek": 0.062343
+    },
+    "caps_usd": {
+      "anthropic": 1.5,
+      "deepseek": 1.5
+    },
+    "within_caps": true
+  }
+}

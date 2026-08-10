@@ -42,11 +42,16 @@
 
 *Hypothèses #2 (nuancée) et #3 (ouverte) — 3 runs juge seul sur même transcription*
 
-| Hypothèse | Run 1 | Run 2 | Run 3 | Accord ≥ 80% |
-|-----------|-------|-------|-------|--------------|
-| (non testé) | — | — | — | — |
+| Hypothèse | Juge | Verdicts | Accord | Gate |
+|---|---|---|---:|---|
+| H2 | Sonnet 4.5 snapshot | CONFIRMED ×3 | 100 % | ✅ |
+| H2 | DeepSeek V4 Flash | CONFIRMED ×3 | 100 % | ✅ |
+| H3 | Sonnet 4.5 snapshot | NUANCED ×3 | 100 % | ✅ |
+| H3 | DeepSeek V4 Flash | PENDING, NUANCED, NUANCED | 66,7 % | ❌ |
 
-**À faire** : Exécuter Étape 2 (stabilité verdict) avant toute hypothèse de recherche réelle.
+**Verdict E1 direct (2026-08-10) : non franchi.** H3/DeepSeek est sous le
+seuil préenregistré ≥80 %. Aucun ajout post-hoc de répétitions pour modifier ce
+verdict.
 
 ### Variante E1-O via Omniroute — série prolongée
 

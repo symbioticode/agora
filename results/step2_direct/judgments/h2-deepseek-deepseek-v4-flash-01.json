@@ -1,0 +1,31 @@
+{
+  "hypothesis_id": "H2",
+  "judge": "deepseek:deepseek-v4-flash",
+  "repeat": 1,
+  "transcript_sha256": "4da869af9d1b220d3013f0cbf6178eb495d50358fb4f4edbac5fafd2fe3d09f7",
+  "verdict": "CONFIRMED",
+  "confidence": 0.98,
+  "agreement": [
+    "La Terre décrit une ellipse autour du Soleil dans le référentiel où le Soleil est au repos (ou le barycentre du système solaire), avec une précision empirique extrêmement élevée.",
+    "Les observations de parallaxe stellaire, d'aberration de la lumière, d'effet Doppler, de phases de Vénus et des trajectoires de sondes spatiales confirment massivement le modèle héliocentrique.",
+    "Le géocentrisme naïf exige des vitesses supraluminiques et des accélérations physiquement incohérentes pour les étoiles, ce qui le rend empiriquement falsifié.",
+    "L'hypothèse est falsifiable : une parallaxe stellaire non corrélée à la position orbitale terrestre la réfuterait.",
+    "La confiance dans l'héliocentrisme est supérieure à 0,95 pour les deux agents en fin de débat."
+  ],
+  "disagreement": [
+    "Statut épistémique : l'agent A considère l'héliocentrisme comme une vérité empirique maximale, tandis que l'agent B maintient une réserve conceptuelle sur la contingence logique et l'équivalence possible des référentiels.",
+    "Source d'incertitude résiduelle : l'agent A l'attribue aux erreurs systématiques possibles, l'agent B à la possibilité logique d'un modèle alternatif plus complexe.",
+    "Clôture du débat : l'agent A estime le débat clos, l'agent B considère qu'une question philosophique distincte reste ouverte."
+  ],
+  "reasoning": "Les deux agents convergent en fin de débat vers CONFIRMED avec des confiances très proches (0,99 et 0,97). L'hypothèse est massivement soutenue par des observations indépendantes et reproductibles, et les objections rationalistes initiales ont été résolues par la distinction entre vérité empirique et nécessité logique. Le désaccord résiduel ne porte pas sur le fait que la Terre tourne autour du Soleil, mais sur la nature épistémique de cette vérité et la quantification exacte de l'incertitude philosophique. Ce désaccord est mineur au regard de l'hypothèse testée, donc le verdict est CONFIRMED.",
+  "usage": {
+    "input_tokens": 8410,
+    "output_tokens": 773,
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 8410
+  },
+  "estimated_cost_usd": 0.012275,
+  "latency_s": 10.535,
+  "collected_at": "2026-08-10T04:02:17.313372+00:00",
+  "raw_response": "{\n  \"verdict\": \"CONFIRMED\",\n  \"confidence\": 0.98,\n  \"agreement\": [\n    \"La Terre décrit une ellipse autour du Soleil dans le référentiel où le Soleil est au repos (ou le barycentre du système solaire), avec une précision empirique extrêmement élevée.\",\n    \"Les observations de parallaxe stellaire, d'aberration de la lumière, d'effet Doppler, de phases de Vénus et des trajectoires de sondes spatiales confirment massivement le modèle héliocentrique.\",\n    \"Le géocentrisme naïf exige des vitesses supraluminiques et des accélérations physiquement incohérentes pour les étoiles, ce qui le rend empiriquement falsifié.\",\n    \"L'hypothèse est falsifiable : une parallaxe stellaire non corrélée à la position orbitale terrestre la réfuterait.\",\n    \"La confiance dans l'héliocentrisme est supérieure à 0,95 pour les deux agents en fin de débat.\"\n  ],\n  \"disagreement\": [\n    \"Statut épistémique : l'agent A considère l'héliocentrisme comme une vérité empirique maximale, tandis que l'agent B maintient une réserve conceptuelle sur la contingence logique et l'équivalence possible des référentiels.\",\n    \"Source d'incertitude résiduelle : l'agent A l'attribue aux erreurs systématiques possibles, l'agent B à la possibilité logique d'un modèle alternatif plus complexe.\",\n    \"Clôture du débat : l'agent A estime le débat clos, l'agent B considère qu'une question philosophique distincte reste ouverte.\"\n  ],\n  \"reasoning\": \"Les deux agents convergent en fin de débat vers CONFIRMED avec des confiances très proches (0,99 et 0,97). L'hypothèse est massivement soutenue par des observations indépendantes et reproductibles, et les objections rationalistes initiales ont été résolues par la distinction entre vérité empirique et nécessité logique. Le désaccord résiduel ne porte pas sur le fait que la Terre tourne autour du Soleil, mais sur la nature épistémique de cette vérité et la quantification exacte de l'incertitude philosophique. Ce désaccord est mineur au regard de l'hypothèse testée, donc le verdict est CONFIRMED.\"\n}"
+}

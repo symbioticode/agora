@@ -47,6 +47,12 @@ désactivé et coût Omniroute déclaré $0. **E1-O franchi**, mais le Gate E1 d
 Anthropic↔DeepSeek reste ouvert : les deux modèles E1-O partagent le provider
 Mistral et ne mesurent donc pas l'effet inter-provider.
 
+**Gate E1 direct (2026-08-10)** : exécuté sur 12/12 jugements. H2 passe chez
+les deux juges et H3 passe chez Sonnet 4.5; H3/DeepSeek obtient seulement
+66,7 % d'accord (`PENDING, NUANCED, NUANCED`). **E1 non franchi** au seuil de
+80 %. Coût conservateur : 0,136146 USD Anthropic et 0,062343 USD DeepSeek,
+incident vide inclus.
+
 ---
 
 ### Métriques clés Étape 1 (runs officiels)

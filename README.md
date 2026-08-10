@@ -96,6 +96,14 @@ du 2026-08-10 : 40/40 appels réels (`cache=MISS`, coût déclaré $0), stabilit
 de verdict 100 % pour H2 et H3. Voir
 `docs/KB-ETAPE2-OMNIROUTE-LONGUE.md` pour les limites d'interprétation.
 
+### Gate E1 direct Anthropic↔DeepSeek
+
+Le 10 août 2026, les 12 jugements directs ont été exécutés avec caches natifs
+et budgets durs. H2 est stable chez les deux juges; H3 est stable chez Sonnet
+4.5 mais DeepSeek produit `PENDING, NUANCED, NUANCED`. E1 est donc **non
+franchi** (66,7 % < 80 % sur H3/DeepSeek). Voir
+`docs/KB-ETAPE2-DIRECT-E1.md`.
+
 ## Tracking
 
 ```bash

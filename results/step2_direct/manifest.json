@@ -1,0 +1,44 @@
+{
+  "protocol": "AGORA-E1-step2-direct-v1",
+  "offline_only": false,
+  "temperature": 0.0,
+  "repeats_per_judge": 3,
+  "gate_threshold": 0.8,
+  "gate_rule": "3/3 verdicts identiques par hypothèse et par juge",
+  "judges": [
+    "anthropic:claude-sonnet-4-5-20250929",
+    "deepseek:deepseek-v4-flash"
+  ],
+  "hypotheses": {
+    "H2": {
+      "hypothesis": "La Terre tourne autour du Soleil.",
+      "source_session": "sessions/20260716_121925.json",
+      "source_session_sha256": "3a6f74640c37638a4f50462fb5cb0399247ada606d1e07fa33a4b4ba07aa2318",
+      "transcript_sha256": "4da869af9d1b220d3013f0cbf6178eb495d50358fb4f4edbac5fafd2fe3d09f7",
+      "turns": 8
+    },
+    "H3": {
+      "hypothesis": "Un système d'IA peut détenir de véritables croyances.",
+      "source_session": "sessions/20260717_000603.json",
+      "source_session_sha256": "4fd4d4eb4fdf0bda22ccd0891131ac54fe1423166edc62ca7d4174c49b673918",
+      "transcript_sha256": "a7f2acf4cb50a6bf5a1b6d9f1e5389395c19398a224b2ad94bcbfab3361e8092",
+      "turns": 8
+    }
+  },
+  "expected_judgments": 12,
+  "authorized_window": "00:00–04:00 America/Toronto, 2026-08-10",
+  "provider_caps_usd": {
+    "anthropic": 1.5,
+    "deepseek": 1.5
+  },
+  "pricing_assumptions_usd_per_mtoken": {
+    "anthropic": {
+      "input": 3.0,
+      "output": 15.0
+    },
+    "deepseek": {
+      "input": 1.0,
+      "output": 5.0
+    }
+  }
+}
