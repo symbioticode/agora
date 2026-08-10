@@ -66,6 +66,22 @@ python scripts/lab_check.py
 python -m pytest tests/
 ```
 
+Les appels de connectivité sont strictement opt-in : `RUN_API=1 python
+test_api_keys.py` ou `RUN_API=1 python -m pytest test_api_keys.py`. Sans cette
+variable, les deux points d'entrée refusent l'appel; un `pytest` ordinaire ne
+doit jamais consommer de crédit API.
+
+## Étape 2 — préparer hors-ligne
+
+```bash
+python scripts/step2_stability.py prepare
+python scripts/step2_stability.py analyze  # exit 2 tant que les 12 jugements manquent
+```
+
+Le manifeste fige par SHA-256 une transcription H2 et une H3. L'analyse exige
+3 répétitions à température 0 pour chacun des deux juges et refuse toute dérive
+de transcription. Ces commandes ne font aucun appel LLM.
+
 ## Tracking
 
 ```bash

@@ -38,6 +38,10 @@
 
 ## Reprise
 
+> **Autorisation requise** : les commandes ci-dessous appellent Anthropic et
+> DeepSeek directement. Ne pas les lancer dans un travail autonome sans accord
+> explicite sur le coût.
+
 ```bash
 # Quand crédits disponibles :
 for i in 1 2 3; do
@@ -48,3 +52,7 @@ done
 python scripts/extract_metrics.py
 # Mise à jour HYPOTHESES.md
 ```
+
+La préparation hors-ligne de l'Étape 2 est disponible via
+`python scripts/step2_stability.py prepare`; elle ne lève pas ce blocage et ne
+constitue pas un résultat du Gate E1.

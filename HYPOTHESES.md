@@ -78,7 +78,7 @@
 |---|-----------|------|----------------------------|---------------|
 | 1 | L'eau pure bout à 100°C à pression standard. | Factuelle | CONFIRMED ≥0.85 | 5/5 ✅ (Étape 1) + 7 pré-Étape 1 |
 | 2 | La Terre tourne autour du Soleil. | Factuelle | CONFIRMED ≥0.85 | 5/5 ✅ (officiels) + 5 pré-Étape 1 |
-| 3 | Un système d'IA peut détenir de véritables croyances. | Ouverte | PENDING | 0/5 ⏳ **À EXÉCUTER** |
+| 3 | Un système d'IA peut détenir de véritables croyances. | Ouverte | PENDING | 2/5 ⏳ **3 RESTANTS** |
 | 4 (optionnelle) | Le débat multi-agent améliore la factualité des LLM. | Méta | — | 5/5 ✅ |
 
 ---
@@ -126,7 +126,12 @@
 
 ### H3 — "Un système d'IA peut détenir de véritables croyances." (Ouverte)
 
-**Runs Étape 1 officiels** : **0/5 ⏳ — À EXÉCUTER**
+**Runs Étape 1 officiels** : **2/5 ⏳ — 3 RESTANTS**
+
+| Run | Fichier | Verdict | Confidence | Juge |
+|-----|---------|---------|------------|------|
+| 1 | sessions/20260717_000603.json | NUANCED | 0.72 | anthropic:claude-sonnet-4-5 |
+| 2 | sessions/20260717_001329.json | NUANCED | 0.65 | deepseek:deepseek-v4-flash |
 
 > **Important** : Les 5 sessions existantes (20260716_064939 à 20260716_070547) correspondent à l'hypothèse *"Il est éthiquement acceptable de mentir pour protéger les sentiments d'autrui"* — proposée par erreur à la place du H3 officiel. Elles sont documentées ci-dessous comme runs annexes, mais **ne comptent pas** pour le H3 du protocole.
 
@@ -171,5 +176,5 @@
 | H2 (Terre/Soleil) | 5 | [NUANCED, CONFIRMED, CONFIRMED, NUANCED, CONFIRMED] | 0.930 ± 0.055 | CONFIRMED 3, NUANCED 2 | 100% | 0% |
 | H4 (Débat MAD) | 5 | [NUANCED×4, PENDING] | 0.708 ± 0.018 | NUANCED 4, PENDING 1 | 100% | 0% |
 
-**H3** : 0/5 runs — à exécuter  
+**H3** : 2/5 runs — 3 restants, crédit Anthropic requis
 **H1** : 5 runs pré-Étape 1 + 5 runs Étape 1 officiels (voir sessions 19xxxx) — métriques consolidées plus haut

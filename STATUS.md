@@ -28,13 +28,18 @@
 |-----------|------|--------------|------------------|--------|
 | H1: L'eau pure bout à 100°C à pression standard | Factuelle | 5/5 ✅ | 7 | Complétée (avec anomalie REJECTED 0.99) |
 | H2: La Terre tourne autour du Soleil | Factuelle | **5/5 ✅** | 5 | Complétée |
-| H3: Un système d'IA peut détenir de véritables croyances | Ouverte | **0/5 ⏳** | 0 | **À EXÉCUTER** |
+| H3: Un système d'IA peut détenir de véritables croyances | Ouverte | **2/5 ⏳** | 0 | Partielle; 3 runs bloqués par crédit Anthropic |
 | H4: Le débat multi-agent améliore la factualité des LLM (optionnelle) | Méta | 5/5 ✅ | 0 | Complétée |
 
 **Prochaines actions** :
-1. Exécuter H3 (5 runs) — hypothèse officielle du protocole
+1. Compléter H3 (3 runs restants) — hypothèse officielle du protocole
 2. (Optionnel) Relancer H1 runs officiels Étape 1 si souhaité
 3. Étape 2 — Stabilité verdict (3 runs juge seul sur même transcription pour H2/H3)
+
+**Préparation Étape 2 (branche Codex 2026-08-10)** : manifeste hors-ligne et
+analyseur disponibles dans `scripts/step2_stability.py`. Deux transcriptions
+réelles sont figées; aucun jugement Étape 2 n'a été exécuté. Le Gate E1 reste
+ouvert et exige des appels explicitement autorisés.
 
 ---
 
