@@ -1,7 +1,9 @@
 # KB — AGORA Étape 2 : protocole de stabilité préparé hors-ligne
 
-**Date de remise :** 2026-08-10  
-**Branche :** `codex/agora-autonome-20260810`  
+**Date de remise :** 2026-08-10
+
+**Branche :** `codex/agora-autonome-20260810`
+
 **Statut :** outillage prêt et testé; Gate E1 non exécuté
 
 ## Résumé
