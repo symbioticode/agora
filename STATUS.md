@@ -32,20 +32,21 @@
 | H4: Le débat multi-agent améliore la factualité des LLM (optionnelle) | Méta | 5/5 ✅ | 0 | Complétée |
 
 **Prochaines actions** :
-1. Compléter H3 (3 runs restants) — hypothèse officielle du protocole
-2. (Optionnel) Relancer H1 runs officiels Étape 1 si souhaité
-3. Étape 2 — Stabilité verdict (3 runs juge seul sur même transcription pour H2/H3)
+1. Préenregistrer l'Étape 3 — bornage des tours `{2,3,4,5,6}`
+2. Définir avant exécution les métriques de nouveaux arguments, reformulations,
+   problem drift et coût token
+3. Dette secondaire : compléter les trois débats H3 de l'Étape 1
 
-**Préparation Étape 2 (branche Codex 2026-08-10)** : manifeste hors-ligne et
-analyseur disponibles dans `scripts/step2_stability.py`. Deux transcriptions
-réelles sont figées; aucun jugement Étape 2 n'a été exécuté. Le Gate E1 reste
-ouvert et exige des appels explicitement autorisés.
+**Préparation Étape 2 (branche Codex 2026-08-10)** : le manifeste hors-ligne
+et l'analyseur de `scripts/step2_stability.py` ont servi à figer deux
+transcriptions. Cette phase de préparation est terminée; les résultats directs
+et collectifs sont décrits ci-dessous.
 
 **Variante E1-O Omniroute prolongée (2026-08-10)** : 40 jugements sur 10 min
 17 s, deux modèles Mistral distincts, 100 % de stabilité sur H2/H3, cache
-désactivé et coût Omniroute déclaré $0. **E1-O franchi**, mais le Gate E1 direct
-Anthropic↔DeepSeek reste ouvert : les deux modèles E1-O partagent le provider
-Mistral et ne mesurent donc pas l'effet inter-provider.
+désactivé et coût Omniroute déclaré $0. **E1-O franchi**, sans conclure sur E1
+direct : les deux modèles E1-O partagent le provider Mistral et ne mesurent
+donc pas l'effet inter-provider. E1 direct a ensuite été exécuté et a échoué.
 
 **Gate E1 direct (2026-08-10)** : exécuté sur 12/12 jugements. H2 passe chez
 les deux juges et H3 passe chez Sonnet 4.5; H3/DeepSeek obtient seulement
@@ -75,4 +76,5 @@ débloquée.
 
 ---
 
-*Mis à jour automatiquement par `scripts/lab_status.sh`*
+*Mis à jour le 2026-08-25; `scripts/lab_status.sh` ne doit pas écraser les
+résultats des gates Étape 2.*

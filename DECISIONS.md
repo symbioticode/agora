@@ -52,3 +52,14 @@ Règle : `pick_judge()` alterne aléatoirement entre Anthropic et DeepSeek
 n'a `judge == Agent A` (Claude). Si futur 3e provider ajouté (OpenAI),
 P4 strict réactivable.
 Référence : AGORA_PROJECT.md §Points ouverts #1 ; docs/ti360_mapping.md §P4 (assoupli + "Ce qu'Agora ne couvre pas")
+
+## D-AGO-008 — Fallback collectif à trois providers après échec E1
+Date : 2026-08-25
+Raison : E1 direct a échoué sur H3/DeepSeek à 66,7 %. La branche prévue du
+protocole est un vote multi-juges. Une analyse rétrospective favorable a été
+conservée comme non préenregistrée, puis six nouveaux votes ont confirmé
+prospectivement H2 CONFIRMED et H3 NUANCED à 3/3 providers.
+Règle : une voix par provider; majorité 2/3; répartition 1-1-1 = PENDING.
+E1 direct reste historiquement échoué. Le fallback collectif franchi débloque
+l'Étape 3 sans prétendre établir l'indépendance épistémique des modèles.
+Référence : docs/KB-ETAPE2-VOTE-MULTIJUGES.md

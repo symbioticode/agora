@@ -53,3 +53,10 @@ résultats présents ont été sautés, démontrant la reprise idempotente.
 E1-O avait montré 100 % de stabilité sur deux LLM du même provider Mistral.
 E1 direct montre que cette stabilité ne se transpose pas automatiquement à
 DeepSeek sur H3. Le résultat ne démontre pas lequel produit le « bon » verdict.
+
+## Suite
+
+La branche de fallback prévue par le protocole a été exécutée le 25 août 2026.
+Le vote prospectif Anthropic/DeepSeek/Mistral est unanime sur H2 et H3 et
+franchit la confirmation collective, sans modifier le verdict historique de
+ce Gate E1 direct. Voir `KB-ETAPE2-VOTE-MULTIJUGES.md`.

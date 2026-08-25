@@ -84,4 +84,6 @@ Deux choses qui comptent autant que les métriques elles-mêmes :
 
 ---
 
-*Prochaine reprise : clôture Étape 1 (H3 officiel, 5 runs restants), puis Étape 2 (stabilité du juge). Budget API à recharger avant.*
+*Prochaine reprise au 25 août 2026 : Étape 3, préenregistrement du bornage des
+tours. Le fallback collectif de l'Étape 2 est confirmé; les trois débats H3
+manquants de l'Étape 1 restent une dette secondaire.*

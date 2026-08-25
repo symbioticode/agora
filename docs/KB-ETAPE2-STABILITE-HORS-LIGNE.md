@@ -4,13 +4,17 @@
 
 **Branche :** `codex/agora-autonome-20260810`
 
-**Statut :** outillage prêt et testé; Gate E1 non exécuté
+**Statut historique :** préparation du 10 août, désormais exécutée et
+supplantée par `KB-ETAPE2-DIRECT-E1.md` puis
+`KB-ETAPE2-VOTE-MULTIJUGES.md`. E1 direct a échoué; le fallback collectif
+prospectif a été franchi le 25 août 2026.
 
 ## Résumé
 
-Le prochain chantier documenté est l'Étape 2 : rejuger plusieurs fois la même
-transcription à température 0 pour mesurer la stabilité du verdict. La branche
-prépare ce protocole sans appel LLM et sans modifier `orchestrator.py`.
+À la date de remise, le prochain chantier documenté était l'Étape 2 : rejuger
+plusieurs fois la même transcription à température 0 pour mesurer la stabilité
+du verdict. La branche préparait ce protocole sans appel LLM et sans modifier
+`orchestrator.py`.
 
 Le travail ne prétend pas franchir E1. Il fige les entrées, rend les futures
 sorties comparables et empêche trois erreurs : transcription différente entre
@@ -82,7 +86,7 @@ sortie pytest ne permet pas d'établir si un appel a été facturé. Le fichier 
 désormais marqué `RUN_API=1` obligatoire et un run ordinaire les ignore. Ce
 garde-fou empêche la récidive; aucun run de débat ni jugement E1 n'a été lancé.
 
-## Ce qui reste à autoriser
+## Ce qui restait à autoriser au 10 août 2026
 
 1. Trois débats H3 complets pour clore l'Étape 1.
 2. Douze jugements directs pour E1 selon le manifeste.
@@ -94,8 +98,7 @@ font pas partie du travail autonome sans confirmation d'Andrei.
 
 ## Verdict
 
-La branche avance AGORA de façon vérifiable : les données existantes sont
-réconciliées et le protocole E1 est prêt, déterministe et auditable. Elle ne
-produit pas de nouvelle conclusion épistémique et ne contourne pas le blocage
-budgétaire. Le prochain acte scientifique reste un run autorisé, pas davantage
-de code.
+À la date de remise, la branche avançait AGORA de façon vérifiable : les
+données existantes étaient réconciliées et le protocole E1 était prêt,
+déterministe et auditable. Pour l'état courant, consulter `STATUS.md` et
+`KB-ETAPE2-VOTE-MULTIJUGES.md`.

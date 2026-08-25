@@ -71,7 +71,7 @@ test_api_keys.py` ou `RUN_API=1 python -m pytest test_api_keys.py`. Sans cette
 variable, les deux points d'entrée refusent l'appel; un `pytest` ordinaire ne
 doit jamais consommer de crédit API.
 
-## Étape 2 — préparer hors-ligne
+## Étape 2 — protocole hors ligne initial
 
 ```bash
 python scripts/step2_stability.py prepare

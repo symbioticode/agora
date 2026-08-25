@@ -155,6 +155,12 @@ utiliser DeepSeek comme juge (et vice-versa). Commiter les écarts.
 
 **Gate E2** : ≥ 80% stabilité sur #2 et #3 avant toute hypothèse de recherche réelle.
 
+**Résultat au 25 août 2026** : E1 direct a échoué sur H3/DeepSeek (2/3), puis
+la branche prévue de vote multi-juges a été confirmée prospectivement avec
+trois providers. H2 donne CONFIRMED 3/3 et H3 NUANCED 3/3. Le fallback
+collectif franchi autorise la préparation de l'Étape 3; il ne réécrit pas E1
+direct en succès.
+
 ---
 
 ### Étape 3 — Bornage des tours (Semaine 3)

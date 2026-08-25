@@ -75,3 +75,8 @@ Conserver E1-O comme résultat positif distinct. Ne pas l'utiliser pour fermer
 le Gate E1 Anthropic↔DeepSeek. La prochaine expérience utile n'est pas davantage
 de répétitions Mistral, mais la restauration d'un second provider capable de
 recevoir les transcriptions complètes avec cache désactivé.
+
+**Suite réalisée le 25 août 2026 :** Anthropic, DeepSeek et Mistral ont été
+réunis dans une confirmation prospective à poids égal. H2 et H3 ont obtenu une
+unanimité 3/3; voir `KB-ETAPE2-VOTE-MULTIJUGES.md`. E1-O conserve son statut
+distinct et E1 direct n'est pas réécrit.

@@ -67,6 +67,23 @@ Fenêtre UTC 02:19:45→02:30:02; 40 cache MISS; coût déclaré $0. Cette varia
 mesure deux LLM mais un seul provider Mistral. Elle ne remplace pas le test
 inter-provider Anthropic↔DeepSeek prévu initialement.
 
+### Fallback collectif confirmé prospectivement — 2026-08-25
+
+L'échec E1 direct a déclenché la branche prévue « vote multi-juges ». Une
+première réagrégation des 32 preuves existantes a produit un signal favorable,
+mais reste étiquetée `RETROSPECTIVE_NOT_PREREGISTERED`. Un manifeste distinct a
+ensuite figé six nouveaux votes, un par provider et par hypothèse.
+
+| Hypothèse | Anthropic | DeepSeek | Mistral | Vote collectif |
+|---|---|---|---|---|
+| H2 | CONFIRMED 0.98 | CONFIRMED 0.98 | CONFIRMED 0.98 | CONFIRMED, 3/3 |
+| H3 | NUANCED 0.72 | NUANCED 0.70 | NUANCED 0.85 | NUANCED, 3/3 |
+
+**Verdict fallback collectif : franchi.** E1 direct demeure historiquement non
+franchi; le mécanisme collectif prévu après cet échec est maintenant confirmé
+et débloque la préparation de l'Étape 3. Coût estimé : 0,085497 USD Anthropic,
+0,020429 USD DeepSeek, 0 USD Mistral via Omniroute.
+
 ---
 
 ## Anomalie technique — Run H1 #7 (REJECTED 0.99)

@@ -1,6 +1,6 @@
-# Sessions H3 en attente — Étape 1
+# Travaux en attente
 
-## Priorité actuelle — confirmation multi-juges E1
+## Fallback multi-juges E1 — terminé
 
 Le protocole de fallback dans `results/step2_multijudge_confirm/manifest.json`
 a été exécuté le 25 août 2026. Les six votes H2/H3 sont complets et unanimes par
@@ -10,6 +10,8 @@ Prochaine action : préenregistrer le bornage des tours de l'Étape 3. Voir
 `docs/KB-ETAPE2-VOTE-MULTIJUGES.md`.
 
 ---
+
+## Dette secondaire — sessions H3 de l'Étape 1
 
 **Hypothèse officielle** : *"Un système d'IA peut détenir de véritables croyances."*
 
@@ -64,6 +66,6 @@ python scripts/extract_metrics.py
 # Mise à jour HYPOTHESES.md
 ```
 
-La préparation hors-ligne de l'Étape 2 est disponible via
-`python scripts/step2_stability.py prepare`; elle ne lève pas ce blocage et ne
-constitue pas un résultat du Gate E1.
+La préparation et l'exécution de l'Étape 2 sont désormais terminées. Ces trois
+débats H3 restent utiles pour compléter le corpus Étape 1, mais ne bloquent plus
+la préparation de l'Étape 3.
