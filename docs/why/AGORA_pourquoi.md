@@ -47,7 +47,7 @@ Une hypothèse qui parle du système lui-même. C'est un test de **cohérence r�
 | **E0** — Gate initiale | Le système produit-il un JSON valide et un verdict cohérent, ne serait-ce qu'une fois ? | Le tuyau fonctionne. Rien sur la qualité du jugement. |
 | **Étape 1** — Calibration anti-convergence | Le système distingue-t-il un vrai désaccord d'un désaccord fabriqué, sur des cas connus d'avance ? | On sait si on peut faire confiance à un NUANCED ou un CONFIRMED. |
 | **Étape 2** — Stabilité du verdict | Si on rejoue le même débat, obtient-on le même jugement ? | On sait si le juge est un instrument de mesure stable, ou un dé qu'on relance. |
-| **Étape 3** *(à venir)* — Biais d'auto-préférence | Un juge favorise-t-il les arguments du modèle qui lui ressemble (Claude jugeant Claude) ? | On sait si le choix du juge fausse le résultat. |
+| **Étape 3** *(à venir)* — Bornage des tours | À partir de combien de tours les reformulations, le drift et le coût dépassent-ils les nouveaux arguments ? | On fixe `DEFAULT_ROUNDS` juste avant la première dégradation observée. |
 | **Étape 4** *(le but final)* — Recherche réelle | Sur une vraie question ouverte, que dit le débat ? | Seulement là, le contenu du verdict a une valeur en soi. |
 
 Chaque étape est une **porte** (gate). On n'avance à la suivante que si la précédente est franchie — pas parce que c'est bureaucratique, mais parce qu'un verdict produit par un instrument non calibré n'est pas juste "moins fiable", il est **trompeur**. Il a l'apparence de la rigueur sans le contenu.
@@ -66,7 +66,9 @@ Pas par intuition, par des critères qu'on a fixés *avant* de voir les résulta
 
 4. **Le juge est stable, pas un générateur de hasard.** C'est l'objet de l'Étape 2 : rejouer le jugement sur la même transcription 3 fois, à température nulle, et vérifier qu'on retombe sur le même verdict au moins 80 % du temps. Un juge qui change d'avis sans raison n'est pas un juge, c'est du bruit.
 
-5. **Le juge ne favorise pas son propre camp.** C'est l'objet du test de biais d'auto-préférence : est-ce que Claude-juge est plus indulgent envers les arguments produits par Claude-agent ? Si oui, il faut soit changer la règle d'attribution du juge, soit accepter cette limite et la documenter.
+5. **Le juge ne favorise pas son propre camp.** Ce contrôle est transversal à
+   l'Étape 2 : comparer les votes par provider et conserver un troisième regard
+   lorsque deux providers seulement ne permettent pas l'indépendance stricte.
 
 **Le couple d'agents sera "prêt"** quand ces cinq critères seront simultanément satisfaits — pas un par un au fil du temps, mais ensemble, de façon reproductible. À ce moment-là seulement, un verdict produit par AGORA sur une vraie question de recherche (Étape 4) pourra être lu comme un signal, et pas comme un artefact de la façon dont le système a été construit.
 

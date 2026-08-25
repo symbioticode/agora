@@ -1,6 +1,6 @@
 # Agora — Status du Laboratoire
 
-## Stage : Étape 1 — Calibration anti-convergence (Semaine 1)
+## Stage : Étape 2 — Confirmation prospective du fallback multi-juges
 
 **Étape 0 terminée** (2026-07-16)
 
@@ -52,6 +52,12 @@ les deux juges et H3 passe chez Sonnet 4.5; H3/DeepSeek obtient seulement
 66,7 % d'accord (`PENDING, NUANCED, NUANCED`). **E1 non franchi** au seuil de
 80 %. Coût conservateur : 0,136146 USD Anthropic et 0,062343 USD DeepSeek,
 incident vide inclus.
+
+**Fallback multi-juges (2026-08-25)** : les 32 preuves existantes ont été
+réagrégées à poids égal par provider. H2 donne CONFIRMED 3/3 providers et H3
+NUANCED 3/3 providers. Ce signal est rétrospectif et ne franchit aucune gate.
+Le manifeste prospectif fige six nouveaux jugements indépendants; exécution en
+attente de plafonds Anthropic/DeepSeek explicites. Étape 3 bloquée jusque-là.
 
 ---
 

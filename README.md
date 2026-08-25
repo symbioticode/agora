@@ -104,6 +104,14 @@ et budgets durs. H2 est stable chez les deux juges; H3 est stable chez Sonnet
 franchi** (66,7 % < 80 % sur H3/DeepSeek). Voir
 `docs/KB-ETAPE2-DIRECT-E1.md`.
 
+### Fallback multi-juges
+
+L'analyse rétrospective des 32 preuves Anthropic, DeepSeek et Mistral soutient
+une majorité collective stable, mais ne remplace pas E1 : sa règle modale
+exacte n'était pas préenregistrée. Une confirmation prospective à six nouveaux
+votes est figée et attend des plafonds API explicites. Voir
+`docs/KB-ETAPE2-VOTE-MULTIJUGES.md`.
+
 ## Tracking
 
 ```bash

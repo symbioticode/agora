@@ -1,0 +1,127 @@
+{
+  "protocol": "AGORA-E1-step2-multijudge-fallback-v1",
+  "original_gate_e1_passed": false,
+  "evidence_received": 32,
+  "evidence_expected": 32,
+  "complete": true,
+  "retrospective_supports_multijudge": true,
+  "fallback_gate_status": "RETROSPECTIVE_NOT_PREREGISTERED",
+  "groups": [
+    {
+      "hypothesis_id": "H2",
+      "provider_votes": [
+        {
+          "provider": "anthropic",
+          "judge": "anthropic:claude-sonnet-4-5-20250929",
+          "runs": 3,
+          "expected_runs": 3,
+          "complete": true,
+          "verdicts": [
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED"
+          ],
+          "vote": "CONFIRMED",
+          "within_provider_agreement": 1.0
+        },
+        {
+          "provider": "deepseek",
+          "judge": "deepseek:deepseek-v4-flash",
+          "runs": 3,
+          "expected_runs": 3,
+          "complete": true,
+          "verdicts": [
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED"
+          ],
+          "vote": "CONFIRMED",
+          "within_provider_agreement": 1.0
+        },
+        {
+          "provider": "mistral",
+          "judge": "mistral/mistral-small-latest",
+          "runs": 10,
+          "expected_runs": 10,
+          "complete": true,
+          "verdicts": [
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED",
+            "CONFIRMED"
+          ],
+          "vote": "CONFIRMED",
+          "within_provider_agreement": 1.0
+        }
+      ],
+      "collective_verdict": "CONFIRMED",
+      "majority_count": 3,
+      "majority": true,
+      "complete": true
+    },
+    {
+      "hypothesis_id": "H3",
+      "provider_votes": [
+        {
+          "provider": "anthropic",
+          "judge": "anthropic:claude-sonnet-4-5-20250929",
+          "runs": 3,
+          "expected_runs": 3,
+          "complete": true,
+          "verdicts": [
+            "NUANCED",
+            "NUANCED",
+            "NUANCED"
+          ],
+          "vote": "NUANCED",
+          "within_provider_agreement": 1.0
+        },
+        {
+          "provider": "deepseek",
+          "judge": "deepseek:deepseek-v4-flash",
+          "runs": 3,
+          "expected_runs": 3,
+          "complete": true,
+          "verdicts": [
+            "PENDING",
+            "NUANCED",
+            "NUANCED"
+          ],
+          "vote": "NUANCED",
+          "within_provider_agreement": 0.6667
+        },
+        {
+          "provider": "mistral",
+          "judge": "mistral/mistral-small-latest",
+          "runs": 10,
+          "expected_runs": 10,
+          "complete": true,
+          "verdicts": [
+            "NUANCED",
+            "NUANCED",
+            "NUANCED",
+            "NUANCED",
+            "NUANCED",
+            "NUANCED",
+            "NUANCED",
+            "NUANCED",
+            "NUANCED",
+            "NUANCED"
+          ],
+          "vote": "NUANCED",
+          "within_provider_agreement": 1.0
+        }
+      ],
+      "collective_verdict": "NUANCED",
+      "majority_count": 3,
+      "majority": true,
+      "complete": true
+    }
+  ]
+}
