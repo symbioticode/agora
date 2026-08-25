@@ -63,3 +63,25 @@ Règle : une voix par provider; majorité 2/3; répartition 1-1-1 = PENDING.
 E1 direct reste historiquement échoué. Le fallback collectif franchi débloque
 l'Étape 3 sans prétendre établir l'indépendance épistémique des modèles.
 Référence : docs/KB-ETAPE2-VOTE-MULTIJUGES.md
+
+## D-AGO-009 — PENDING bloque l'action; NUANCED peut qualifier une idée
+Date : 2026-08-25
+Raison : l'incertitude épistémique et l'autorisation opérationnelle ne sont pas
+le même objet. H3 évalue une idée sans action associée; son verdict NUANCED
+conserve correctement le désaccord. Une action exige en revanche un fort degré
+de confiance et ne doit jamais partir d'un verdict PENDING.
+Règle : PENDING bloque toujours l'action. NUANCED est acceptable sans action;
+avec action, il bloque par défaut jusqu'à confirmation humaine ou preuve plus
+forte. CONFIRMED reste soumis aux permissions et postconditions de l'action.
+Référence : PROGRESSION.md
+
+## D-AGO-010 — DEFAULT_ROUNDS = 6 après bornage prospectif
+Date : 2026-08-25
+Raison : les cinq réglages préenregistrés `{2,3,4,5,6}` ont été exécutés sur
+la même hypothèse et classés par un tiers. Aucun drift n'a été détecté; le taux
+de nouveauté marginal est resté supérieur au seuil de 25 % jusque 6. La règle
+préenregistrée choisit donc la borne haute testée.
+Règle : `DEFAULT_ROUNDS = 6`. Ce choix remplace D-AGO-004 pour le réglage
+courant sans prétendre établir un optimum universel : une seule session par
+réglage a été exécutée et aucun réglage supérieur à 6 n'a été testé.
+Référence : results/step3_rounds/manifest.json et analysis.json

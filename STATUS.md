@@ -1,6 +1,6 @@
 # Agora — Status du Laboratoire
 
-## Stage : Étape 3 — Bornage des tours à préparer
+## Stage : Étape 3 terminée — contrôles transversaux à poursuivre
 
 **Étape 0 terminée** (2026-07-16)
 
@@ -32,10 +32,10 @@
 | H4: Le débat multi-agent améliore la factualité des LLM (optionnelle) | Méta | 5/5 ✅ | 0 | Complétée |
 
 **Prochaines actions** :
-1. Préenregistrer l'Étape 3 — bornage des tours `{2,3,4,5,6}`
-2. Définir avant exécution les métriques de nouveaux arguments, reformulations,
-   problem drift et coût token
-3. Dette secondaire : compléter les trois débats H3 de l'Étape 1
+1. Exécuter le test contrôlé d'auto-préférence, identités masquées et permutées
+2. Répéter le vote collectif pour mesurer sa stabilité temporelle
+3. Produire la recette finale réunissant les cinq critères de qualification
+4. Dette secondaire : compléter les trois débats H3 de l'Étape 1
 
 **Préparation Étape 2 (branche Codex 2026-08-10)** : le manifeste hors-ligne
 et l'analyseur de `scripts/step2_stability.py` ont servi à figer deux
@@ -62,6 +62,14 @@ CONFIRMED 3/3 providers et H3 NUANCED 3/3 providers. **Fallback collectif
 franchi.** Coût estimé : 0,085497 USD Anthropic, 0,020429 USD DeepSeek et 0 USD
 Mistral. E1 direct reste historiquement échoué; l'Étape 3 est maintenant
 débloquée.
+
+**Étape 3 (2026-08-25)** : les cinq réglages `{2,3,4,5,6}` ont été collectés
+selon le manifeste prospectif. Aucun drift n'est observé; une reformulation
+apparaît au réglage 3 et la nouveauté marginale reste au-dessus du seuil pour
+tous les réglages. La règle préenregistrée recommande 6 tours, désormais valeur
+par défaut. Coût estimé de l'étape : 0,409434 USD Anthropic et 0,137625 USD
+DeepSeek. Limite : une seule session par réglage; 6 est la borne haute testée,
+pas un optimum universel démontré.
 
 ---
 

@@ -177,6 +177,12 @@ Mesurer : nouveaux arguments vs reformulations, problem drift, coût token.
 le drift arrive à 76–89% des sessions génératives (Becker et al.).
 Le ré-ancrage est non-négociable dans les prompts.
 
+**Résultat au 25 août 2026** : protocole complet sur `{2,3,4,5,6}`, sans
+dégradation au sens des seuils préenregistrés. La règle sélectionne donc 6,
+borne haute testée. `DEFAULT_ROUNDS` passe à 6. Cette observation repose sur
+une session par réglage et ne démontre pas que 6 est optimal au-delà de ce
+périmètre. Preuves : `results/step3_rounds/`.
+
 ---
 
 ### Étape 4 — Premiers sujets de recherche (Semaine 4+)

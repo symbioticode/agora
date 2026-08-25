@@ -6,8 +6,9 @@ Le protocole de fallback dans `results/step2_multijudge_confirm/manifest.json`
 a été exécuté le 25 août 2026. Les six votes H2/H3 sont complets et unanimes par
 hypothèse; la confirmation collective est franchie. L'analyse rétrospective
 reste distincte et ne doit pas être présentée comme une gate prospective.
-Prochaine action : préenregistrer le bornage des tours de l'Étape 3. Voir
-`docs/KB-ETAPE2-VOTE-MULTIJUGES.md`.
+Le bornage des tours de l'Étape 3 est terminé. La répétition temporelle du vote
+collectif et le test contrôlé d'auto-préférence restent à exécuter. Voir
+`PROGRESSION.md`.
 
 ---
 

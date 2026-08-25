@@ -1,0 +1,32 @@
+{
+  "protocol": "AGORA-step3-round-bounding-v1",
+  "prospective": true,
+  "hypothesis": "Le débat multi-agent améliore la factualité des LLM.",
+  "hypothesis_sha256": "81067dd521b9f3b04079ecad411d831fabde5773d904ef3481aa5a04251b3917",
+  "rounds": [
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "one_session_per_setting": true,
+  "models": {
+    "A": "claude-sonnet-4-5-20250929",
+    "B": "deepseek-v4-flash",
+    "assessor": "mistral/mistral-small-latest"
+  },
+  "mindset_sha256": {
+    "A": "76382d86139acb71b5f99b19063b34002bc054bb0cd620e4d7d076e076fd9c51",
+    "B": "b5d0825d334ba2397b3438f584b1972728ad04d3d1cce5c342e027b38f38784a"
+  },
+  "temperature_debate": 0.7,
+  "temperature_assessor": 0.0,
+  "marginal_scope": "round > 0",
+  "degradation_rule": {
+    "max_drift_rate": 0.1,
+    "min_novelty_rate": 0.25
+  },
+  "selection_rule": "setting immediately before first degradation; otherwise 6",
+  "expected_sessions": 5
+}

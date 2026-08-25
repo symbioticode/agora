@@ -47,7 +47,7 @@ Une hypothèse qui parle du système lui-même. C'est un test de **cohérence r�
 | **E0** — Gate initiale | Le système produit-il un JSON valide et un verdict cohérent, ne serait-ce qu'une fois ? | Le tuyau fonctionne. Rien sur la qualité du jugement. |
 | **Étape 1** — Calibration anti-convergence | Le système distingue-t-il un vrai désaccord d'un désaccord fabriqué, sur des cas connus d'avance ? | On sait si on peut faire confiance à un NUANCED ou un CONFIRMED. |
 | **Étape 2** — Stabilité du verdict | Si on rejoue le même débat, obtient-on le même jugement ? | On sait si le juge est un instrument de mesure stable, ou un dé qu'on relance. |
-| **Étape 3** *(à venir)* — Bornage des tours | À partir de combien de tours les reformulations, le drift et le coût dépassent-ils les nouveaux arguments ? | On fixe `DEFAULT_ROUNDS` juste avant la première dégradation observée. |
+| **Étape 3** — Bornage des tours | À partir de combien de tours les reformulations, le drift et le coût dépassent-ils les nouveaux arguments ? | Aucun drift jusqu'à la borne testée; `DEFAULT_ROUNDS=6`, avec une session par réglage. |
 | **Étape 4** *(le but final)* — Recherche réelle | Sur une vraie question ouverte, que dit le débat ? | Seulement là, le contenu du verdict a une valeur en soi. |
 
 Chaque étape est une **porte** (gate). On n'avance à la suivante que si la précédente est franchie — pas parce que c'est bureaucratique, mais parce qu'un verdict produit par un instrument non calibré n'est pas juste "moins fiable", il est **trompeur**. Il a l'apparence de la rigueur sans le contenu.
@@ -84,6 +84,6 @@ Deux choses qui comptent autant que les métriques elles-mêmes :
 
 ---
 
-*Prochaine reprise au 25 août 2026 : Étape 3, préenregistrement du bornage des
-tours. Le fallback collectif de l'Étape 2 est confirmé; les trois débats H3
-manquants de l'Étape 1 restent une dette secondaire.*
+*Prochaine reprise après le 25 août 2026 : test contrôlé d'auto-préférence et
+répétition temporelle du vote collectif. L'Étape 3 recommande 6 tours; les
+trois débats H3 manquants de l'Étape 1 restent une dette secondaire.*
