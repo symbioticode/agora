@@ -45,10 +45,30 @@ exécuté qu'entre 00:00 et 04:00 America/Toronto et exige deux plafonds de coû
     .venv/bin/python scripts/step2_multijudge_confirm.py run \
       --anthropic-cap <USD> --deepseek-cap <USD>
 
-Cette commande ne doit être lancée qu'après autorisation explicite des deux
-plafonds. Mistral passe par Omniroute avec cache et mémoire désactivés par le
-transport existant. Tant que les six nouveaux fichiers ne sont pas présents,
-la confirmation reste `PENDING` et l'Étape 3 ne commence pas.
+Cette commande a été autorisée le 25 août 2026 avec un plafond de 1 USD par
+substrat. Mistral passe par Omniroute avec cache et mémoire désactivés par le
+transport existant.
+
+## Résultat prospectif
+
+Les six nouveaux jugements ont été collectés et la gate de confirmation est
+franchie :
+
+| Hypothèse | Anthropic | DeepSeek | Mistral | Vote collectif |
+|---|---|---|---|---|
+| H2 | CONFIRMED, 0.98 | CONFIRMED, 0.98 | CONFIRMED, 0.98 | CONFIRMED, 3/3 |
+| H3 | NUANCED, 0.72 | NUANCED, 0.70 | NUANCED, 0.85 | NUANCED, 3/3 |
+
+Consommation estimée contre les plafonds de 1 USD :
+
+- Anthropic : 0,085497 USD ;
+- DeepSeek : 0,020429 USD ;
+- Mistral via Omniroute : 0 USD déclaré, cache Omniroute `MISS` sur les deux
+  appels.
+
+Le résultat ne transforme pas rétroactivement E1 direct en succès. Il valide
+le fallback collectif prévu après son échec et débloque la préparation de
+l'Étape 3.
 
 ## Reproduction hors réseau
 
@@ -56,4 +76,3 @@ la confirmation reste `PENDING` et l'Étape 3 ne commence pas.
     .venv/bin/python scripts/step2_multijudge_confirm.py prepare
     .venv/bin/python -m pytest tests/test_step2_multijudge.py \
       tests/test_step2_multijudge_confirm.py
-

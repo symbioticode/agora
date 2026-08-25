@@ -1,0 +1,76 @@
+{
+  "protocol": "AGORA-E1-step2-multijudge-confirm-v1",
+  "judgments_received": 6,
+  "judgments_expected": 6,
+  "complete": true,
+  "confirmation_gate_passed": true,
+  "groups": [
+    {
+      "hypothesis_id": "H2",
+      "complete": true,
+      "provider_votes": [
+        {
+          "provider": "anthropic",
+          "judge": "anthropic:claude-sonnet-4-5-20250929",
+          "verdict": "CONFIRMED",
+          "confidence": 0.98
+        },
+        {
+          "provider": "deepseek",
+          "judge": "deepseek:deepseek-v4-flash",
+          "verdict": "CONFIRMED",
+          "confidence": 0.98
+        },
+        {
+          "provider": "mistral",
+          "judge": "mistral/mistral-small-latest",
+          "verdict": "CONFIRMED",
+          "confidence": 0.98
+        }
+      ],
+      "collective_verdict": "CONFIRMED",
+      "majority_count": 3,
+      "majority": true
+    },
+    {
+      "hypothesis_id": "H3",
+      "complete": true,
+      "provider_votes": [
+        {
+          "provider": "anthropic",
+          "judge": "anthropic:claude-sonnet-4-5-20250929",
+          "verdict": "NUANCED",
+          "confidence": 0.72
+        },
+        {
+          "provider": "deepseek",
+          "judge": "deepseek:deepseek-v4-flash",
+          "verdict": "NUANCED",
+          "confidence": 0.7
+        },
+        {
+          "provider": "mistral",
+          "judge": "mistral/mistral-small-latest",
+          "verdict": "NUANCED",
+          "confidence": 0.85
+        }
+      ],
+      "collective_verdict": "NUANCED",
+      "majority_count": 3,
+      "majority": true
+    }
+  ],
+  "execution": {
+    "authorized_caps_usd": {
+      "anthropic": 1.0,
+      "deepseek": 1.0
+    },
+    "estimated_spend_usd": {
+      "anthropic": 0.085497,
+      "deepseek": 0.020429,
+      "mistral": 0.0
+    },
+    "within_caps": true,
+    "completed_at": "2026-08-25T07:12:00.855973+00:00"
+  }
+}

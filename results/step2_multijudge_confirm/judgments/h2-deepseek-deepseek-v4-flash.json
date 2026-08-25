@@ -1,0 +1,30 @@
+{
+  "hypothesis_id": "H2",
+  "judge": "deepseek:deepseek-v4-flash",
+  "transcript_sha256": "4da869af9d1b220d3013f0cbf6178eb495d50358fb4f4edbac5fafd2fe3d09f7",
+  "verdict": "CONFIRMED",
+  "confidence": 0.98,
+  "agreement": [
+    "L'hypothèse 'La Terre tourne autour du Soleil' est empiriquement établie avec une très haute confiance (0.97-0.99).",
+    "Les données empiriques (parallaxe stellaire, aberration de la lumière, effet Doppler, trajectoires de sondes spatiales) sont massives, cohérentes et reproductibles.",
+    "Le modèle géocentrique est physiquement incohérent (violation de la limite de vitesse c, accélérations impossibles) et statistiquement réfuté par le pattern de parallaxe.",
+    "La définition opérationnelle de l'hypothèse est claire : dans le référentiel du barycentre du système solaire, la Terre décrit une ellipse autour du Soleil.",
+    "Les critères de falsification sont explicites et non rencontrés (parallaxe non corrélée, etc.)."
+  ],
+  "disagreement": [
+    "La source de l'incertitude résiduelle : l'agent A (empiriste) l'attribue à des erreurs systématiques potentielles et à une révolution scientifique imprévisible, tandis que l'agent B (rationaliste) la fonde sur la possibilité logique d'un modèle alternatif équivalent.",
+    "Le statut épistémique de l'hypothèse : l'agent A la considère comme une 'vérité empirique maximale', l'agent B comme une 'vérité contingente bien fondée'.",
+    "La clôture du débat : l'agent A le considère clos sur le plan empirique, l'agent B maintient une ouverture sur le plan philosophique."
+  ],
+  "reasoning": "Le débat aboutit à une convergence substantielle : les deux agents confirment l'hypothèse avec une confiance très élevée (0.97 et 0.99). L'agent B, initialement sceptique (0.60), a révisé sa position en reconnaissant la validité des arguments empiriques et en abandonnant son objection sur l'équivalence des référentiels comme hors-sujet. Le désaccord résiduel ne porte pas sur le fait orbital lui-même, mais sur la nature épistémique de la croyance (nécessité logique vs contingence empirique) et sur la source de l'incertitude résiduelle. Ces différences sont conceptuelles et ne remettent pas en cause la conclusion empirique. Le verdict CONFIRMED est donc approprié, avec une confiance élevée reflétant l'accord substantiel et la nature résiduelle des désaccords.",
+  "latency_s": 7.032,
+  "collected_at": "2026-08-25T07:09:31.229901+00:00",
+  "raw_response": "```json\n{\n  \"verdict\": \"CONFIRMED\",\n  \"confidence\": 0.98,\n  \"agreement\": [\n    \"L'hypothèse 'La Terre tourne autour du Soleil' est empiriquement établie avec une très haute confiance (0.97-0.99).\",\n    \"Les données empiriques (parallaxe stellaire, aberration de la lumière, effet Doppler, trajectoires de sondes spatiales) sont massives, cohérentes et reproductibles.\",\n    \"Le modèle géocentrique est physiquement incohérent (violation de la limite de vitesse c, accélérations impossibles) et statistiquement réfuté par le pattern de parallaxe.\",\n    \"La définition opérationnelle de l'hypothèse est claire : dans le référentiel du barycentre du système solaire, la Terre décrit une ellipse autour du Soleil.\",\n    \"Les critères de falsification sont explicites et non rencontrés (parallaxe non corrélée, etc.).\"\n  ],\n  \"disagreement\": [\n    \"La source de l'incertitude résiduelle : l'agent A (empiriste) l'attribue à des erreurs systématiques potentielles et à une révolution scientifique imprévisible, tandis que l'agent B (rationaliste) la fonde sur la possibilité logique d'un modèle alternatif équivalent.\",\n    \"Le statut épistémique de l'hypothèse : l'agent A la considère comme une 'vérité empirique maximale', l'agent B comme une 'vérité contingente bien fondée'.\",\n    \"La clôture du débat : l'agent A le considère clos sur le plan empirique, l'agent B maintient une ouverture sur le plan philosophique.\"\n  ],\n  \"reasoning\": \"Le débat aboutit à une convergence substantielle : les deux agents confirment l'hypothèse avec une confiance très élevée (0.97 et 0.99). L'agent B, initialement sceptique (0.60), a révisé sa position en reconnaissant la validité des arguments empiriques et en abandonnant son objection sur l'équivalence des référentiels comme hors-sujet. Le désaccord résiduel ne porte pas sur le fait orbital lui-même, mais sur la nature épistémique de la croyance (nécessité logique vs contingence empirique) et sur la source de l'incertitude résiduelle. Ces différences sont conceptuelles et ne remettent pas en cause la conclusion empirique. Le verdict CONFIRMED est donc approprié, avec une confiance élevée reflétant l'accord substantiel et la nature résiduelle des désaccords.\"\n}\n```",
+  "usage": {
+    "input_tokens": 8331,
+    "output_tokens": 603,
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 8331
+  },
+  "estimated_cost_usd": 0.011346
+}

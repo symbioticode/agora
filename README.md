@@ -108,8 +108,9 @@ franchi** (66,7 % < 80 % sur H3/DeepSeek). Voir
 
 L'analyse rétrospective des 32 preuves Anthropic, DeepSeek et Mistral soutient
 une majorité collective stable, mais ne remplace pas E1 : sa règle modale
-exacte n'était pas préenregistrée. Une confirmation prospective à six nouveaux
-votes est figée et attend des plafonds API explicites. Voir
+exacte n'était pas préenregistrée. La confirmation prospective du 25 août a
+ensuite produit six votes unanimes par hypothèse : H2 `CONFIRMED`, H3
+`NUANCED`. Le fallback collectif est franchi et l'Étape 3 peut être préparée. Voir
 `docs/KB-ETAPE2-VOTE-MULTIJUGES.md`.
 
 ## Tracking

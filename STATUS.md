@@ -1,6 +1,6 @@
 # Agora — Status du Laboratoire
 
-## Stage : Étape 2 — Confirmation prospective du fallback multi-juges
+## Stage : Étape 3 — Bornage des tours à préparer
 
 **Étape 0 terminée** (2026-07-16)
 
@@ -56,8 +56,11 @@ incident vide inclus.
 **Fallback multi-juges (2026-08-25)** : les 32 preuves existantes ont été
 réagrégées à poids égal par provider. H2 donne CONFIRMED 3/3 providers et H3
 NUANCED 3/3 providers. Ce signal est rétrospectif et ne franchit aucune gate.
-Le manifeste prospectif fige six nouveaux jugements indépendants; exécution en
-attente de plafonds Anthropic/DeepSeek explicites. Étape 3 bloquée jusque-là.
+Le manifeste prospectif a ensuite produit six nouveaux jugements : H2 est
+CONFIRMED 3/3 providers et H3 NUANCED 3/3 providers. **Fallback collectif
+franchi.** Coût estimé : 0,085497 USD Anthropic, 0,020429 USD DeepSeek et 0 USD
+Mistral. E1 direct reste historiquement échoué; l'Étape 3 est maintenant
+débloquée.
 
 ---
 

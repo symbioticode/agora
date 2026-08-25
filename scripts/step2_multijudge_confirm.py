@@ -213,6 +213,16 @@ def execute(
             if interval:
                 time.sleep(interval)
     result = analyze(manifest, load_judgments(output))
+    result["execution"] = {
+        "authorized_caps_usd": caps,
+        "estimated_spend_usd": {
+            provider: round(value, 8) for provider, value in spend.items()
+        },
+        "within_caps": all(
+            spend[provider] <= caps[provider] for provider in ("anthropic", "deepseek")
+        ),
+        "completed_at": datetime.now(timezone.utc).isoformat(),
+    }
     analysis_path = output.parent / "analysis.json"
     analysis_text = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     analysis_path.write_text(analysis_text, encoding="utf-8")

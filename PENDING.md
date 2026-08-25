@@ -2,12 +2,12 @@
 
 ## Priorité actuelle — confirmation multi-juges E1
 
-Le protocole de fallback est préparé dans
-`results/step2_multijudge_confirm/manifest.json`. Il manque six nouveaux votes
-H2/H3 répartis entre Anthropic, DeepSeek et Mistral. Les appels directs restent
-bloqués tant que leurs plafonds en USD ne sont pas explicitement autorisés.
-L'analyse rétrospective favorable ne doit pas être présentée comme une gate
-franchie. Voir `docs/KB-ETAPE2-VOTE-MULTIJUGES.md`.
+Le protocole de fallback dans `results/step2_multijudge_confirm/manifest.json`
+a été exécuté le 25 août 2026. Les six votes H2/H3 sont complets et unanimes par
+hypothèse; la confirmation collective est franchie. L'analyse rétrospective
+reste distincte et ne doit pas être présentée comme une gate prospective.
+Prochaine action : préenregistrer le bornage des tours de l'Étape 3. Voir
+`docs/KB-ETAPE2-VOTE-MULTIJUGES.md`.
 
 ---
 
