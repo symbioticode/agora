@@ -74,6 +74,18 @@ class ProviderGateway:
     def status(self) -> dict:
         return json.loads(json.dumps(self._state))
 
+    def restore_from_experiment(self, record: dict):
+        """Restore observable provider state after a service restart."""
+        transcript = record.get("observation", {}).get("transcript", [])
+        if any(turn.get("agent") == "A" and turn.get("content", "").strip() for turn in transcript):
+            self._state["anthropic"]["status"] = "ON"
+        if any(turn.get("agent") == "B" and turn.get("content", "").strip() for turn in transcript):
+            self._state["deepseek"]["status"] = "ON"
+        failure = " ".join(str(value) for value in record.get("failure", {}).values()).lower()
+        for provider in ("anthropic", "deepseek"):
+            if provider in failure:
+                self._state[provider].update({"status": "DEGRADED", "last_error": record["failure"].get("message")})
+
     def _success(self, provider: str):
         self._state[provider].update({"status": "ON", "last_success": datetime.now(timezone.utc).isoformat(), "last_error": None})
 

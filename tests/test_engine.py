@@ -33,3 +33,16 @@ def test_engine_rejects_unqualified_round_count():
         assert "impose 6 tours" in str(exc)
     else:
         raise AssertionError("non-qualified rounds accepted")
+
+
+def test_gateway_status_can_be_restored_from_failed_experiment(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "configured")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "configured")
+    from agora.engine import ProviderGateway
+    gateway = ProviderGateway()
+    gateway.restore_from_experiment({
+        "observation": {"transcript": [{"agent": "A", "content": "ok"}, {"agent": "B", "content": "partiel"}]},
+        "failure": {"message": "Réponse DeepSeek vide"},
+    })
+    assert gateway.status()["anthropic"]["status"] == "ON"
+    assert gateway.status()["deepseek"]["status"] == "DEGRADED"

@@ -220,6 +220,9 @@ def create_server(host="127.0.0.1", port=8768, engine=None, registry=None, dist=
         raise ValueError("AGORA web doit rester sur l'interface loopback")
     registry = registry or ExperimentRegistry(REPO / "experiments")
     engine = engine or DebateEngine(judge_selector=lambda: "deepseek" if len(registry.list()) % 2 == 0 else "anthropic")
+    records = registry.list()
+    if records and hasattr(engine.gateway, "restore_from_experiment"):
+        engine.gateway.restore_from_experiment(records[0])
     return ThreadingHTTPServer((host, port), make_handler(engine, registry, dist))
 
 
