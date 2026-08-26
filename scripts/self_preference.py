@@ -64,6 +64,22 @@ def digest(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
+def extract_scores(raw: str) -> dict:
+    from orchestrator import extract_json
+    try:
+        return extract_json(raw)
+    except ValueError:
+        values = {}
+        for key in ("score_A", "score_B"):
+            match = re.search(rf'"{key}"\s*:\s*(\d+(?:\.\d+)?)', raw)
+            if match:
+                values[key] = float(match.group(1))
+        winner = re.search(r'"winner"\s*:\s*"(A|B|TIE)"', raw)
+        if len(values) != 2 or not winner:
+            raise
+        return {**values, "winner": winner.group(1), "reasoning": "Réponse JSON tronquée après les champs mesurés."}
+
+
 def prepare_manifest(repo: Path = REPO) -> dict:
     source = json.loads((repo / SOURCE.relative_to(REPO)).read_text(encoding="utf-8"))
     transcript = source["transcript"]
@@ -169,8 +185,7 @@ def execute(manifest: dict, root: Path, caps: dict[str, float], max_tokens: int,
                 if spend[provider] + projection > caps[provider]:
                     raise RuntimeError(f"budget {provider} refusé avant appel")
                 raw, usage, latency = call_preference_direct(judge, user, max_tokens)
-                from orchestrator import extract_json
-                result = extract_json(raw)
+                result = extract_scores(raw)
                 cost = usage_cost(provider, usage)
             else:
                 body = json.dumps({"model": judge, "temperature": 0, "stream": False, "max_tokens": max_tokens,
@@ -182,8 +197,7 @@ def execute(manifest: dict, root: Path, caps: dict[str, float], max_tokens: int,
                     payload = json.load(response)
                 latency = round(time.monotonic() - started, 3)
                 raw = payload["choices"][0]["message"]["content"]
-                from orchestrator import extract_json
-                result = extract_json(raw)
+                result = extract_scores(raw)
                 usage, cost = payload.get("usage", {}), 0.0
             spend[provider] += cost
             item = {"condition": condition, "judge": judge, "transcript_sha256": manifest["transcript_sha256"],

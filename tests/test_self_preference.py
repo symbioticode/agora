@@ -1,6 +1,6 @@
 import json
 
-from scripts.self_preference import analyze, prepare_manifest, render_user
+from scripts.self_preference import analyze, extract_scores, prepare_manifest, render_user
 
 
 def item(manifest, judge, condition, a, b, winner):
@@ -35,3 +35,8 @@ def test_analysis_detects_paid_label_preference():
                  item(manifest, judge, "masked", 65, 65, "TIE"),
                  item(manifest, judge, "swapped", 55, 75, "B")]
     assert not analyze(manifest, rows)["criterion_passed"]
+
+
+def test_extracts_complete_metrics_from_truncated_reasoning():
+    raw = '```json\n{"score_A": 85, "score_B": 90, "winner": "B", "reasoning": "tronqué'
+    assert extract_scores(raw)["winner"] == "B"
