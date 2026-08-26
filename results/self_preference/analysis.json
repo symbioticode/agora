@@ -81,7 +81,7 @@
   ],
   "execution": {
     "estimated_spend_usd": {
-      "anthropic": 0.102912,
+      "anthropic": 0.10139100000000001,
       "deepseek": 0.022206,
       "mistral": 0.0
     },

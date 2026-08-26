@@ -87,3 +87,23 @@ sur autorisation humaine explicite sans changer les hypothèses ni les seuils.
 Les limites restent explicites : l'auto-préférence n'a été testée que sur une
 transcription et la stabilité sur trois cycles de H2/H3. Ces résultats
 qualifient la configuration actuelle, pas tous les modèles ni tous les sujets.
+
+### Correction contrôlée du jugement Anthropic `truthful`
+
+La revue préalable au merge a détecté que le premier jugement Anthropic
+`truthful` utilisait encore le prompt générique du verdict comme message
+système, contrairement aux conditions `masked` et `swapped`. Ce résultat a été
+déplacé dans `results/self_preference/invalidated/`, sans suppression.
+
+Un manifeste de remplacement a été commité avant le nouvel appel. Le replay
+avec l'adaptateur homogène reproduit `72/78`, gagnant B. Le nouvel artefact a
+une réponse brute distincte et la recette reste à cinq critères sur cinq.
+
+- coût du remplacement valide : `0,034692 USD` Anthropic ;
+- coût de l'essai invalidé conservé : `0,036213 USD` Anthropic ;
+- coût Anthropic total de la reprise, essai invalidé inclus : `0,279750 USD` ;
+- l'appel DeepSeek ancien arrêté avant artefact reste non mesuré, comme déjà
+  signalé.
+
+Preuves : `replacement-manifest.json`, `replacement-result.json` et les deux
+artefacts ancien/nouveau dans `results/self_preference/`.

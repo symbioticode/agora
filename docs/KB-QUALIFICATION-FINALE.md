@@ -28,6 +28,12 @@ aucune autonomie opérationnelle aux agents.
    critères dans une seule recette.
 5. Le résultat consolidé est `results/final_qualification.json`.
 
+Une revue préalable au merge a détecté une différence de prompt système dans
+le premier appel Anthropic `truthful`. L'artefact a été invalidé sans être
+effacé, puis remplacé sous manifeste préenregistré avec l'adaptateur corrigé.
+Le replay reproduit les scores `72/78` et le gagnant B. Voir
+`results/self_preference/replacement-result.json`.
+
 Commande de reproduction hors réseau :
 
     .venv/bin/python scripts/final_qualification.py
