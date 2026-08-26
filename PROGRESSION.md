@@ -32,6 +32,12 @@ observation humaine et preuves restent distingués. AGORA est replacé dans le
 programme commun sur la connaissance et l'ignorance agentiques avec
 ETAU-CAVEMAN, SUBSTRACT-BENCH, KBM 2.0 et DUO.
 
+Deux destinations sont retenues sans créer deux sources de vérité : AGORA
+conserve l'expérience canonique et KBM 2.0 publie chaque jour sa projection
+documentaire dans `home-kbm`, sous `Projets > AGORA > Expériences`. Le
+rapprochement repose sur l'identifiant, la révision Git et le hash source; les
+erreurs et retards de synchronisation restent visibles.
+
 ## 2026-08-25 — Trajectoire de qualification après l'Étape 2
 
 À ce point de la trajectoire, le couple n'était pas qualifié comme instrument

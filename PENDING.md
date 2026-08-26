@@ -14,6 +14,10 @@ Le MVP doit également implémenter le registre `AGO-EXP-YYYY-NNNN` et conserver
 séparément la transcription brute, le jugement machine, les inconnues et les
 observations du superviseur. Voir `docs/PROGRAMME-RECHERCHE-CONNAISSANCE.md`.
 
+La livraison comprend aussi le générateur et le contrat de synchronisation
+quotidien `AGORA → GitHub → KBM 2.0 → home-kbm/AGORA`. Le job côté KBM, son
+timer et l'affichage des retards seront coordonnés avec `kbm-shared`.
+
 Avant les appels de recette UI, définir la Phase 0 du plan : corpus factuel
 simple, réponses attendues, métriques et seuils préenregistrés. Cette baseline
 ne remet pas en cause les propriétés déjà qualifiées; elle mesure une propriété

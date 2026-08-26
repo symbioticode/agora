@@ -65,6 +65,31 @@ Le numéro identifie l'expérience; la date et le titre facilitent sa lecture.
 Un nouvel essai ne remplace jamais silencieusement un ancien essai : il reçoit
 son propre identifiant et peut déclarer `replays` ou `supersedes`.
 
+## Deux destinations, une seule source
+
+Chaque expérience validée produit deux représentations :
+
+1. **preuve canonique dans AGORA** : données structurées, transcription brute,
+   observations, manifest et hashes dans le dépôt AGORA ;
+2. **projection documentaire dans KBM 2.0** : article lisible dans le projet
+   `home-kbm`, section `Projets > AGORA > Expériences`.
+
+La projection KBM n'est pas une seconde source éditoriale. Elle est générée à
+partir de l'expérience AGORA et porte obligatoirement l'identifiant, le dépôt,
+la révision Git, le hash canonique, la date de génération et l'état de
+synchronisation. Les corrections de fond se font dans AGORA, puis la projection
+est régénérée. Une annotation propre à KBM reste identifiable comme annotation
+documentaire et ne modifie pas rétroactivement l'expérience.
+
+```text
+AGORA local → dépôt GitHub AGORA → import quotidien KBM 2.0 → home-kbm/AGORA
+```
+
+La synchronisation s'exécute une fois par jour et produit un manifest des
+expériences nouvelles, mises à jour, inchangées, refusées et en erreur. Une
+absence de synchronisation devient visible; elle ne provoque ni suppression ni
+publication partielle silencieuse.
+
 ## Connaissance et ignorance
 
 AGORA ne transforme pas automatiquement un verdict en connaissance. Il

@@ -110,3 +110,15 @@ référence son parent. Le verdict machine ne remplace jamais l'observation du
 superviseur.
 Référence : docs/PROGRAMME-RECHERCHE-CONNAISSANCE.md et
 docs/PLAN-INTEGRATION-UI-BCP-HUB.md
+
+## D-AGO-013 — AGORA canonique, KBM 2.0 comme projection quotidienne
+Date : 2026-08-26
+Raison : les expériences doivent rester proches du code et de leurs preuves,
+tout en devenant consultables dans la documentation AGORA sous `home-kbm`.
+Deux sources modifiables indépendamment rendraient la provenance ambiguë.
+Règle : AGORA est canonique pour `AGO-EXP-*`. KBM 2.0 importe depuis GitHub une
+projection quotidienne portant identifiant, révision et hash source. Toute
+correction de fond repart d'AGORA. L'import est idempotent, journalisé et sans
+suppression implicite.
+Référence : docs/PROGRAMME-RECHERCHE-CONNAISSANCE.md et
+docs/PLAN-INTEGRATION-UI-BCP-HUB.md

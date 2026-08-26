@@ -121,6 +121,29 @@ Le schéma sépare :
 Une observation humaine peut être ajoutée après le run sans réécrire la preuve
 brute : elle constitue un événement versionné distinct.
 
+### Publication dans AGORA et KBM 2.0
+
+Une expérience aboutie est enregistrée dans le dépôt AGORA sous sa forme
+canonique structurée. Un générateur déterministe en produit une fiche Markdown
+destinée à KBM 2.0.
+
+```text
+AGO-EXP-YYYY-NNNN
+    ├── AGORA : preuve canonique, JSON, événements, hashes
+    └── GitHub → synchronisation quotidienne → KBM 2.0
+                                         └── home-kbm / Projets / AGORA / Expériences
+```
+
+La fiche préserve question, contexte, synthèse des échanges, verdict,
+inconnues et observation humaine. Elle porte les métadonnées KBM, l'identifiant
+commun, la révision Git et le hash source. Le générateur refuse une expérience
+incomplète et exclut secrets ou contenu non destiné à la publication.
+
+Le job quotidien importe depuis GitHub afin que la VM KBM 2.0 ne dépende pas du
+poste NixOS. Il est idempotent, ne supprime rien implicitement et journalise les
+nouveaux articles, mises à jour, refus et erreurs dans un manifest. L'UI AGORA
+rend visible la dernière révision publiée et tout retard de synchronisation.
+
 ### API locale
 
 Créer un adaptateur HTTP dans AGORA avec le contrat minimal suivant :
@@ -134,6 +157,7 @@ Créer un adaptateur HTTP dans AGORA avec le contrat minimal suivant :
 | `GET /api/v1/experiments/{id}` | consulter contexte, transcription, verdict et preuves |
 | `POST /api/v1/experiments/{id}/observations` | ajouter l'observation du superviseur sans altérer le run |
 | `GET /api/v1/experiments/{id}/export` | exporter le JSON ou le Markdown |
+| `GET /api/v1/sync` | consulter l'état de la projection GitHub → KBM 2.0 |
 
 Le premier MVP peut traiter une requête de façon synchrone. Si la durée rend
 l’usage inconfortable, la même API évoluera vers un identifiant de run et une
@@ -157,7 +181,9 @@ le coût potentiel et l’absence de permission d’action. Il
 doit montrer après le lancement : la transcription, le verdict, la confiance,
 les accords/désaccords, l’identité du juge, les métriques et l’identifiant de
 preuve. Une vue de registre permet ensuite de retrouver une expérience par
-numéro, date, question, verdict, projet lié ou inconnue conservée.
+numéro, date, question, verdict, projet lié ou inconnue conservée. Elle affiche
+aussi `local`, `poussé sur GitHub`, `publié dans KBM` ou `synchronisation en
+erreur`.
 
 Ajouter un petit outillage frontend reproductible autour du JSX existant. Les
 dépendances installées et les sorties générées ne deviennent pas des sources de
@@ -253,12 +279,26 @@ après reconnexion et après redémarrage contrôlé du service.
 Critère de sortie : le Hub annonce correctement AGORA disponible ou
 indisponible et ouvre l’application sur `8768`.
 
+### Phase 5 bis — Projeter quotidiennement dans KBM 2.0
+
+- Générer une fiche documentaire déterministe par expérience publiable.
+- Définir le contrat d'import du projet `home-kbm/AGORA`.
+- Installer côté KBM 2.0 un import quotidien depuis GitHub.
+- Produire et exposer le manifest de synchronisation.
+- Tester idempotence, reprise après erreur, refus d'un artefact invalide et
+  absence de suppression implicite.
+
+Critère de sortie : une expérience de recette porte le même identifiant et le
+même hash source dans AGORA et dans la documentation AGORA de `home-kbm`; une
+seconde exécution ne crée aucun doublon.
+
 ### Phase 6 — Recette et revue contradictoire
 
 - Rejouer tous les tests AGORA et BCP Hub.
 - Vérifier qu’aucune clé ni contenu de `.env` n’est présent dans les artefacts
   frontend, logs, API ou Git.
 - Comparer un run CLI et un run UI.
+- Vérifier la projection de recette dans KBM 2.0 et son manifest quotidien.
 - Soumettre le résultat à une revue contradictoire avant de déclarer l’UI
   qualifiée.
 
