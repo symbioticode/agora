@@ -91,7 +91,10 @@ class ProviderGateway:
                 system=system,
                 messages=[{"role": "user", "content": user}],
             )
-            return result.content[0].text
+            text = result.content[0].text if result.content else ""
+            if not text or not text.strip():
+                raise RuntimeError("Réponse Anthropic vide")
+            return text
 
         return self._retry(invoke)
 
@@ -112,7 +115,10 @@ class ProviderGateway:
                     {"role": "user", "content": user},
                 ],
             )
-            return result.choices[0].message.content
+            text = result.choices[0].message.content if result.choices else ""
+            if not text or not text.strip():
+                raise RuntimeError("Réponse DeepSeek vide")
+            return text
 
         return self._retry(invoke)
 

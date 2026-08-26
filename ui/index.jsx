@@ -283,7 +283,10 @@ export default function App() {
         setTurns(run.transcript || [])
         setStep(run.stage === "JUDGMENT" ? "Juge · délibération réelle en cours…" : `Échanges réels · ${(run.transcript || []).length} prises de parole enregistrées`)
       }
-      if (run.status !== "COMPLETED") throw new Error(run.error || "L'expérience a échoué")
+      if (run.status !== "COMPLETED") {
+        await refresh()
+        throw new Error(`${run.experiment_id} enregistré en échec — ${run.error || "cause inconnue"}`)
+      }
       const record = run.experiment
       setCurrent(record); setTurns(record.observation.transcript); setVerdict(record.machine_judgment)
       await refresh()

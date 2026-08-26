@@ -111,6 +111,37 @@ class ExperimentRegistry:
         self._atomic_write(path, record)
         return record
 
+    def create_failed(self, experiment_id: str, metadata: dict, transcript: list, error: dict, now: datetime | None = None) -> dict:
+        """Persist a failed experiment without pretending it has a verdict."""
+        now = now or datetime.now(timezone.utc)
+        record = {
+            "schema_version": SCHEMA_VERSION,
+            "id": experiment_id,
+            "created_at": now.isoformat(),
+            "updated_at": now.isoformat(),
+            "status": "FAILED",
+            "title": metadata.get("title") or metadata.get("question", "Expérience interrompue")[:100],
+            "question": metadata.get("question", ""),
+            "objective": metadata.get("objective", ""),
+            "context": metadata.get("context", ""),
+            "project": metadata.get("project", "AGORA"),
+            "supervisor": metadata.get("supervisor", "human-supervisor"),
+            "relations": metadata.get("relations", {}),
+            "protocol": {"configuration": {"mode": "QUALIFIED", "rounds": 6}},
+            "observation": {"transcript": transcript},
+            "machine_judgment": None,
+            "unknowns": ["Le jugement machine n'a pas été produit."],
+            "supervisor_observations": [],
+            "failure": error,
+            "provenance": {"repository": "symbioticode/agora", "git_revision": self._git_revision(self.root.parent)},
+            "sync": {"github": "LOCAL", "kbm": "NOT_SYNCHRONIZED"},
+        }
+        record["evidence_sha256"] = hashlib.sha256(canonical_json(record)).hexdigest()
+        record["record_sha256"] = record_sha256(record)
+        path = self.root / str(now.year) / f"{experiment_id}.json"
+        self._atomic_write(path, record)
+        return record
+
     def list(self) -> list[dict]:
         records = [json.loads(path.read_text(encoding="utf-8")) for path in self._paths()]
         return sorted(records, key=lambda item: item["id"], reverse=True)
@@ -171,18 +202,12 @@ class ExperimentRegistry:
         ]
         for turn in record["observation"]["transcript"]:
             lines.extend([f"### Tour {turn['round']} — Agent {turn['agent']}", "", turn["content"], ""])
-        lines.extend([
-            "## Jugement machine",
-            "",
-            f"- Verdict : **{verdict['verdict']}**",
-            f"- Confiance : {verdict['confidence']}",
-            f"- Juge : `{record['protocol']['models']['judge']}`",
-            "",
-            verdict.get("rationale") or verdict.get("reasoning", ""),
-            "",
-            "## Inconnues et limites",
-            "",
-        ])
+        lines.extend(["## Jugement machine", ""])
+        if verdict:
+            lines.extend([f"- Verdict : **{verdict['verdict']}**", f"- Confiance : {verdict['confidence']}", f"- Juge : `{record['protocol']['models']['judge']}`", "", verdict.get("rationale") or verdict.get("reasoning", ""), ""])
+        else:
+            lines.extend(["Aucun verdict produit : expérience interrompue.", "", f"- Cause : `{record.get('failure', {}).get('code', 'UNKNOWN')}`", ""])
+        lines.extend(["## Inconnues et limites", ""])
         lines.extend([f"- {item}" for item in record.get("unknowns", [])] or ["- Aucune inconnue explicitement ajoutée."])
         lines.extend(["", "## Observation du superviseur", ""])
         observations = record.get("supervisor_observations", [])

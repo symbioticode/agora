@@ -25,3 +25,11 @@ def test_supervisor_observation_is_append_only_event(tmp_path):
     updated = registry.add_observation(record["id"], "andrei", "À revoir.")
     assert updated["observation"]["transcript"] == original_transcript
     assert updated["supervisor_observations"][0]["content"] == "À revoir."
+
+
+def test_failed_experiment_is_durable_and_exportable(tmp_path):
+    registry = ExperimentRegistry(tmp_path / "experiments")
+    experiment_id = registry.reserve_id(datetime(2026, 8, 26, tzinfo=timezone.utc))
+    failed = registry.create_failed(experiment_id, {"question": "Question"}, [{"round": 0, "agent": "A", "content": "Partiel"}], {"code": "ProviderError", "message": "Réponse vide"}, datetime(2026, 8, 26, tzinfo=timezone.utc))
+    assert registry.get(experiment_id)["status"] == "FAILED"
+    assert "Aucun verdict produit" in registry.markdown(failed)

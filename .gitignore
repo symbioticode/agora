@@ -8,6 +8,8 @@ docs/PROJECT_GUIDE.md
 sessions/*.json
 !sessions/.gitkeep
 tokenomics/
+experiments/.sequence.json
+experiments/.sequence.lock
 
 # Python
 __pycache__/

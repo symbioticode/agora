@@ -9,6 +9,7 @@ import os
 import re
 import threading
 import uuid
+import traceback
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -47,7 +48,7 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
     def launch(body: dict) -> dict:
         experiment_id = registry.reserve_id()
         run_id = uuid.uuid4().hex
-        state = {"run_id": run_id, "experiment_id": experiment_id, "status": "RUNNING", "stage": "DEBATE", "transcript": []}
+        state = {"run_id": run_id, "experiment_id": experiment_id, "status": "RUNNING", "stage": "DEBATE", "transcript": [], "request": body.copy()}
         with runs_lock:
             runs[run_id] = state
 
@@ -64,9 +65,13 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                 record = registry.create(debate, body, experiment_id=experiment_id)
                 with runs_lock:
                     state.update({"status": "COMPLETED", "stage": "COMPLETED", "experiment": record})
-            except Exception:
+            except Exception as exc:
+                detail = str(exc).strip() or type(exc).__name__
+                error = {"code": type(exc).__name__, "message": detail[:500]}
+                failed = registry.create_failed(experiment_id, body, state["transcript"], error)
+                print(json.dumps({"component": "agora-run", "run_id": run_id, "experiment_id": experiment_id, "error": error, "traceback": traceback.format_exc(limit=5)}, ensure_ascii=False))
                 with runs_lock:
-                    state.update({"status": "FAILED", "stage": "FAILED", "error": "L'expérience n'a pas pu être exécutée"})
+                    state.update({"status": "FAILED", "stage": "FAILED", "error": detail[:500], "experiment": failed})
 
         threading.Thread(target=worker, name=f"agora-{run_id[:8]}", daemon=True).start()
         return state.copy()
