@@ -77,8 +77,8 @@ def analyze(manifest: dict, judgments: list[dict]) -> dict:
             "hypotheses": hypotheses}
 
 
-def execute(manifest: dict, root: Path, caps: dict[str, float], max_tokens: int) -> int:
-    if not in_window(datetime.now(timezone.utc)):
+def execute(manifest: dict, root: Path, caps: dict[str, float], max_tokens: int, allow_outside_window: bool = False) -> int:
+    if not allow_outside_window and not in_window(datetime.now(timezone.utc)):
         raise RuntimeError("appels refusés hors fenêtre 00:00–04:00 America/Toronto")
     sources = load_sources(manifest)
     output = root / "judgments"
@@ -134,6 +134,7 @@ def main() -> int:
     run.add_argument("--anthropic-cap", type=float, required=True)
     run.add_argument("--deepseek-cap", type=float, required=True)
     run.add_argument("--max-tokens", type=int, default=1200)
+    run.add_argument("--allow-outside-window", action="store_true")
     args = parser.parse_args()
     if args.command == "prepare":
         args.root.mkdir(parents=True, exist_ok=True)
@@ -141,7 +142,8 @@ def main() -> int:
         print(args.root / "manifest.json")
         return 0
     manifest = json.loads((args.root / "manifest.json").read_text(encoding="utf-8"))
-    return execute(manifest, args.root, {"anthropic": args.anthropic_cap, "deepseek": args.deepseek_cap}, args.max_tokens)
+    return execute(manifest, args.root, {"anthropic": args.anthropic_cap, "deepseek": args.deepseek_cap}, args.max_tokens,
+                   args.allow_outside_window)
 
 
 if __name__ == "__main__":
