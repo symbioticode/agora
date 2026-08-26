@@ -210,7 +210,7 @@ def main() -> int:
     run.add_argument("--root", type=Path, default=DEFAULT_ROOT)
     run.add_argument("--anthropic-cap", type=float, required=True)
     run.add_argument("--deepseek-cap", type=float, required=True)
-    run.add_argument("--max-tokens", type=int, default=700)
+    run.add_argument("--max-tokens", type=int, default=1400)
     run.add_argument("--allow-outside-window", action="store_true")
     args = parser.parse_args()
     if args.command == "prepare":
