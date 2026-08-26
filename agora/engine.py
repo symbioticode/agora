@@ -7,6 +7,7 @@ import os
 import time
 from pathlib import Path
 from typing import Callable
+from datetime import datetime, timezone
 
 from anthropic import Anthropic
 from openai import OpenAI
@@ -65,6 +66,19 @@ class ProviderGateway:
         self.max_retries = max_retries
         self._anthropic = None
         self._deepseek = None
+        self._state = {
+            "anthropic": {"status": "READY" if os.getenv("ANTHROPIC_API_KEY") else "UNCONFIGURED", "last_success": None, "last_error": None},
+            "deepseek": {"status": "READY" if os.getenv("DEEPSEEK_API_KEY") else "UNCONFIGURED", "last_success": None, "last_error": None},
+        }
+
+    def status(self) -> dict:
+        return json.loads(json.dumps(self._state))
+
+    def _success(self, provider: str):
+        self._state[provider].update({"status": "ON", "last_success": datetime.now(timezone.utc).isoformat(), "last_error": None})
+
+    def _failure(self, provider: str, exc: Exception):
+        self._state[provider].update({"status": "DEGRADED", "last_error": (str(exc).strip() or type(exc).__name__)[:200]})
 
     def _retry(self, call: Callable[[], str]) -> tuple[str, int]:
         for attempt in range(self.max_retries):
@@ -96,7 +110,13 @@ class ProviderGateway:
                 raise RuntimeError("Réponse Anthropic vide")
             return text
 
-        return self._retry(invoke)
+        try:
+            result = self._retry(invoke)
+            self._success("anthropic")
+            return result
+        except Exception as exc:
+            self._failure("anthropic", exc)
+            raise
 
     def deepseek(self, model: str, system: str, user: str, temp: float) -> tuple[str, int]:
         if self._deepseek is None:
@@ -120,7 +140,13 @@ class ProviderGateway:
                 raise RuntimeError("Réponse DeepSeek vide")
             return text
 
-        return self._retry(invoke)
+        try:
+            result = self._retry(invoke)
+            self._success("deepseek")
+            return result
+        except Exception as exc:
+            self._failure("deepseek", exc)
+            raise
 
 
 class DebateEngine:

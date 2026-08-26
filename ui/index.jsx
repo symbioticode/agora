@@ -24,6 +24,12 @@ const S = `
   .hdr{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:0.5px solid var(--border);background:var(--surface-1)}
   .brand{font-size:16px;font-weight:500;color:var(--text-primary)}
   .sub{font-size:12px;color:var(--text-secondary)}
+  .providers{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+  .provider{font-size:10px;padding:3px 7px;border:0.5px solid var(--border-strong);border-radius:999px;color:var(--text-secondary)}
+  .provider.on{color:var(--text-success);border-color:var(--border-success);background:var(--bg-success)}
+  .provider.degraded{color:var(--text-danger);border-color:var(--border-danger);background:var(--bg-danger)}
+  .provider.ready{color:var(--text-warning);border-color:var(--border-warning);background:var(--bg-warning)}
+  .failed{color:var(--text-danger);font-weight:600}
   .nav{display:flex;gap:8px;margin-left:auto;align-items:center}
   .nbtn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:0.5px solid var(--border-strong);border-radius:var(--radius);background:none;color:var(--text-secondary);font-size:12px;font-weight:500;cursor:pointer;text-decoration:none}
   .nbtn.act{background:var(--bg-accent);border-color:var(--border-accent);color:var(--text-accent)}
@@ -222,6 +228,7 @@ export default function App() {
   const [current, setCurrent] = useState(null)
   const [config, setConfig]   = useState(null)
   const [sync, setSync]       = useState(null)
+  const [replayId, setReplayId] = useState(null)
   const txRef  = useRef(null)
   const fileRef = useRef(null)
 
@@ -258,11 +265,15 @@ export default function App() {
     window.location.href = `/api/v1/experiments/${experiment.id}/export?format=${format}`
   }
 
-  const goCompose = () => { setDetail(null); setView("compose") }
+  const goCompose = () => { setDetail(null); setReplayId(null); setView("compose") }
   const goHistory = () => setView("history")
   const openDetail = async (s) => {
     try { setDetail(await api(`/api/v1/experiments/${s.id}`)); setView("detail") }
     catch (e) { setErr(e.message) }
+  }
+  const replay = (record) => {
+    setHyp(record.question); setCtx(record.context || ""); setTitle(record.title || "")
+    setObjective(record.objective || ""); setReplayId(record.id); setDetail(null); setView("compose")
   }
 
   const canLaunch = hyp.trim() && config?.mode === "QUALIFIED" && !step
@@ -275,7 +286,7 @@ export default function App() {
     try {
       let run = await api("/api/v1/experiments", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: hyp, context: ctx, title, objective, supervisor: "human-supervisor" })
+        body: JSON.stringify({ question: hyp, context: ctx, title, objective, supervisor: "human-supervisor", relations: replayId ? { replays: replayId } : {} })
       })
       while (run.status === "RUNNING") {
         await new Promise(resolve => setTimeout(resolve, 700))
@@ -309,6 +320,14 @@ export default function App() {
           <i className="ti ti-messages" style={{ fontSize: 18, color: "var(--text-accent)" }} aria-hidden="true" />
           <span className="brand">Agora</span>
           <span className="sub">expériences contradictoires supervisées</span>
+          <div className="providers">
+            {config && Object.entries(config.agents).map(([id, agent]) => {
+              const state = config.providers?.[agent.provider]?.status || "READY"
+              return <span key={id} className={`provider ${state.toLowerCase()}`} title={`${agent.model} · ${agent.mindset}`}>
+                {agent.provider === "anthropic" ? "Claude · Empiriste" : "DeepSeek · Rationaliste"} · {state}
+              </span>
+            })}
+          </div>
           <div className="nav">
             {(view === "debate" || view === "history" || view === "detail") && (
               <button className="nbtn" onClick={goCompose}>
@@ -328,6 +347,7 @@ export default function App() {
         {/* Compose */}
         {view === "compose" && (
           <div className="compose">
+            {replayId && <div className="warn"><i className="ti ti-reload" aria-hidden="true" /> Reprise de {replayId} — une nouvelle entrée sera créée; l'original reste inchangé.</div>}
             <div>
               <label className="field-lbl">Titre court de l'expérience</label>
               <textarea rows={1} value={title} onChange={e => setTitle(e.target.value)}
@@ -467,7 +487,7 @@ export default function App() {
                         <span className="stt">{new Date(s.created_at).toLocaleString("fr-FR")}</span>
                       </div>
                     </div>
-                    <VBadge v={s.verdict?.verdict} />
+                    {s.status === "FAILED" ? <span className="failed">FAILED</span> : <VBadge v={s.verdict?.verdict} />}
                     <i className="ti ti-chevron-right" style={{ fontSize: 16, color: "var(--text-muted)" }} aria-hidden="true" />
                   </button>
                 ))}
@@ -483,8 +503,9 @@ export default function App() {
               <button className="bk" onClick={goHistory}><i className="ti ti-arrow-left" aria-hidden="true" /> Historique</button>
               <span style={{ fontSize: 12, color: "var(--text-muted)" }}>·</span>
               <span className="dq">{detail.id} · "{detail.question.slice(0, 80)}{detail.question.length > 80 ? "…" : ""}"</span>
-              <VBadge v={detail.machine_judgment?.verdict} />
+              {detail.status === "FAILED" ? <span className="failed">FAILED</span> : <VBadge v={detail.machine_judgment?.verdict} />}
             </div>
+            {detail.status === "FAILED" && <div className="eb"><strong>Expérience interrompue — {detail.failure?.code}</strong><br />{detail.failure?.message}<br /><button className="bg" onClick={() => replay(detail)}>Reprendre cette question</button></div>}
             <div className="tx">
               {detail.observation.transcript.map((t, i) => <Turn key={`${t.round}-${t.agent}-${i}`} t={t} msA="empiricist" msB="rationalist" />)}
             </div>

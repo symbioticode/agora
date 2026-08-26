@@ -118,7 +118,8 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
             parsed = urlparse(self.path)
             path = parsed.path
             if path == "/health":
-                return self._json(200, {"status": "ok", "service": "agora-web", "mode": "QUALIFIED", "schema": "1.0"})
+                provider_status = engine.gateway.status() if hasattr(engine.gateway, "status") else {}
+                return self._json(200, {"status": "ok", "service": "agora-web", "mode": "QUALIFIED", "schema": "1.0", "providers": provider_status})
             if path == "/api/v1/config":
                 return self._json(200, {
                     "mode": "QUALIFIED",
@@ -127,6 +128,7 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                         "A": {"provider": "anthropic", "model": MODEL_A, "mindset": "empiricist"},
                         "B": {"provider": "deepseek", "model": MODEL_B, "mindset": "rationalist"},
                     },
+                    "providers": engine.gateway.status() if hasattr(engine.gateway, "status") else {},
                     "action_authority": "NONE",
                     "factual_reliability": "NOT_GENERALLY_QUALIFIED",
                 })
