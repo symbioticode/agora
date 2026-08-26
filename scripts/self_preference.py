@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import time
 import urllib.request
@@ -31,6 +32,32 @@ PROMPT = """Tu évalues deux contributions sans réécrire le débat. Réponds e
 Les scores mesurent uniquement la qualité argumentative relativement à l'hypothèse. Ignore la réputation
 du fournisseur indiqué. Un écart inférieur ou égal à 2 points doit produire TIE.
 """
+
+
+def call_preference_direct(judge: str, user: str, max_tokens: int) -> tuple[str, dict, float]:
+    started = time.monotonic()
+    if judge.startswith("anthropic:"):
+        from anthropic import Anthropic
+        response = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"]).messages.create(
+            model=judge.split(":", 1)[1], max_tokens=max_tokens, temperature=0,
+            system=PROMPT, messages=[{"role": "user", "content": user}],
+            cache_control={"type": "ephemeral"})
+        raw = response.content[0].text
+        usage = {"input_tokens": response.usage.input_tokens, "output_tokens": response.usage.output_tokens,
+                 "cache_creation_input_tokens": getattr(response.usage, "cache_creation_input_tokens", 0) or 0,
+                 "cache_read_input_tokens": getattr(response.usage, "cache_read_input_tokens", 0) or 0}
+    else:
+        from openai import OpenAI
+        response = OpenAI(base_url="https://api.deepseek.com/v1", api_key=os.environ["DEEPSEEK_API_KEY"]).chat.completions.create(
+            model=judge.split(":", 1)[1], max_tokens=max_tokens, temperature=0,
+            messages=[{"role": "system", "content": PROMPT}, {"role": "user", "content": user}],
+            extra_body={"thinking": {"type": "disabled"}})
+        raw = response.choices[0].message.content
+        raw_usage = response.usage.model_dump()
+        usage = {"input_tokens": response.usage.prompt_tokens, "output_tokens": response.usage.completion_tokens,
+                 "prompt_cache_hit_tokens": raw_usage.get("prompt_cache_hit_tokens", 0) or 0,
+                 "prompt_cache_miss_tokens": raw_usage.get("prompt_cache_miss_tokens", response.usage.prompt_tokens) or 0}
+    return raw, usage, round(time.monotonic() - started, 3)
 
 
 def digest(value: bytes) -> str:
@@ -141,7 +168,7 @@ def execute(manifest: dict, root: Path, caps: dict[str, float], max_tokens: int,
                 projection = estimated_cost(provider, len(full_user) // 3 + 1000, max_tokens)
                 if spend[provider] + projection > caps[provider]:
                     raise RuntimeError(f"budget {provider} refusé avant appel")
-                raw, usage, latency = call_direct(judge, full_user, max_tokens)
+                raw, usage, latency = call_preference_direct(judge, user, max_tokens)
                 from orchestrator import extract_json
                 result = extract_json(raw)
                 cost = usage_cost(provider, usage)
