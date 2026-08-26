@@ -29,6 +29,16 @@ Validation intermédiaire : 60 tests réussis, 5 tests réseau ignorés, build V
 réussi. L'import quotidien côté `kbm-shared`, la progression temps réel des
 tours et la recette avec providers réels restent à terminer.
 
+La progression temps réel est ensuite devenue opérationnelle au commit
+`6c45c83` : le moteur publie chaque prise de parole dans l'état d'un run, l'UI
+la récupère par polling et distingue la phase de débat de la délibération du
+juge. Aucune animation simulée n'est utilisée.
+
+L'inspection de `kbm-shared` montre que la VM déploie un checkout Git détaché et
+que `sync/sources.json` ne déclare actuellement que RATIO comme entrée HOME.
+L'import AGORA sera donc préparé dans une branche KBM distincte avant
+déploiement, et non écrit directement dans `/srv/kbm-shared/repo`.
+
 ## 2026-08-26 — Planification de l’interface locale
 
 L’interface commencée dans `ui/index.jsx` est retenue comme base visuelle, mais

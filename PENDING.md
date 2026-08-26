@@ -5,11 +5,15 @@
 État au 26 août : moteur, registre, API, UI, service local, carte BCP Hub et
 générateur KBM sont implémentés sur `feat/agora-ui-bcp-hub`. Restent :
 
-- affichage progressif des tours pendant leur production, au lieu d'attendre la
-  réponse HTTP complète ;
 - import et timer quotidien côté `kbm-shared` ;
 - exécution contrôlée de la baseline factuelle et recette réelle de l'UI ;
 - revue contradictoire finale avant merge.
+
+L'audit du point d'insertion KBM confirme que l'import doit être ajouté au
+dépôt `kbm-shared`, puis déployé normalement sur la VM. Le fichier
+`sync/sources.json` ne déclare actuellement que RATIO comme input HOME : AGORA
+doit devenir un second flux explicite, sans modifier directement le checkout
+détaché `/srv/kbm-shared/repo`.
 
 Le plan d’implémentation est enregistré dans
 `docs/PLAN-INTEGRATION-UI-BCP-HUB.md`. L’ordre retenu est : moteur partagé,
