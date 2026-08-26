@@ -11,6 +11,7 @@ tokenomics/
 experiments/.sequence.json
 experiments/.sequence.lock
 sync/manifest.json
+runtime/runs/*.json
 
 # Python
 __pycache__/

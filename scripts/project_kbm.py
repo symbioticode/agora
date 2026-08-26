@@ -61,6 +61,14 @@ def project(source: Path, destination: Path, now: datetime | None = None, state_
         if experiment_id not in expected:
             entries.append({"id": experiment_id, "status": "ORPHAN_PRESERVED", "path": path.name})
 
+    faq_source = REPO / "docs" / "FAQ-PROVIDERS.md"
+    faq_target = destination / "FAQ-providers.md"
+    faq_content = faq_source.read_text(encoding="utf-8")
+    faq_status = "UNCHANGED" if faq_target.exists() and faq_target.read_text(encoding="utf-8") == faq_content else ("UPDATED" if faq_target.exists() else "NEW")
+    if faq_status != "UNCHANGED":
+        atomic_text(faq_target, faq_content)
+    entries.append({"id": "FAQ-AGO-001", "status": faq_status, "path": faq_target.name})
+
     manifest = {
         "schema_version": "1.0",
         "generated_at": now.isoformat(),

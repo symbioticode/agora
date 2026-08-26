@@ -288,9 +288,18 @@ export default function App() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: hyp, context: ctx, title, objective, supervisor: "human-supervisor", relations: replayId ? { replays: replayId } : {} })
       })
+      let networkRetries = 0
       while (run.status === "RUNNING") {
         await new Promise(resolve => setTimeout(resolve, 700))
-        run = await api(`/api/v1/runs/${run.run_id}`)
+        try {
+          run = await api(`/api/v1/runs/${run.run_id}`)
+          networkRetries = 0
+        } catch (pollError) {
+          networkRetries += 1
+          if (networkRetries > 12) throw new Error(`Connexion au run interrompue : ${pollError.message}`)
+          setStep(`Connexion temporairement interrompue · reprise ${networkRetries}/12…`)
+          continue
+        }
         setTurns(run.transcript || [])
         setStep(run.stage === "JUDGMENT" ? "Juge · délibération réelle en cours…" : `Échanges réels · ${(run.transcript || []).length} prises de parole enregistrées`)
       }
@@ -323,9 +332,9 @@ export default function App() {
           <div className="providers">
             {config && Object.entries(config.agents).map(([id, agent]) => {
               const state = config.providers?.[agent.provider]?.status || "READY"
-              return <span key={id} className={`provider ${state.toLowerCase()}`} title={`${agent.model} · ${agent.mindset}`}>
+              return <a key={id} className={`provider ${state.toLowerCase()}`} title={`${agent.model} · ${agent.mindset} · ouvrir la FAQ`} href="http://192.168.100.199/corpus/home/agora/faq-providers/" target="_blank">
                 {agent.provider === "anthropic" ? "Claude · Empiriste" : "DeepSeek · Rationaliste"} · {state}
-              </span>
+              </a>
             })}
           </div>
           <div className="nav">

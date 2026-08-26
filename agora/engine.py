@@ -140,16 +140,20 @@ class ProviderGateway:
         def invoke() -> str:
             result = self._deepseek.chat.completions.create(
                 model=model,
-                max_tokens=2000,
+                max_tokens=4000,
                 temperature=temp,
                 messages=[
                     {"role": "system", "content": system},
                     {"role": "user", "content": user},
                 ],
             )
-            text = result.choices[0].message.content if result.choices else ""
+            choice = result.choices[0] if result.choices else None
+            text = choice.message.content if choice else ""
             if not text or not text.strip():
-                raise RuntimeError("Réponse DeepSeek vide")
+                finish = getattr(choice, "finish_reason", "unknown") if choice else "no_choice"
+                reasoning = getattr(choice.message, "reasoning_content", "") if choice else ""
+                reasoning_flag = "yes" if reasoning else "no"
+                raise RuntimeError(f"Réponse DeepSeek vide (finish_reason={finish}, reasoning_present={reasoning_flag})")
             return text
 
         try:

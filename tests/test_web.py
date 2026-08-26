@@ -30,7 +30,7 @@ def test_web_api_without_network(tmp_path):
     (dist / "index.html").write_text("<h1>AGORA</h1>", encoding="utf-8")
     registry = ExperimentRegistry(tmp_path / "experiments")
     engine = DebateEngine(FakeGateway(), judge_selector=lambda: "deepseek")
-    server = create_server(port=0, engine=engine, registry=registry, dist=dist)
+    server = create_server(port=0, engine=engine, registry=registry, dist=dist, run_root=tmp_path / "runs")
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     base = f"http://127.0.0.1:{server.server_port}"
@@ -60,7 +60,7 @@ def test_web_api_without_network(tmp_path):
 
 def test_web_refuses_non_local_origin(tmp_path):
     registry = ExperimentRegistry(tmp_path / "experiments")
-    server = create_server(port=0, engine=DebateEngine(FakeGateway()), registry=registry, dist=tmp_path)
+    server = create_server(port=0, engine=DebateEngine(FakeGateway()), registry=registry, dist=tmp_path, run_root=tmp_path / "runs")
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     try:
@@ -71,6 +71,33 @@ def test_web_refuses_non_local_origin(tmp_path):
             assert exc.code == 403
         else:
             raise AssertionError("external origin accepted")
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_running_state_is_recovered_as_failed_after_restart(tmp_path):
+    registry = ExperimentRegistry(tmp_path / "experiments")
+    experiment_id = registry.reserve_id()
+    run_root = tmp_path / "runs"
+    run_root.mkdir()
+    run_id = "a" * 32
+    (run_root / f"{run_id}.json").write_text(json.dumps({
+        "run_id": run_id,
+        "experiment_id": experiment_id,
+        "status": "RUNNING",
+        "stage": "DEBATE",
+        "request": {"question": "Question interrompue"},
+        "transcript": [{"round": 0, "agent": "A", "content": "partiel"}],
+    }), encoding="utf-8")
+    server = create_server(port=0, engine=DebateEngine(FakeGateway()), registry=registry, dist=tmp_path, run_root=run_root)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        base = f"http://127.0.0.1:{server.server_port}"
+        recovered = json.loads(request(base, f"/api/v1/runs/{run_id}")[2])
+        assert recovered["status"] == "FAILED"
+        assert registry.get(experiment_id)["failure"]["code"] == "SERVICE_RESTART_DURING_RUN"
     finally:
         server.shutdown()
         server.server_close()

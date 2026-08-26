@@ -22,6 +22,7 @@ from .registry import ExperimentRegistry
 
 REPO = Path(__file__).resolve().parent.parent
 DIST = REPO / "ui" / "dist"
+RUN_ROOT = REPO / "runtime" / "runs"
 MAX_BODY = 32_768
 EXPERIMENT_ID = re.compile(r"^AGO-EXP-\d{4}-\d{4}$")
 
@@ -41,9 +42,28 @@ def _public_record(record: dict, summary: bool = False) -> dict:
     }
 
 
-def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path = DIST):
+def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path = DIST, run_root: Path = RUN_ROOT):
     runs = {}
     runs_lock = threading.Lock()
+    run_root.mkdir(parents=True, exist_ok=True)
+
+    def persist(state: dict):
+        registry._atomic_write(run_root / f"{state['run_id']}.json", state)
+
+    for path in run_root.glob("*.json"):
+        try:
+            state = json.loads(path.read_text(encoding="utf-8"))
+            if state.get("status") == "RUNNING":
+                error = {"code": "SERVICE_RESTART_DURING_RUN", "message": "Le service a redémarré pendant l'expérience; le run partiel a été conservé."}
+                try:
+                    failed = registry.get(state["experiment_id"])
+                except KeyError:
+                    failed = registry.create_failed(state["experiment_id"], state.get("request", {}), state.get("transcript", []), error)
+                state.update({"status": "FAILED", "stage": "FAILED", "error": error["message"], "experiment": failed})
+                persist(state)
+            runs[state["run_id"]] = state
+        except (OSError, ValueError, KeyError):
+            continue
 
     def launch(body: dict) -> dict:
         experiment_id = registry.reserve_id()
@@ -51,6 +71,7 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
         state = {"run_id": run_id, "experiment_id": experiment_id, "status": "RUNNING", "stage": "DEBATE", "transcript": [], "request": body.copy()}
         with runs_lock:
             runs[run_id] = state
+            persist(state)
 
         def event(item):
             with runs_lock:
@@ -58,6 +79,7 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                     state["transcript"].append(item["turn"])
                 elif item["type"] == "judge":
                     state["stage"] = "JUDGMENT"
+                persist(state)
 
         def worker():
             try:
@@ -65,6 +87,7 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                 record = registry.create(debate, body, experiment_id=experiment_id)
                 with runs_lock:
                     state.update({"status": "COMPLETED", "stage": "COMPLETED", "experiment": record})
+                    persist(state)
             except Exception as exc:
                 detail = str(exc).strip() or type(exc).__name__
                 error = {"code": type(exc).__name__, "message": detail[:500]}
@@ -72,6 +95,7 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                 print(json.dumps({"component": "agora-run", "run_id": run_id, "experiment_id": experiment_id, "error": error, "traceback": traceback.format_exc(limit=5)}, ensure_ascii=False))
                 with runs_lock:
                     state.update({"status": "FAILED", "stage": "FAILED", "error": detail[:500], "experiment": failed})
+                    persist(state)
 
         threading.Thread(target=worker, name=f"agora-{run_id[:8]}", daemon=True).start()
         return state.copy()
@@ -119,7 +143,8 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
             path = parsed.path
             if path == "/health":
                 provider_status = engine.gateway.status() if hasattr(engine.gateway, "status") else {}
-                return self._json(200, {"status": "ok", "service": "agora-web", "mode": "QUALIFIED", "schema": "1.0", "providers": provider_status})
+                active = sum(1 for item in runs.values() if item.get("status") == "RUNNING")
+                return self._json(200, {"status": "ok", "service": "agora-web", "mode": "QUALIFIED", "schema": "1.0", "active_runs": active, "providers": provider_status})
             if path == "/api/v1/config":
                 return self._json(200, {
                     "mode": "QUALIFIED",
@@ -215,7 +240,7 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
     return Handler
 
 
-def create_server(host="127.0.0.1", port=8768, engine=None, registry=None, dist=DIST):
+def create_server(host="127.0.0.1", port=8768, engine=None, registry=None, dist=DIST, run_root=RUN_ROOT):
     if host not in {"127.0.0.1", "localhost"}:
         raise ValueError("AGORA web doit rester sur l'interface loopback")
     registry = registry or ExperimentRegistry(REPO / "experiments")
@@ -223,7 +248,7 @@ def create_server(host="127.0.0.1", port=8768, engine=None, registry=None, dist=
     records = registry.list()
     if records and hasattr(engine.gateway, "restore_from_experiment"):
         engine.gateway.restore_from_experiment(records[0])
-    return ThreadingHTTPServer((host, port), make_handler(engine, registry, dist))
+    return ThreadingHTTPServer((host, port), make_handler(engine, registry, dist, run_root))
 
 
 def main():
