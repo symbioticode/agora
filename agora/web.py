@@ -247,7 +247,8 @@ def create_server(host="127.0.0.1", port=8768, engine=None, registry=None, dist=
     engine = engine or DebateEngine(judge_selector=lambda: "deepseek" if len(registry.list()) % 2 == 0 else "anthropic")
     records = registry.list()
     if records and hasattr(engine.gateway, "restore_from_experiment"):
-        engine.gateway.restore_from_experiment(records[0])
+        for record in reversed(records):
+            engine.gateway.restore_from_experiment(record)
     return ThreadingHTTPServer((host, port), make_handler(engine, registry, dist, run_root))
 
 
