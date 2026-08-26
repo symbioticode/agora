@@ -2,6 +2,9 @@ from agora.engine import DEFAULT_ROUNDS, DebateEngine
 
 
 class FakeGateway:
+    def ready(self):
+        return True
+
     def anthropic(self, model, system, user, temp):
         if "juge impartial" in system:
             return '{"verdict":"CONFIRMED","confidence":0.9,"agreement":[],"disagreement":[],"reasoning":"ok"}', 0
@@ -46,3 +49,4 @@ def test_gateway_status_can_be_restored_from_failed_experiment(monkeypatch):
     })
     assert gateway.status()["anthropic"]["status"] == "ON"
     assert gateway.status()["deepseek"]["status"] == "DEGRADED"
+    assert not gateway.ready()

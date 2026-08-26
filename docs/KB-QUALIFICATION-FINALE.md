@@ -1,6 +1,13 @@
 # KB — Qualification finale d'AGORA
 
-**Date :** 2026-08-25 · **Statut :** qualifié pour la recherche supervisée
+**Date :** 2026-08-25 · **Statut historique :** recette franchie
+
+> Mise à jour du 26 août : la configuration d'exécution courante est
+> `REQUALIFICATION_REQUIRED`. La preuve ci-dessous reste valable pour le
+> protocole et les artefacts testés le 25 août; elle ne démontrait pas la
+> disponibilité bout en bout du débat. Le réglage DeepSeek et les gates de
+> transport ayant changé, une recette proportionnée doit précéder le retour au
+> mode de recherche supervisée.
 
 ## Verdict
 
@@ -57,9 +64,17 @@ système décident séparément si une action est permise.
 - Mistral conserve le gagnant dans le test d'étiquette, mais ses scores varient
   de 7 points; ce témoin gratuit était hors du seuil préenregistré.
 - `DEFAULT_ROUNDS=6` est la borne haute testée, pas un optimum universel.
+- Dans le code historique, cette valeur signifie une position initiale puis six
+  cycles de contradiction, soit quatorze prises de parole. Le libellé UI
+  « six tours » était donc ambigu; cette sémantique doit être figée ou corrigée
+  explicitement pendant la requalification, jamais silencieusement.
 - E1 direct reste historiquement non franchi; la qualification repose sur le
   fallback collectif prévu après cet échec.
 - Trois débats H3 de l'Étape 1 restent une dette secondaire non bloquante.
 
 Tout changement de modèle, de prompt, de politique de vote ou de domaine
 important doit déclencher une nouvelle calibration proportionnée au risque.
+
+Cette règle s'applique désormais aussi à un réglage provider qui peut modifier
+la sortie, comme `reasoning_effort`. Les sondes de transport ne sont jamais
+comptées comme expériences ni comme preuves de qualité sémantique.

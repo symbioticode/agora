@@ -1,6 +1,20 @@
 # Agora — Status du Laboratoire
 
-## Stage : recette de qualification franchie — instrument supervisé
+## Stage : protocole historiquement validé — configuration courante à requalifier
+
+**État opérationnel au 2026-08-26 : `REQUALIFICATION_REQUIRED`.** La recette du
+25 août reste une preuve valide des cinq critères qu'elle mesurait, mais elle
+n'avait pas qualifié la disponibilité d'un débat complet. L'UI a rendu visible
+que deux des huit sessions historiques comportaient déjà une sortie DeepSeek
+vide, silencieusement acceptée par l'ancien orchestrateur. La configuration
+courante ajoute des timeouts, un préflight bloquant et
+`reasoning_effort=low`; ce changement utile interdit de reporter mécaniquement
+la qualification précédente sur le runtime corrigé.
+
+Quatre sondes DeepSeek consécutives et une sonde Anthropic ont réussi sans
+retry le 26 août. Elles qualifient le transport à petite échelle, pas le débat,
+le jugement ni la stabilité temporelle. L'UI reste donc verrouillée jusqu'à une
+recette de requalification bornée.
 
 **Étape 0 terminée** (2026-07-16)
 

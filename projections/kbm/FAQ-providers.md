@@ -91,3 +91,11 @@ Après deux échecs comparables, arrêter la reprise automatique. Le provider re
 `DEGRADED`, l'expérience demeure une preuve de laboratoire et une décision
 humaine choisit entre changement de modèle, réduction du protocole ou attente
 d'un rétablissement externe.
+
+## Transport vert signifie-t-il « configuration qualifiée » ?
+
+Non. Une sonde confirme seulement qu'un provider peut produire maintenant une
+réponse finale non vide. Le 26 août, Anthropic a réussi une sonde et DeepSeek
+quatre sondes consécutives, toutes sans retry. Comme la correction DeepSeek
+emploie désormais `reasoning_effort=low`, la configuration courante reste
+`REQUALIFICATION_REQUIRED` jusqu'au replay borné des contrôles pertinents.

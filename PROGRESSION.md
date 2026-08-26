@@ -73,6 +73,30 @@ L'import KBM quotidien n'est pas encore installé. Il sera déclenché par horlo
 pas après un nombre de débats : les échecs font partie des résultats de
 recherche et doivent être projetés eux aussi.
 
+### Suspension et robustesse du runtime
+
+Le qualificatif global « mode qualifié » était trop large. La recette du 25
+août validait cinq propriétés du jugement supervisé, mais pas la disponibilité
+bout en bout du pipeline. Le runtime distingue maintenant :
+
+- qualification historique du protocole ;
+- disponibilité instantanée de chaque provider ;
+- qualification de la configuration d'exécution courante.
+
+Inspiré du préflight d'ETAU-CAVEMAN, un diagnostic minimal précède désormais
+toute reprise. Tant qu'un provider n'est pas vert, le serveur répond
+`EXECUTION_SUSPENDED`, sans réserver d'identifiant ni lancer d'appel de débat.
+Une sonde n'est jamais enregistrée comme expérience scientifique. Les appels
+ont des timeouts explicites et DeepSeek utilise `reasoning_effort=low` afin que
+le raisonnement interne ne consomme pas tout le budget avant la réponse finale.
+
+La sonde réelle du 26 août a réussi pour Anthropic (`4,185 s`) et quatre fois
+de suite pour DeepSeek (`5,856 s`, `4,075 s`, `0,803 s`, `1,213 s`), sans aucun
+retry. Ce résultat éprouve la correction du transport à petite échelle. Comme
+le réglage DeepSeek a changé, le runtime passe à `REQUALIFICATION_REQUIRED` et
+l'UI reste verrouillée : la recette historique n'est pas transférée par simple
+déclaration à cette nouvelle configuration.
+
 ## 2026-08-26 — Planification de l’interface locale
 
 L’interface commencée dans `ui/index.jsx` est retenue comme base visuelle, mais

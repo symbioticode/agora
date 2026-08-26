@@ -18,6 +18,7 @@ MODEL_B = "deepseek-v4-flash"
 DEFAULT_ROUNDS = 6
 TEMP_DEBATE = 0.7
 TEMP_JUDGE = 0.0
+CALL_TIMEOUT_SECONDS = 90
 
 MINDSETS = {
     "A": (REPO / "mindsets" / "empiricist.md").read_text(encoding="utf-8"),
@@ -102,7 +103,25 @@ class ProviderGateway:
                 time.sleep(2**attempt)
         raise RuntimeError("retry loop exhausted")
 
-    def anthropic(self, model: str, system: str, user: str, temp: float) -> tuple[str, int]:
+    def ready(self) -> bool:
+        """A full run is allowed only after both providers proved usable."""
+        return all(item["status"] == "ON" for item in self._state.values())
+
+    def probe(self, provider: str) -> dict:
+        """Minimal paid transport probe, never an AGORA experiment."""
+        started = time.monotonic()
+        try:
+            if provider == "anthropic":
+                text, retries = self.anthropic(MODEL_A, "Réponds brièvement.", "Réponds uniquement: OK", 0.0, max_tokens=64)
+            elif provider == "deepseek":
+                text, retries = self.deepseek(MODEL_B, "Réponds brièvement.", "Réponds uniquement: OK", 0.0, max_tokens=512)
+            else:
+                raise ValueError(f"Provider inconnu: {provider}")
+            return {"provider": provider, "ok": True, "latency_seconds": round(time.monotonic() - started, 3), "retries": retries, "content_present": bool(text.strip())}
+        except Exception as exc:
+            return {"provider": provider, "ok": False, "latency_seconds": round(time.monotonic() - started, 3), "error": (str(exc).strip() or type(exc).__name__)[:200]}
+
+    def anthropic(self, model: str, system: str, user: str, temp: float, max_tokens: int = 2000) -> tuple[str, int]:
         if self._anthropic is None:
             key = os.getenv("ANTHROPIC_API_KEY")
             if not key:
@@ -112,8 +131,9 @@ class ProviderGateway:
         def invoke() -> str:
             result = self._anthropic.messages.create(
                 model=model,
-                max_tokens=2000,
+                max_tokens=max_tokens,
                 temperature=temp,
+                timeout=CALL_TIMEOUT_SECONDS,
                 system=system,
                 messages=[{"role": "user", "content": user}],
             )
@@ -130,7 +150,7 @@ class ProviderGateway:
             self._failure("anthropic", exc)
             raise
 
-    def deepseek(self, model: str, system: str, user: str, temp: float) -> tuple[str, int]:
+    def deepseek(self, model: str, system: str, user: str, temp: float, max_tokens: int = 4000) -> tuple[str, int]:
         if self._deepseek is None:
             key = os.getenv("DEEPSEEK_API_KEY")
             if not key:
@@ -140,8 +160,10 @@ class ProviderGateway:
         def invoke() -> str:
             result = self._deepseek.chat.completions.create(
                 model=model,
-                max_tokens=4000,
+                max_tokens=max_tokens,
                 temperature=temp,
+                reasoning_effort="low",
+                timeout=CALL_TIMEOUT_SECONDS,
                 messages=[
                     {"role": "system", "content": system},
                     {"role": "user", "content": user},

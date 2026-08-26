@@ -27,6 +27,11 @@ MAX_BODY = 32_768
 EXPERIMENT_ID = re.compile(r"^AGO-EXP-\d{4}-\d{4}$")
 
 
+def _runtime_mode(engine: DebateEngine) -> str:
+    ready = engine.gateway.ready() if hasattr(engine.gateway, "ready") else True
+    return "REQUALIFICATION_REQUIRED" if ready else "EXECUTION_SUSPENDED"
+
+
 def _public_record(record: dict, summary: bool = False) -> dict:
     if not summary:
         return record
@@ -152,10 +157,12 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
             if path == "/health":
                 provider_status = engine.gateway.status() if hasattr(engine.gateway, "status") else {}
                 active = sum(1 for item in runs.values() if item.get("status") == "RUNNING")
-                return self._json(200, {"status": "ok", "service": "agora-web", "mode": "QUALIFIED", "schema": "1.0", "active_runs": active, "providers": provider_status})
+                return self._json(200, {"status": "ok", "service": "agora-web", "mode": _runtime_mode(engine), "historical_protocol_qualification": "VALIDATED_FOR_SUPERVISED_RESEARCH", "current_configuration_qualification": "REQUIRED", "schema": "1.0", "active_runs": active, "providers": provider_status})
             if path == "/api/v1/config":
                 return self._json(200, {
-                    "mode": "QUALIFIED",
+                    "mode": _runtime_mode(engine),
+                    "historical_protocol_qualification": "VALIDATED_FOR_SUPERVISED_RESEARCH",
+                    "current_configuration_qualification": "REQUIRED",
                     "rounds": DEFAULT_ROUNDS,
                     "agents": {
                         "A": {"provider": "anthropic", "model": MODEL_A, "mindset": "empiricist"},
@@ -210,7 +217,17 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                 return self._error(403, "ORIGIN_REFUSED", "Origine non locale")
             try:
                 body = self._body()
+                if self.path == "/api/v1/providers/probe":
+                    if not hasattr(engine.gateway, "probe"):
+                        return self._error(501, "PROBE_UNAVAILABLE", "La gateway ne fournit pas de diagnostic")
+                    requested = body.get("providers", ["anthropic", "deepseek"])
+                    if not isinstance(requested, list) or not requested or set(requested) - {"anthropic", "deepseek"}:
+                        raise ValueError("providers doit contenir anthropic et/ou deepseek")
+                    results = [engine.gateway.probe(provider) for provider in requested]
+                    return self._json(200, {"kind": "TRANSPORT_DIAGNOSTIC", "creates_experiment": False, "ready": engine.gateway.ready(), "results": results})
                 if self.path == "/api/v1/experiments":
+                    if hasattr(engine.gateway, "ready") and not engine.gateway.ready():
+                        return self._error(409, "EXECUTION_SUSPENDED", "Un provider n'a pas franchi le diagnostic; aucun identifiant ni appel de débat n'a été créé")
                     allowed = {"question", "context", "title", "objective", "supervisor", "relations", "unknowns"}
                     unknown = set(body) - allowed
                     if unknown:

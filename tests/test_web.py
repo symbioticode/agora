@@ -124,3 +124,59 @@ def test_persistence_failure_creates_failed_experiment(tmp_path, monkeypatch):
     finally:
         server.shutdown()
         server.server_close()
+
+
+def test_suspended_gateway_refuses_run_without_reserving_experiment(tmp_path):
+    class SuspendedGateway(FakeGateway):
+        def ready(self):
+            return False
+        def status(self):
+            return {"anthropic": {"status": "ON"}, "deepseek": {"status": "DEGRADED"}}
+
+    registry = ExperimentRegistry(tmp_path / "experiments")
+    server = create_server(port=0, engine=DebateEngine(SuspendedGateway()), registry=registry, dist=tmp_path, run_root=tmp_path / "runs")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        base = f"http://127.0.0.1:{server.server_port}"
+        try:
+            request(base, "/api/v1/experiments", "POST", {"question": "Question"})
+        except HTTPError as exc:
+            assert exc.code == 409
+            assert json.loads(exc.read())["error"]["code"] == "EXECUTION_SUSPENDED"
+        else:
+            raise AssertionError("suspended execution accepted")
+        assert registry.list() == []
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_probe_is_diagnostic_and_never_creates_experiment(tmp_path):
+    class ProbeGateway(FakeGateway):
+        available = False
+        def ready(self):
+            return self.available
+        def status(self):
+            status = "ON" if self.available else "DEGRADED"
+            return {"anthropic": {"status": status}, "deepseek": {"status": status}}
+        def probe(self, provider):
+            self.available = True
+            return {"provider": provider, "ok": True, "content_present": True, "retries": 0}
+
+    registry = ExperimentRegistry(tmp_path / "experiments")
+    server = create_server(port=0, engine=DebateEngine(ProbeGateway()), registry=registry, dist=tmp_path, run_root=tmp_path / "runs")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        base = f"http://127.0.0.1:{server.server_port}"
+        status, _, body = request(base, "/api/v1/providers/probe", "POST", {"providers": ["deepseek"]})
+        diagnostic = json.loads(body)
+        assert status == 200
+        assert diagnostic["kind"] == "TRANSPORT_DIAGNOSTIC"
+        assert diagnostic["creates_experiment"] is False
+        assert diagnostic["ready"] is True
+        assert registry.list() == []
+    finally:
+        server.shutdown()
+        server.server_close()

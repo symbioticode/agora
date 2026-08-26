@@ -1,19 +1,19 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-26T22:31:00.275412+00:00",
+  "generated_at": "2026-08-26T22:44:04.340887+00:00",
   "source": "symbioticode/agora",
   "destination": "home-kbm/Projets/AGORA/Experiences",
   "status": "SUCCESS",
   "entries": [
     {
       "id": "AGO-EXP-2026-0004",
-      "status": "NEW",
+      "status": "UNCHANGED",
       "source_sha256": "aa19e717704053f326c944e79be2f6f9e9c7c9d7ac8a047823b2276d4f20132e",
       "path": "AGO-EXP-2026-0004.md"
     },
     {
       "id": "AGO-EXP-2026-0003",
-      "status": "NEW",
+      "status": "UNCHANGED",
       "source_sha256": "34147f930b7d5c4d2eeb1996310a521883984c03f8378b2a8fd243e4abe1bb9f",
       "path": "AGO-EXP-2026-0003.md"
     },

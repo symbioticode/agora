@@ -31,6 +31,12 @@ La version actuelle est un client du moteur Python commun à la CLI :
 - état de synchronisation GitHub/KBM visible ;
 - aucune clé et aucun appel provider dans le bundle frontend.
 
+Depuis le 26 août, « six tours » décrit le protocole historique, pas une
+permission automatique de lancement. L'interface distingue
+`EXECUTION_SUSPENDED`, `REQUALIFICATION_REQUIRED` et le futur retour à
+`SUPERVISED_RESEARCH`. Une sonde provider est un diagnostic technique et ne
+crée jamais d'entrée `AGO-EXP`.
+
 ## Revenir au laboratoire historique
 
 Oui. Trois références indépendantes sont conservées :

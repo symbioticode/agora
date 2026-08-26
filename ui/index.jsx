@@ -58,7 +58,7 @@ const S = `
   .ol{font-size:12px;color:var(--text-secondary);font-weight:500}
   .rb{width:30px;height:30px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);font-size:13px;font-weight:500;cursor:pointer}
   .rb.rs{border-color:var(--border-accent);background:var(--bg-accent);color:var(--text-accent)}
-  .on{font-size:11px;color:var(--text-muted);margin-right:auto}
+  .on{font-size:11px;color:var(--text-success);margin-right:auto}.off{font-size:11px;color:var(--text-danger);margin-right:auto}
   .ctog{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-secondary);background:none;border:none;cursor:pointer;padding:4px}
   .carea{padding:12px 14px;background:var(--surface-1);border-radius:var(--radius);border:0.5px solid var(--border);display:flex;flex-direction:column;gap:8px}
   .dz{border:0.5px dashed var(--border-strong);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:all .15s}
@@ -276,7 +276,20 @@ export default function App() {
     setObjective(record.objective || ""); setReplayId(record.id); setDetail(null); setView("compose")
   }
 
-  const canLaunch = hyp.trim() && config?.mode === "QUALIFIED" && !step
+  const canLaunch = hyp.trim() && config?.mode === "SUPERVISED_RESEARCH" && !step
+
+  const probeProviders = async () => {
+    setErr(null); setStep("Diagnostic minimal des deux providers…")
+    try {
+      const result = await api("/api/v1/providers/probe", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ providers: ["anthropic", "deepseek"] })
+      })
+      await refresh()
+      if (!result.ready) setErr("Diagnostic non franchi : l’exécution reste suspendue.")
+    } catch (e) { setErr(e.message) }
+    finally { setStep("") }
+  }
 
   const runDebate = async () => {
     if (!canLaunch) return
@@ -404,7 +417,9 @@ export default function App() {
             <div className="opts">
               <span className="ol">Tours</span>
               <button className="rb rs" disabled>{rds}</button>
-              <span className="on">mode qualifié · aucune autorité d'action</span>
+              <span className={config?.mode === "SUPERVISED_RESEARCH" ? "on" : "off"}>
+                {config?.mode === "SUPERVISED_RESEARCH" ? "configuration qualifiée · exécution disponible" : config?.mode === "REQUALIFICATION_REQUIRED" ? "transport disponible · requalification requise" : "exécution suspendue · diagnostic requis"}
+              </span>
               <button className="ctog" onClick={() => setShowCtx(x => !x)}>
                 <i className={`ti ${showCtx ? "ti-chevron-down" : "ti-chevron-right"}`} aria-hidden="true" />
                 Contexte {ctx && "✓"}
@@ -433,8 +448,14 @@ export default function App() {
             )}
 
             <div className="warn">
-              <i className="ti ti-alert-triangle" aria-hidden="true" /> La stabilité contradictoire est qualifiée; la fiabilité factuelle générale reste à démontrer.
+              <i className="ti ti-alert-triangle" aria-hidden="true" /> Le protocole de jugement a été validé hors ligne; la disponibilité du débat complet et la fiabilité factuelle générale restent à démontrer.
             </div>
+
+            {config?.mode === "EXECUTION_SUSPENDED" && (
+              <button className="nbtn" onClick={probeProviders} disabled={!!step}>
+                <i className="ti ti-stethoscope" aria-hidden="true" /> Éprouver les providers sans créer d’expérience
+              </button>
+            )}
 
             <button className="lbtn" onClick={runDebate} disabled={!canLaunch}>
               <i className="ti ti-player-play" aria-hidden="true" /> Lancer l'expérience supervisée
