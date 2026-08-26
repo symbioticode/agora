@@ -21,6 +21,8 @@ def qualify(repo: Path = REPO) -> dict:
     collective = load("results/step2_multijudge_confirm/analysis.json", repo)
     temporal = load("results/temporal_stability/analysis.json", repo)
     preference = load("results/self_preference/analysis.json", repo)
+    replacement_path = repo / "results/self_preference/replacement-result.json"
+    replacement = json.loads(replacement_path.read_text(encoding="utf-8")) if replacement_path.exists() else None
     groups = {item["hypothesis_id"]: item for item in collective["groups"]}
     criteria = [
         {"id": 1, "name": "Ne pas converger artificiellement",
@@ -42,13 +44,36 @@ def qualify(repo: Path = REPO) -> dict:
          "passed": preference["complete"] and preference["criterion_passed"],
          "evidence": "results/self_preference/analysis.json"},
     ]
-    return {"protocol": "AGORA-final-qualification-v1", "generated_at": datetime.now(timezone.utc).isoformat(),
+    result = {"protocol": "AGORA-final-qualification-v1", "generated_at": datetime.now(timezone.utc).isoformat(),
             "all_five_simultaneously_satisfied": all(item["passed"] for item in criteria),
             "qualification": "SUPERVISED_RESEARCH_INSTRUMENT" if all(item["passed"] for item in criteria) else "LAB_ONLY",
             "criteria": criteria,
             "limits": ["Le test d'auto-préférence porte sur une transcription contrôlée, pas sur tous les sujets.",
                        "La stabilité temporelle porte sur trois cycles H2/H3 à température 0.",
                        "Aucun verdict n'autorise seul une action opérationnelle."]}
+    if replacement:
+        valid_cost = float(preference["execution"]["estimated_spend_usd"]["anthropic"])
+        invalid_cost = float(replacement["invalidated"]["estimated_cost_usd"])
+        result["evidence_corrections"] = [{
+            "status": replacement["status"],
+            "manifest": "results/self_preference/replacement-manifest.json",
+            "result": "results/self_preference/replacement-result.json",
+            "invalidated_artifact": replacement["invalidated"]["path"],
+            "invalidated_sha256": replacement["invalidated"]["sha256"],
+            "replacement_artifact": replacement["replacement"]["path"],
+            "replacement_sha256": replacement["replacement"]["sha256"],
+            "scores_reproduced": replacement["comparison"]["scores_reproduced"],
+            "winner_reproduced": replacement["comparison"]["winner_reproduced"],
+            "recorded_cost_usd": {
+                "valid_anthropic_judgments": round(valid_cost, 8),
+                "invalidated_anthropic_judgment": round(invalid_cost, 8),
+                "combined": round(valid_cost + invalid_cost, 8),
+            },
+            "unmeasured_events": [
+                "One earlier DeepSeek schema-mismatch call produced no usage artifact."
+            ],
+        }]
+    return result
 
 
 def main() -> int:
