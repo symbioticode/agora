@@ -10,5 +10,8 @@ def test_current_evidence_satisfies_five_criteria():
     correction = result["evidence_corrections"][0]
     assert correction["status"] == "REPLACEMENT_COMPLETED"
     assert correction["scores_reproduced"] and correction["winner_reproduced"]
-    assert correction["recorded_cost_usd"]["combined"] == 0.137604
-    assert correction["unmeasured_events"]
+    costs = correction["recorded_cost_usd"]
+    assert costs["valid_anthropic_judgments_including_replacement"] == 0.101391
+    assert costs["recorded_total_including_replacement_and_invalidated"] == 0.137604
+    assert correction["invalidation_status"] == "INVALIDATED_PROTOCOL_MISMATCH"
+    assert correction["unmeasured_events"][0]["type"] == "ASSUME"

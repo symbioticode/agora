@@ -56,6 +56,8 @@ def qualify(repo: Path = REPO) -> dict:
         invalid_cost = float(replacement["invalidated"]["estimated_cost_usd"])
         result["evidence_corrections"] = [{
             "status": replacement["status"],
+            "invalidation_status": "INVALIDATED_PROTOCOL_MISMATCH",
+            "invalidation_reason": "The original truthful Anthropic judgment used a different system-prompt adapter than masked and swapped.",
             "manifest": "results/self_preference/replacement-manifest.json",
             "result": "results/self_preference/replacement-result.json",
             "invalidated_artifact": replacement["invalidated"]["path"],
@@ -65,13 +67,15 @@ def qualify(repo: Path = REPO) -> dict:
             "scores_reproduced": replacement["comparison"]["scores_reproduced"],
             "winner_reproduced": replacement["comparison"]["winner_reproduced"],
             "recorded_cost_usd": {
-                "valid_anthropic_judgments": round(valid_cost, 8),
+                "valid_anthropic_judgments_including_replacement": round(valid_cost, 8),
                 "invalidated_anthropic_judgment": round(invalid_cost, 8),
-                "combined": round(valid_cost + invalid_cost, 8),
+                "recorded_total_including_replacement_and_invalidated": round(valid_cost + invalid_cost, 8),
             },
-            "unmeasured_events": [
-                "One earlier DeepSeek schema-mismatch call produced no usage artifact."
-            ],
+            "unmeasured_events": [{
+                "type": "ASSUME",
+                "description": "One earlier DeepSeek schema-mismatch call produced no usage artifact.",
+                "verification": "Check DeepSeek provider billing/logs around 2026-08-26 02:00-03:00 UTC."
+            }],
         }]
     return result
 
