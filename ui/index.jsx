@@ -273,10 +273,18 @@ export default function App() {
     setStep("Expérience en cours · les deux providers échangent puis le juge délibère…")
     setView("debate")
     try {
-      const record = await api("/api/v1/experiments", {
+      let run = await api("/api/v1/experiments", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: hyp, context: ctx, title, objective, supervisor: "human-supervisor" })
       })
+      while (run.status === "RUNNING") {
+        await new Promise(resolve => setTimeout(resolve, 700))
+        run = await api(`/api/v1/runs/${run.run_id}`)
+        setTurns(run.transcript || [])
+        setStep(run.stage === "JUDGMENT" ? "Juge · délibération réelle en cours…" : `Échanges réels · ${(run.transcript || []).length} prises de parole enregistrées`)
+      }
+      if (run.status !== "COMPLETED") throw new Error(run.error || "L'expérience a échoué")
+      const record = run.experiment
       setCurrent(record); setTurns(record.observation.transcript); setVerdict(record.machine_judgment)
       await refresh()
       setStep("")

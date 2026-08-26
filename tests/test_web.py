@@ -1,5 +1,6 @@
 import json
 import threading
+import time
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -37,8 +38,15 @@ def test_web_api_without_network(tmp_path):
         assert json.loads(request(base, "/health")[2])["status"] == "ok"
         assert json.loads(request(base, "/api/v1/config")[2])["rounds"] == 6
         status, _, body = request(base, "/api/v1/experiments", "POST", {"question": "Question test", "title": "Test"})
-        assert status == 201
-        experiment = json.loads(body)
+        assert status == 202
+        run = json.loads(body)
+        for _ in range(30):
+            run = json.loads(request(base, f"/api/v1/runs/{run['run_id']}")[2])
+            if run["status"] != "RUNNING":
+                break
+            time.sleep(0.02)
+        assert run["status"] == "COMPLETED"
+        experiment = run["experiment"]
         assert experiment["id"] == "AGO-EXP-2026-0001"
         listing = json.loads(request(base, "/api/v1/experiments")[2])
         assert listing[0]["id"] == experiment["id"]

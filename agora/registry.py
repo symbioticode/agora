@@ -69,10 +69,10 @@ class ExperimentRegistry:
         )
         return result.stdout.strip() if result.returncode == 0 else "UNKNOWN"
 
-    def create(self, debate: dict, metadata: dict | None = None, now: datetime | None = None) -> dict:
+    def create(self, debate: dict, metadata: dict | None = None, now: datetime | None = None, experiment_id: str | None = None) -> dict:
         now = now or datetime.now(timezone.utc)
         metadata = metadata or {}
-        experiment_id = self.reserve_id(now)
+        experiment_id = experiment_id or self.reserve_id(now)
         record = {
             "schema_version": SCHEMA_VERSION,
             "id": experiment_id,

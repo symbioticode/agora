@@ -162,7 +162,7 @@ class DebateEngine:
             verdict["rationale"] = verdict["reasoning"]
         return verdict, model, retries
 
-    def run(self, hypothesis: str, context: str = "", rounds: int = DEFAULT_ROUNDS) -> dict:
+    def run(self, hypothesis: str, context: str = "", rounds: int = DEFAULT_ROUNDS, on_event=None) -> dict:
         hypothesis = hypothesis.strip()
         context = context.strip()
         if not hypothesis:
@@ -187,7 +187,11 @@ class DebateEngine:
                 else:
                     history[-1][agent] = response
                 transcript.append({"round": round_num, "agent": agent, "content": response})
+                if on_event:
+                    on_event({"type": "turn", "turn": transcript[-1].copy()})
 
+        if on_event:
+            on_event({"type": "judge", "status": "RUNNING"})
         verdict, judge_model, judge_retries = self._judge(hypothesis, transcript)
         retries["judge"] = judge_retries
         return {

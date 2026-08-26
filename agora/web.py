@@ -7,6 +7,8 @@ import json
 import mimetypes
 import os
 import re
+import threading
+import uuid
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -39,6 +41,36 @@ def _public_record(record: dict, summary: bool = False) -> dict:
 
 
 def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path = DIST):
+    runs = {}
+    runs_lock = threading.Lock()
+
+    def launch(body: dict) -> dict:
+        experiment_id = registry.reserve_id()
+        run_id = uuid.uuid4().hex
+        state = {"run_id": run_id, "experiment_id": experiment_id, "status": "RUNNING", "stage": "DEBATE", "transcript": []}
+        with runs_lock:
+            runs[run_id] = state
+
+        def event(item):
+            with runs_lock:
+                if item["type"] == "turn":
+                    state["transcript"].append(item["turn"])
+                elif item["type"] == "judge":
+                    state["stage"] = "JUDGMENT"
+
+        def worker():
+            try:
+                debate = engine.run(body.get("question", ""), context=body.get("context", ""), on_event=event)
+                record = registry.create(debate, body, experiment_id=experiment_id)
+                with runs_lock:
+                    state.update({"status": "COMPLETED", "stage": "COMPLETED", "experiment": record})
+            except Exception:
+                with runs_lock:
+                    state.update({"status": "FAILED", "stage": "FAILED", "error": "L'expérience n'a pas pu être exécutée"})
+
+        threading.Thread(target=worker, name=f"agora-{run_id[:8]}", daemon=True).start()
+        return state.copy()
+
     class Handler(BaseHTTPRequestHandler):
         server_version = "AGORA/0.2"
 
@@ -105,6 +137,14 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                 if not sync_path.exists():
                     return self._json(200, {"status": "NOT_SYNCHRONIZED", "github": "UNKNOWN", "kbm": "UNKNOWN"})
                 return self._json(200, json.loads(sync_path.read_text(encoding="utf-8")))
+            run_match = re.fullmatch(r"/api/v1/runs/([a-f0-9]{32})", path)
+            if run_match:
+                with runs_lock:
+                    state = runs.get(run_match.group(1))
+                    payload = json.loads(json.dumps(state, ensure_ascii=False)) if state else None
+                if not payload:
+                    return self._error(404, "NOT_FOUND", "Run inconnu")
+                return self._json(200, payload)
             match = re.fullmatch(r"/api/v1/experiments/(AGO-EXP-\d{4}-\d{4})(/export)?", path)
             if match:
                 try:
@@ -135,9 +175,10 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                     unknown = set(body) - allowed
                     if unknown:
                         raise ValueError(f"Champs inconnus: {', '.join(sorted(unknown))}")
-                    debate = engine.run(body.get("question", ""), context=body.get("context", ""))
-                    record = registry.create(debate, body)
-                    return self._json(HTTPStatus.CREATED, record)
+                    question = body.get("question", "").strip()
+                    if not question:
+                        raise ValueError("L'hypothèse est obligatoire")
+                    return self._json(HTTPStatus.ACCEPTED, launch(body))
                 match = re.fullmatch(r"/api/v1/experiments/(AGO-EXP-\d{4}-\d{4})/observations", self.path)
                 if match:
                     record = registry.add_observation(match.group(1), body.get("actor", ""), body.get("content", ""))
