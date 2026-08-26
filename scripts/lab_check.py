@@ -68,7 +68,7 @@ def _():
 
 @check("A", "Aucun I/O texte sans encoding explicite (régression Windows cp1252, 3 occurrences 2026-07-16)")
 def _():
-    import re
+    import ast
     bad = []
     EXCLUDE_DIRS = {".venv", "venv", "node_modules", ".git", "__pycache__"}
     for pyfile in REPO.rglob("*.py"):
@@ -76,16 +76,29 @@ def _():
             continue
         if "venv" in pyfile.parts: continue
         content = pyfile.read_text(encoding="utf-8")
-        for i, line in enumerate(content.splitlines(), 1):
-            for m in re.finditer(r'\.(read_text|write_text)\(', line):
-                if "encoding=" not in line[m.start():]:
-                    bad.append(f"{pyfile.relative_to(REPO)}:{i}: {m.group()} sans encoding=")
+        tree = ast.parse(content, filename=str(pyfile))
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+                continue
+            if node.func.attr not in {"read_text", "write_text"}:
+                continue
+            if not any(keyword.arg == "encoding" for keyword in node.keywords):
+                bad.append(f"{pyfile.relative_to(REPO)}:{node.lineno}: .{node.func.attr}( sans encoding=")
     assert not bad, "I/O sans encoding UTF-8 explicite :\n" + "\n".join(bad)
 
 @check("A", "sessions/ et results/ existent")
 def _():
     assert (REPO/"sessions").exists(), "sessions/ absent"
     assert (REPO/"results").exists(), "results/ absent"
+
+@check("A", "Lab #2 préenregistré et vérificateur présents")
+def _():
+    manifest = REPO/"labs"/"LAB-2"/"manifest.json"
+    assert manifest.exists(), "manifest LAB-2 absent"
+    data = json.loads(manifest.read_text(encoding="utf-8"))
+    assert data.get("status") == "PREREGISTERED", "LAB-2 non préenregistré"
+    assert len(data.get("cases", [])) == 10, "LAB-2 doit contenir 10 cas"
+    assert (REPO/"scripts"/"lab2_check.py").exists(), "lab2_check.py absent"
 
 # ── Section B — Cohérence des mindsets ──────────────────────────────────────
 

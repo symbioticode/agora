@@ -69,6 +69,33 @@ def project(source: Path, destination: Path, now: datetime | None = None, state_
         atomic_text(faq_target, faq_content)
     entries.append({"id": "FAQ-AGO-001", "status": faq_status, "path": faq_target.name})
 
+    lab_source = REPO / "labs" / "LAB-2" / "README.md"
+    lab_target = destination / "LAB-2.md"
+    lab_content = """---
+id: LAB-2
+type: calibration
+project: AGORA
+status: PREREGISTERED
+date: 2026-08-26
+audience: human-agent
+scope: home
+maturity: experimental
+source_of_truth: symbioticode/agora
+nav_title: Lab #2
+section: corpus/home/agora
+tags:
+  - agora
+  - calibration
+  - lab-2
+  - fiabilite
+---
+
+""" + lab_source.read_text(encoding="utf-8")
+    lab_status = "UNCHANGED" if lab_target.exists() and lab_target.read_text(encoding="utf-8") == lab_content else ("UPDATED" if lab_target.exists() else "NEW")
+    if lab_status != "UNCHANGED":
+        atomic_text(lab_target, lab_content)
+    entries.append({"id": "LAB-2", "status": lab_status, "path": lab_target.name})
+
     manifest = {
         "schema_version": "1.0",
         "generated_at": now.isoformat(),

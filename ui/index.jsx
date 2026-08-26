@@ -297,6 +297,11 @@ export default function App() {
     setStep("Expérience en cours · les deux providers échangent puis le juge délibère…")
     setView("debate")
     try {
+      const liveConfig = await api("/api/v1/config")
+      setConfig(liveConfig)
+      if (liveConfig.mode !== "SUPERVISED_RESEARCH") {
+        throw new Error("Exécution suspendue avant tout appel — revenez au formulaire et lancez le diagnostic provider.")
+      }
       let run = await api("/api/v1/experiments", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: hyp, context: ctx, title, objective, supervisor: "human-supervisor", relations: replayId ? { replays: replayId } : {} })

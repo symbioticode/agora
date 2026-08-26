@@ -16,6 +16,15 @@ retry le 26 août. Elles qualifient le transport à petite échelle, pas le déb
 le jugement ni la stabilité temporelle. L'UI reste donc verrouillée jusqu'à une
 recette de requalification bornée.
 
+### Lab #2 préenregistré
+
+La recette de requalification progressive est désormais `LAB-2 — Fiabilité
+élémentaire du juge`. Dix cas couvrent les faits vrais, les faits faux, les
+vérités par définition et l'incertitude légitime. La cible active est de trois
+runs par cas; aucun run n'est encore reconnu. `scripts/lab2_check.py` retourne
+donc `PENDING` avec le code 2. Les tentatives antérieures sur le gel de l'eau ne
+comptent pas : leur objectif ne correspond pas au contrat préenregistré.
+
 **Étape 0 terminée** (2026-07-16)
 
 ---

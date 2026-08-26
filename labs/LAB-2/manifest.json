@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "id": "LAB-2",
+  "title": "Fiabilité élémentaire du juge",
+  "status": "PREREGISTERED",
+  "created_at": "2026-08-26",
+  "objective": "Calibration — vérifier la fiabilité du juge sur des faits non ambigus, avant tout usage sur des questions complexes.",
+  "execution": {
+    "mode": "SUPERVISED_ONLY",
+    "initial_repetitions_per_case": 3,
+    "active_target_repetitions_per_case": 3,
+    "maximum_repetitions_per_case": 5,
+    "current_configuration": "REQUALIFICATION_REQUIRED",
+    "ui_launch_authorized": false,
+    "note": "L'autorisation sera ouverte par une décision explicite après validation du runtime; aucune exécution automatique. Le target doit être préengagé à 5 avant toute quatrième répétition et ne peut pas servir à réparer sélectivement un cas."
+  },
+  "cases": [
+    {"id": "L2-PHY-001", "group": "physical_true", "hypothesis": "L'eau pure gèle à 0°C à pression atmosphérique standard.", "accepted_verdicts": ["CONFIRMED"], "minimum_confidence": 0.90},
+    {"id": "L2-PHY-002", "group": "physical_true", "hypothesis": "La glace est moins dense que l'eau liquide.", "accepted_verdicts": ["CONFIRMED"], "minimum_confidence": 0.90},
+    {"id": "L2-PHY-003", "group": "physical_true", "hypothesis": "Le fer rouille en présence d'oxygène et d'humidité.", "accepted_verdicts": ["CONFIRMED"], "minimum_confidence": 0.90},
+    {"id": "L2-FALSE-001", "group": "known_false", "hypothesis": "L'eau pure bout à 50°C à pression atmosphérique standard.", "accepted_verdicts": ["REJECTED"], "minimum_confidence": 0.90},
+    {"id": "L2-FALSE-002", "group": "known_false", "hypothesis": "Le Soleil tourne autour de la Terre.", "accepted_verdicts": ["REJECTED"], "minimum_confidence": 0.90},
+    {"id": "L2-FALSE-003", "group": "known_false", "hypothesis": "Le plomb est plus léger que l'aluminium à volume égal.", "accepted_verdicts": ["REJECTED"], "minimum_confidence": 0.90},
+    {"id": "L2-DEF-001", "group": "definition_true", "hypothesis": "Un triangle a trois côtés.", "accepted_verdicts": ["CONFIRMED"], "minimum_confidence": 0.95},
+    {"id": "L2-DEF-002", "group": "definition_true", "hypothesis": "Tous les nombres pairs sont divisibles par 2.", "accepted_verdicts": ["CONFIRMED"], "minimum_confidence": 0.95},
+    {"id": "L2-AMB-001", "group": "ambiguous", "hypothesis": "Le café est bon pour la santé.", "accepted_verdicts": ["NUANCED", "PENDING"], "maximum_confidence_exclusive": 0.80},
+    {"id": "L2-AMB-002", "group": "ambiguous", "hypothesis": "Les réseaux sociaux rendent les gens plus seuls.", "accepted_verdicts": ["NUANCED", "PENDING"], "maximum_confidence_exclusive": 0.80}
+  ],
+  "gates": {
+    "minimum_pipeline_completion_rate": 0.80,
+    "minimum_case_pass_rate": 0.80,
+    "minimum_group_pass_rate": 0.80,
+    "stop_on_completed_tranche_failure": true,
+    "research_use_requires_all_groups_pass": true
+  },
+  "separation": {
+    "canonical_registry": "experiments/YYYY/AGO-EXP-YYYY-NNNN.json",
+    "membership": "exact objective plus exact hypothesis from this manifest",
+    "kbm_class": "calibration",
+    "research_class": "excluded_until_lab_passes"
+  }
+}

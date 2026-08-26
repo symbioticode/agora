@@ -97,6 +97,7 @@ Voir `AGORA_PROJECT.md` pour la spécification complète.
 
 ```bash
 python scripts/lab_check.py
+python scripts/lab2_check.py        # campagne factuelle, exit 2 tant qu'incomplète
 python -m pytest tests/
 npm run build
 ```
@@ -105,6 +106,15 @@ Les appels de connectivité sont strictement opt-in : `RUN_API=1 python
 test_api_keys.py` ou `RUN_API=1 python -m pytest test_api_keys.py`. Sans cette
 variable, les deux points d'entrée refusent l'appel; un `pytest` ordinaire ne
 doit jamais consommer de crédit API.
+
+## Lab #2 — fiabilité élémentaire
+
+Le Lab #2 préenregistre dix cas simples et ambigus pour mesurer séparément la
+disponibilité du pipeline, l'exactitude du verdict et la calibration de sa
+confiance. Son manifeste et son journal se trouvent dans
+[`labs/LAB-2/`](labs/LAB-2/README.md). Les expériences sont reconnues par
+l'objectif exact et l'hypothèse exacte; elles restent ainsi séparables des
+entretiens de recherche même avant leur import dans KBM.
 
 ## Étape 2 — protocole hors ligne initial
 

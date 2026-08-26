@@ -97,6 +97,21 @@ le réglage DeepSeek a changé, le runtime passe à `REQUALIFICATION_REQUIRED` e
 l'UI reste verrouillée : la recette historique n'est pas transférée par simple
 déclaration à cette nouvelle configuration.
 
+### Préenregistrement du Lab #2
+
+Le Lab #2 formalise la prochaine calibration avant toute reprise UI. Son
+manifeste fixe dix hypothèses, leurs verdicts et niveaux de confiance attendus,
+trois répétitions actives par cas, une limite de cinq et une gate de 80 %. Les
+faits faux empêchent un simple biais d'acquiescement; les cas ambigus empêchent
+la surconfiance binaire.
+
+`scripts/lab2_check.py` rapproche mécaniquement les expériences par objectif et
+hypothèse exacts. Il distingue échec technique, verdict incorrect et campagne
+incomplète, avec les codes `0=PASS`, `1=FAIL`, `2=PENDING`. Les preuves restent
+dans le registre canonique mais portent la classe documentaire `calibration`;
+elles ne deviennent pas des débats de recherche parce que KBM tarde à les
+importer. État initial vérifié : `PENDING`, zéro run reconnu.
+
 ## 2026-08-26 — Planification de l’interface locale
 
 L’interface commencée dans `ui/index.jsx` est retenue comme base visuelle, mais

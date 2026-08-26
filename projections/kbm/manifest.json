@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-26T22:44:04.340887+00:00",
+  "generated_at": "2026-08-26T22:51:40.484932+00:00",
   "source": "symbioticode/agora",
   "destination": "home-kbm/Projets/AGORA/Experiences",
   "status": "SUCCESS",
@@ -31,8 +31,13 @@
     },
     {
       "id": "FAQ-AGO-001",
-      "status": "UPDATED",
+      "status": "UNCHANGED",
       "path": "FAQ-providers.md"
+    },
+    {
+      "id": "LAB-2",
+      "status": "NEW",
+      "path": "LAB-2.md"
     }
   ]
 }
