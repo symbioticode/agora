@@ -25,11 +25,11 @@ La convergence est non planifiée. Elle est documentée ici pour deux raisons :
 | CONTRADICTION VISIBLE | NUANCED | `verdict == "NUANCED"` |
 | INCONNU DÉCLARÉ | PENDING | `verdict == "PENDING"` |
 | Contradiction non effacée (P3) | Désaccords persistants listés | `verdict.disagreement[]` |
-| Vérification indépendante (P4, assoupli) | Juge alterné, ≠ Agent A uniquement | `models.judge` ≠ `models.A` (voir D-AGO-007) |
+| Vérification indépendante (P4, assoupli) | Orchestrateur : juge alterné; qualification : vote à trois providers | `models.judge` et `results/temporal_stability/` |
 | Lisible sans l'outil (P2) | Rapport Markdown exporté | `results/YYYYMMDD_<slug>.md` |
 | Invariant bloquant | Exit code 1 sur format invalide | `lab_check.py` Section D |
 | Invariant avertissement | Warning terminal | `lab_status.sh` niveau `[!!]` |
-| Limite non résolue (P6) | Points ouverts déclarés | `AGORA_PROJECT.md §Points ouverts` |
+| Limite non résolue (P6) | Contrôles et limites déclarés | `AGORA_PROJECT.md §Contrôles transversaux` |
 | Résilience réseau tracée | Compteur de tentatives par appel | `retries{}` (optionnel, si >0) |
 
 ## Ce qu'une session JSON est, au sens de TI-360
@@ -64,7 +64,8 @@ Conditions TI-360 vérifiées par ce format :
 - P1 : source repérable — `models.A`, `models.B`, `models.judge` + `timestamp`
 - P2 : lisible sans l'outil — JSON pur + Markdown dans `results/`
 - P3 : contradiction non effacée — `disagreement[]` jamais vidé si NUANCED
-- P4 : vérification indépendante — `models.judge` distinct des deux agents
+- P4 : vérification indépendante — assouplie dans l'orchestrateur à deux
+  providers; renforcée dans la qualification par une troisième voix Mistral
 - P6 : limites déclarées — voir section "Ce qu'Agora ne couvre pas"
 
 ## Principe P5 — Ce que lab_check.py ne vérifie PAS
@@ -87,9 +88,12 @@ documentée dans `HYPOTHESES.md` colonne "Observations".
 | Refus mécanique des transitions d'état entre phases | TI-360 v0.1 DRAFT, périmètre non encore validé |
 | Recoupement indépendant des sources par tiers humain | Procédure, pas automatisable à ce stade |
 | Audit path (remonter d'une décision vers ses sources) | Git log sur sessions/ est un proxy suffisant pour l'instant |
-| P4 strict (juge ≠ A ≠ B) | Impossible avec 2 providers seulement — voir D-AGO-007 |
+| P4 strict dans chaque session de l'orchestrateur | Le runner principal reste à deux providers; la qualification ajoute Mistral au niveau du vote collectif |
 
-**Retour prévu** : TI-360 v0.2 + Agora Étapes 0-3 complétées.
+**Retour prévu** : les Étapes 0-3 d'Agora sont complétées. Le retour vers le
+graphe TI-360 complet reste conditionné à une version TI-360 stabilisée et à
+une décision explicite d'intégration; il n'est pas automatiquement débloqué par
+la qualification d'AGORA.
 
 ## Agora comme banc de test empirique pour TI-360
 

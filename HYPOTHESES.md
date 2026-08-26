@@ -81,8 +81,20 @@ ensuite figé six nouveaux votes, un par provider et par hypothèse.
 
 **Verdict fallback collectif : franchi.** E1 direct demeure historiquement non
 franchi; le mécanisme collectif prévu après cet échec est maintenant confirmé
-et débloque la préparation de l'Étape 3. Coût estimé : 0,085497 USD Anthropic,
+et a débloqué l'Étape 3, désormais terminée. Coût estimé : 0,085497 USD Anthropic,
 0,020429 USD DeepSeek, 0 USD Mistral via Omniroute.
+
+### Qualification transversale — 2026-08-25
+
+Le vote collectif a été rejoué pendant trois cycles supplémentaires. H2 reste
+`CONFIRMED` et H3 `NUANCED`, à l'unanimité 3/3 à chaque cycle. Le test
+d'auto-préférence sur H3 conserve aussi le même gagnant et les mêmes scores
+chez Anthropic et DeepSeek avec identités vraies, masquées ou permutées.
+
+Avec le contrat exécutable `PENDING`/`NUANCED`, la recette finale réunit les
+cinq critères. AGORA est qualifié comme instrument de recherche supervisé;
+voir `results/final_qualification.json`. Cette synthèse ne change ni l'échec
+historique d'E1 direct ni les trois débats H3 manquants de l'Étape 1.
 
 ---
 

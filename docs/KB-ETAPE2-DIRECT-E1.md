@@ -59,4 +59,6 @@ DeepSeek sur H3. Le résultat ne démontre pas lequel produit le « bon » verdi
 La branche de fallback prévue par le protocole a été exécutée le 25 août 2026.
 Le vote prospectif Anthropic/DeepSeek/Mistral est unanime sur H2 et H3 et
 franchit la confirmation collective, sans modifier le verdict historique de
-ce Gate E1 direct. Voir `KB-ETAPE2-VOTE-MULTIJUGES.md`.
+ce Gate E1 direct. Trois cycles temporels et la recette finale ont ensuite été
+franchis. Voir `KB-ETAPE2-VOTE-MULTIJUGES.md` et
+`KB-QUALIFICATION-FINALE.md`.

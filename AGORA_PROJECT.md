@@ -70,7 +70,7 @@ Hypothèse (texte)
 [Tours 1..N — Contradictoires]
  Chaque agent lit la réponse de l'autre
  Hypothèse ré-ancrée à chaque tour (anti-drift)
- N = 3 par défaut, max 5
+ N = 6 par défaut (borne haute testée)
       │
 [Juge tiers — temp=0]
  Claude Sonnet OU DeepSeek (alterner pour éviter biais)
@@ -158,7 +158,7 @@ utiliser DeepSeek comme juge (et vice-versa). Commiter les écarts.
 **Résultat au 25 août 2026** : E1 direct a échoué sur H3/DeepSeek (2/3), puis
 la branche prévue de vote multi-juges a été confirmée prospectivement avec
 trois providers. H2 donne CONFIRMED 3/3 et H3 NUANCED 3/3. Le fallback
-collectif franchi autorise la préparation de l'Étape 3; il ne réécrit pas E1
+collectif franchi a autorisé l'Étape 3; il ne réécrit pas E1
 direct en succès.
 
 ---
@@ -646,7 +646,7 @@ La convergence est non planifiée. Elle est documentée ici pour deux raisons :
 | Lisible sans l'outil (P2) | Rapport Markdown exporté | `results/YYYYMMDD_<slug>.md` |
 | Invariant bloquant | Exit code 1 sur format invalide | `lab_check.py` Section D |
 | Invariant avertissement | Warning terminal | `lab_status.sh` niveau `[!!]` |
-| Limite non résolue (P6) | Points ouverts déclarés | `AGORA_PROJECT.md §Points ouverts` |
+| Limite non résolue (P6) | Contrôles et limites déclarés | `AGORA_PROJECT.md §Contrôles transversaux` |
 
 ## Ce qu'une session JSON est, au sens de TI-360
 
@@ -796,15 +796,19 @@ docs(ti360): Agora comme use case TI-360 — Geste A
 
 ---
 
-## Points ouverts — à résoudre empiriquement
+## Contrôles transversaux — état au 25 août 2026
 
-1. **Biais d'auto-préférence du juge** : si Claude = Agent A, utiliser DeepSeek
-   comme juge (et vice-versa). À tester à l'Étape 2.
-2. **Déterminisme illusoire** : temperature=0 ne garantit pas la reproductibilité.
-   La stabilité du verdict est un objet de test, pas un acquis.
-3. **Asymétrie coût/latence** : Claude plus cher que DeepSeek Flash. Peut créer
-   un biais de verbosité. À observer à l'Étape 1.
+1. **Biais d'auto-préférence du juge** : test contrôlé franchi sur une
+   transcription; Anthropic et DeepSeek sont invariants aux étiquettes. À
+   répéter lors d'un changement de domaine ou de modèle.
+2. **Déterminisme illusoire** : trois cycles collectifs H2/H3 sont stables.
+   La stabilité reste une propriété mesurée de cette configuration, pas un
+   acquis universel.
+3. **Asymétrie coût/latence** : Claude reste plus cher que DeepSeek Flash.
+   Usage, coût estimé et latence sont conservés dans les preuves; le biais de
+   verbosité n'est pas déclaré résolu.
 
 ---
 
-*Agora v0.1 — Draft — à revoir après Étape 0 empirique*
+*Agora — configuration qualifiée pour la recherche supervisée le 25 août
+2026; limites et dettes actives dans `PROGRESSION.md` et `PENDING.md`.*

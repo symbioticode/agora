@@ -6,10 +6,11 @@ les expériences évoluent. Omniroute ne faisait pas partie du plan initial;
 son coût déclaré nul a permis de tester les transports, préparer le code et
 ajouter un troisième regard sans remplacer les expériences directes prévues.
 
-## 2026-08-25 — Qualification du couple d'agents après l'Étape 2
+## 2026-08-25 — Trajectoire de qualification après l'Étape 2
 
-Le couple n'est pas encore qualifié comme instrument autonome de recherche.
-Il est utilisable comme laboratoire supervisé.
+À ce point de la trajectoire, le couple n'était pas qualifié comme instrument
+autonome. Les contrôles complétés le même jour, consignés plus bas, le
+qualifient finalement comme instrument de recherche supervisé.
 
 | Critère de préparation | Qualification | Preuve actuelle |
 |---|---|---|
@@ -34,7 +35,7 @@ Cette règle remplace l'attente trop rigide « H3 doit nécessairement produire
 PENDING ». Pour H3, `NUANCED` est cohérent parce que l'expérience juge une idée
 et conserve explicitement les désaccords; elle n'autorise aucune action.
 
-### Travaux pour atteindre cinq critères simultanément satisfaits
+### Checklist définie à ce stade
 
 1. Borner les tours sur `{2,3,4,5,6}` et fixer `DEFAULT_ROUNDS` avant le drift.
 2. Mesurer l'auto-préférence avec identités masquées puis permutées.
@@ -42,6 +43,9 @@ et conserve explicitement les désaccords; elle n'autorise aucune action.
 4. Vérifier mécaniquement le contrat `PENDING`/`NUANCED` selon la présence d'une
    action.
 5. Produire une recette finale où les cinq critères sont simultanément vrais.
+
+Cette checklist est entièrement clôturée dans « Qualification finale
+contrôlée » ci-dessous.
 
 ## 2026-08-25 — Étape 3 : bornage prospectif des tours
 

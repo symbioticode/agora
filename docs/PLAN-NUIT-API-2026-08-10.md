@@ -1,5 +1,10 @@
 # Plan d'exécution API — 00:00 à 04:00 America/Toronto
 
+> **Plan historique exécuté le 10 août 2026.** E1 direct n'a pas franchi son
+> seuil. Le fallback collectif, l'Étape 3 et la recette de qualification ont
+> ensuite été terminés le 25 août. La fenêtre horaire était un garde-fou de
+> cette campagne, pas une propriété scientifique d'AGORA.
+
 ## Autorisation et plafonds
 
 Andrei a autorisé Anthropic (solde annoncé 4,52 USD) et DeepSeek (4,16 USD)

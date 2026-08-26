@@ -67,8 +67,10 @@ Consommation estimée contre les plafonds de 1 USD :
   appels.
 
 Le résultat ne transforme pas rétroactivement E1 direct en succès. Il valide
-le fallback collectif prévu après son échec et débloque la préparation de
-l'Étape 3.
+le fallback collectif prévu après son échec. L'Étape 3 et les contrôles
+transversaux ont depuis été exécutés : trois cycles collectifs restent stables
+et la recette finale qualifie AGORA comme instrument supervisé. Voir
+`PROGRESSION.md` et `results/final_qualification.json`.
 
 ## Reproduction hors réseau
 

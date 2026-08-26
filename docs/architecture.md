@@ -31,7 +31,7 @@
 
 ## Flux de données
 
-1. **Input** : Hypothèse (string) + Rounds (int, défaut=3)
+1. **Input** : Hypothèse (string) + Rounds (int, défaut=6)
 2. **Tour 0 (Parallèle)** : Agent A et B répondent indépendamment
 3. **Tours 1..N (Contradictoires)** : Chaque agent lit la réponse de l'autre, hypothèse ré-ancrée
 4. **Juge** : Reçoit transcription complète, produit verdict JSON gradué
@@ -54,6 +54,11 @@
 ### scripts/
 - `lab_status.sh` : Dashboard tracking (PCA-T) — "Où en est-on ?"
 - `lab_check.py` : Vérification invariants (PCA-V) — "Est-ce correct ?"
+- `step3_rounds.py` : bornage prospectif du nombre de tours
+- `self_preference.py` : test d'étiquette vrai/masqué/permuté
+- `temporal_stability.py` : trois cycles de vote collectif H2/H3
+- `verdict_policy.py` : séparation verdict d'idée / autorisation d'action
+- `final_qualification.py` : recette mécanique des cinq critères
 
 ### tests/
 - `test_orchestrator.py` : Tests unitaires structurels (sans API)
@@ -64,6 +69,7 @@
 - `pitfalls.md` : Pièges connus et contournements
 - `research_notes.md` : Synthèse littérature (base décisions)
 - `ti360_mapping.md` : Correspondance TI-360
+- `KB-QUALIFICATION-FINALE.md` : recette, verdict et limites actuelles
 
 ## Conventions
 
@@ -71,8 +77,13 @@
 - **Modèles** : `claude-sonnet-4-5` / `deepseek-v4-flash` (fixes dans orchestrator)
 - **Ré-ancrage** : Hypothèse réinjectée à chaque tour (anti-drift)
 - **Providers distincts** : Règle dure D-AGO-001
+- **Autorisation** : un verdict qualifie une proposition; il ne donne jamais à
+  lui seul la permission de l'exécuter
 
 ## Extensibilité
 
 Nouveaux mindsets : ajouter `.md` dans `mindsets/` + mettre à jour `MINDSETS` dict.
-Nouveaux juges : alterner `MODEL_JUDGE` entre Claude/DeepSeek (anti-biais).
+Nouveaux juges : les évaluer par permutation d'identité et stabilité
+temporelle avant de les intégrer au vote collectif. Mistral fournit aujourd'hui
+la troisième voix via Omniroute; une voix par provider, majorité 2/3 et
+`PENDING` en cas de répartition 1-1-1.

@@ -68,6 +68,6 @@ python scripts/extract_metrics.py
 # Mise à jour HYPOTHESES.md
 ```
 
-La préparation et l'exécution de l'Étape 2 sont désormais terminées. Ces trois
-débats H3 restent utiles pour compléter le corpus Étape 1, mais ne bloquent plus
-la préparation de l'Étape 3.
+La préparation et l'exécution de l'Étape 2, de l'Étape 3 et de la recette
+finale sont désormais terminées. Ces trois débats H3 restent utiles pour
+compléter le corpus Étape 1, mais ne bloquent plus la qualification actuelle.
