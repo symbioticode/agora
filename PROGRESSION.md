@@ -39,6 +39,19 @@ que `sync/sources.json` ne déclare actuellement que RATIO comme entrée HOME.
 L'import AGORA sera donc préparé dans une branche KBM distincte avant
 déploiement, et non écrit directement dans `/srv/kbm-shared/repo`.
 
+### Premier essai UI et conservation de l'échec
+
+La question « L'eau pure gèle à 0°C à pression atmosphérique standard » a
+produit 14 prises de parole avant d'échouer : DeepSeek a renvoyé plusieurs
+contenus vides et aucun verdict final fiable n'a pu être construit. Le premier
+serveur masquait la cause et ne persistait que les succès.
+
+Le run a été récupéré sous `AGO-EXP-2026-0001`, statut `FAILED`, avec sa
+transcription et la cause `EMPTY_PROVIDER_OUTPUT`. Les réponses provider vides
+sont désormais des erreurs réessayables; tout échec futur est enregistré et
+exportable. Sa projection KBM est poussée sur la branche de fonctionnalité au
+commit `92dd180`; l'import KBM reste à effectuer.
+
 ## 2026-08-26 — Planification de l’interface locale
 
 L’interface commencée dans `ui/index.jsx` est retenue comme base visuelle, mais

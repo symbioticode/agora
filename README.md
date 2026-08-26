@@ -85,6 +85,10 @@ Le service installé provient de `deploy/agora-web.service`. Les expériences
 réelles consomment les APIs Anthropic et DeepSeek; les tests ordinaires et le
 build frontend n'effectuent aucun appel payant.
 
+Le but de l'interface, ses différences avec le prototype fusionné en `c122cbe`
+et les procédures de retour au laboratoire historique sont détaillés dans
+[`ui/README.md`](ui/README.md).
+
 ## Structure du projet
 
 Voir `AGORA_PROJECT.md` pour la spécification complète.
