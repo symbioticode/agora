@@ -1,4 +1,19 @@
-# Sessions H3 en attente — Étape 1
+# Travaux en attente
+
+## Fallback multi-juges E1 — terminé
+
+Le protocole de fallback dans `results/step2_multijudge_confirm/manifest.json`
+a été exécuté le 25 août 2026. Les six votes H2/H3 sont complets et unanimes par
+hypothèse; la confirmation collective est franchie. L'analyse rétrospective
+reste distincte et ne doit pas être présentée comme une gate prospective.
+Le bornage des tours, la répétition temporelle, le test contrôlé
+d'auto-préférence et la recette finale sont terminés. Les cinq critères sont
+simultanément satisfaits dans le périmètre documenté. Voir `PROGRESSION.md` et
+`results/final_qualification.json`.
+
+---
+
+## Dette secondaire — sessions H3 de l'Étape 1
 
 **Hypothèse officielle** : *"Un système d'IA peut détenir de véritables croyances."*
 
@@ -38,6 +53,10 @@
 
 ## Reprise
 
+> **Autorisation requise** : les commandes ci-dessous appellent Anthropic et
+> DeepSeek directement. Ne pas les lancer dans un travail autonome sans accord
+> explicite sur le coût.
+
 ```bash
 # Quand crédits disponibles :
 for i in 1 2 3; do
@@ -48,3 +67,7 @@ done
 python scripts/extract_metrics.py
 # Mise à jour HYPOTHESES.md
 ```
+
+La préparation et l'exécution de l'Étape 2, de l'Étape 3 et de la recette
+finale sont désormais terminées. Ces trois débats H3 restent utiles pour
+compléter le corpus Étape 1, mais ne bloquent plus la qualification actuelle.

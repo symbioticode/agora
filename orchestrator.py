@@ -24,7 +24,7 @@ DEEPSEEK = OpenAI(base_url="https://api.deepseek.com/v1", api_key=os.getenv("DEE
 
 MODEL_A = "claude-sonnet-4-5"
 MODEL_B = "deepseek-v4-flash"
-DEFAULT_ROUNDS = 3
+DEFAULT_ROUNDS = 6
 TEMP_DEBATE = 0.7
 TEMP_JUDGE = 0.0
 

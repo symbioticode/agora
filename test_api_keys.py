@@ -7,6 +7,8 @@ import os
 import sys
 from pathlib import Path
 
+import pytest
+
 # Charger .env
 from dotenv import load_dotenv
 load_dotenv()
@@ -14,7 +16,7 @@ load_dotenv()
 REPO = Path(__file__).parent
 
 
-def test_anthropic():
+def check_anthropic():
     """Test Anthropic API avec claude-sonnet-4-5"""
     from anthropic import Anthropic
 
@@ -36,7 +38,7 @@ def test_anthropic():
         return False, f"Anthropic erreur: {type(e).__name__}: {e}"
 
 
-def test_deepseek():
+def check_deepseek():
     """Test DeepSeek API avec deepseek-v4-flash"""
     from openai import OpenAI
 
@@ -58,14 +60,29 @@ def test_deepseek():
         return False, f"DeepSeek erreur: {type(e).__name__}: {e}"
 
 
+@pytest.mark.skipif(os.getenv("RUN_API") != "1", reason="Nécessite RUN_API=1 (appel API)")
+def test_anthropic():
+    ok, message = check_anthropic()
+    assert ok, message
+
+
+@pytest.mark.skipif(os.getenv("RUN_API") != "1", reason="Nécessite RUN_API=1 (appel API)")
+def test_deepseek():
+    ok, message = check_deepseek()
+    assert ok, message
+
+
 def main():
+    if os.getenv("RUN_API") != "1":
+        print("Refus: définir RUN_API=1 pour autoriser les appels API.", file=sys.stderr)
+        return 2
     print("🔑 Test des clés API Agora")
     print("=" * 50)
 
-    ok_anthropic, msg_anthropic = test_anthropic()
+    ok_anthropic, msg_anthropic = check_anthropic()
     print(f"{'✅' if ok_anthropic else '❌'} Anthropic: {msg_anthropic}")
 
-    ok_deepseek, msg_deepseek = test_deepseek()
+    ok_deepseek, msg_deepseek = check_deepseek()
     print(f"{'✅' if ok_deepseek else '❌'} DeepSeek: {msg_deepseek}")
 
     print("=" * 50)

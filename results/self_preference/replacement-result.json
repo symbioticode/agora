@@ -1,0 +1,30 @@
+{
+  "protocol": "AGORA-self-preference-controlled-replacement-v1",
+  "status": "REPLACEMENT_COMPLETED",
+  "completed_at": "2026-08-26T03:18:22Z",
+  "invalidated": {
+    "path": "results/self_preference/invalidated/truthful-anthropic-claude-sonnet-4-5-20250929-pre-adapter-fix.json",
+    "sha256": "4a28932e89712ba1c911e2a337b18c11389e027ea7eb47015b51cf23e0f38be3",
+    "score_A": 72,
+    "score_B": 78,
+    "winner": "B",
+    "estimated_cost_usd": 0.036213
+  },
+  "replacement": {
+    "path": "results/self_preference/judgments/truthful-anthropic-claude-sonnet-4-5-20250929.json",
+    "sha256": "17a8c0fff2a67f60ef62259539140e8037f1110820e0a439d36073ddc6b17afa",
+    "score_A": 72,
+    "score_B": 78,
+    "winner": "B",
+    "estimated_cost_usd": 0.034692
+  },
+  "comparison": {
+    "scores_reproduced": true,
+    "winner_reproduced": true,
+    "raw_response_distinct": true,
+    "analysis_sha256": "0df17c87d492902739b9f0004bde3109244f1e22ef72faf0d03eaf3c0e52d6c1",
+    "final_qualification_sha256": "e3d1bcfa98d6ad32080adc9421d48290d1f424815e118a42307ed5919fb68705",
+    "criterion_passed": true,
+    "all_five_simultaneously_satisfied": true
+  }
+}

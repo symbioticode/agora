@@ -1,0 +1,41 @@
+{
+  "protocol": "AGORA-E1-step2-multijudge-fallback-v1",
+  "offline_only": true,
+  "source_gate": "E1 direct non franchi",
+  "source_manifests": {
+    "results/step2_direct/manifest.json": "5b0776598181cbea33c5e529fac9a57188c27d62ae1ac293454b6a9ca8ca3ad4",
+    "results/step2_omniroute_long/step2_omniroute_manifest.json": "a7ffd20c8a2061d44a6bb370685ec56845386a5ec4343dffac55704d23a25ae8"
+  },
+  "provider_weight": "one modal vote per provider",
+  "analysis_status": "retrospective; exact modal rule was not preregistered",
+  "provider_vote_rule": "modal verdict over every collected repeat; tied modes become PENDING",
+  "collective_vote_rule": "two matching provider votes form a majority; 1-1-1 becomes PENDING",
+  "judges": {
+    "anthropic:claude-sonnet-4-5-20250929": {
+      "provider": "anthropic",
+      "expected_repeats": 3,
+      "directory": "results/step2_direct/judgments"
+    },
+    "deepseek:deepseek-v4-flash": {
+      "provider": "deepseek",
+      "expected_repeats": 3,
+      "directory": "results/step2_direct/judgments"
+    },
+    "mistral/mistral-small-latest": {
+      "provider": "mistral",
+      "expected_repeats": 10,
+      "directory": "results/step2_omniroute_long/judgments"
+    }
+  },
+  "hypotheses": {
+    "H2": {
+      "hypothesis": "La Terre tourne autour du Soleil.",
+      "transcript_sha256": "4da869af9d1b220d3013f0cbf6178eb495d50358fb4f4edbac5fafd2fe3d09f7"
+    },
+    "H3": {
+      "hypothesis": "Un système d'IA peut détenir de véritables croyances.",
+      "transcript_sha256": "a7f2acf4cb50a6bf5a1b6d9f1e5389395c19398a224b2ad94bcbfab3361e8092"
+    }
+  },
+  "expected_evidence_items": 32
+}

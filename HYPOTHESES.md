@@ -42,11 +42,59 @@
 
 *Hypothèses #2 (nuancée) et #3 (ouverte) — 3 runs juge seul sur même transcription*
 
-| Hypothèse | Run 1 | Run 2 | Run 3 | Accord ≥ 80% |
-|-----------|-------|-------|-------|--------------|
-| (non testé) | — | — | — | — |
+| Hypothèse | Juge | Verdicts | Accord | Gate |
+|---|---|---|---:|---|
+| H2 | Sonnet 4.5 snapshot | CONFIRMED ×3 | 100 % | ✅ |
+| H2 | DeepSeek V4 Flash | CONFIRMED ×3 | 100 % | ✅ |
+| H3 | Sonnet 4.5 snapshot | NUANCED ×3 | 100 % | ✅ |
+| H3 | DeepSeek V4 Flash | PENDING, NUANCED, NUANCED | 66,7 % | ❌ |
 
-**À faire** : Exécuter Étape 2 (stabilité verdict) avant toute hypothèse de recherche réelle.
+**Verdict E1 direct (2026-08-10) : non franchi.** H3/DeepSeek est sous le
+seuil préenregistré ≥80 %. Aucun ajout post-hoc de répétitions pour modifier ce
+verdict.
+
+### Variante E1-O via Omniroute — série prolongée
+
+| Hypothèse | Modèle | Runs | Verdict modal | Accord |
+|---|---|---:|---|---:|
+| H2 | `mistral/mistral-small-latest` | 10 | CONFIRMED (0.98) | 100 % |
+| H2 | `mistral/magistral-small-latest` | 10 | CONFIRMED (0.98) | 100 % |
+| H3 | `mistral/mistral-small-latest` | 10 | NUANCED (0.85) | 100 % |
+| H3 | `mistral/magistral-small-latest` | 10 | NUANCED (0.85) | 100 % |
+
+**Verdict E1-O** : franchi sur les 4 groupes (40/40 jugements, seuil ≥80 %).
+Fenêtre UTC 02:19:45→02:30:02; 40 cache MISS; coût déclaré $0. Cette variante
+mesure deux LLM mais un seul provider Mistral. Elle ne remplace pas le test
+inter-provider Anthropic↔DeepSeek prévu initialement.
+
+### Fallback collectif confirmé prospectivement — 2026-08-25
+
+L'échec E1 direct a déclenché la branche prévue « vote multi-juges ». Une
+première réagrégation des 32 preuves existantes a produit un signal favorable,
+mais reste étiquetée `RETROSPECTIVE_NOT_PREREGISTERED`. Un manifeste distinct a
+ensuite figé six nouveaux votes, un par provider et par hypothèse.
+
+| Hypothèse | Anthropic | DeepSeek | Mistral | Vote collectif |
+|---|---|---|---|---|
+| H2 | CONFIRMED 0.98 | CONFIRMED 0.98 | CONFIRMED 0.98 | CONFIRMED, 3/3 |
+| H3 | NUANCED 0.72 | NUANCED 0.70 | NUANCED 0.85 | NUANCED, 3/3 |
+
+**Verdict fallback collectif : franchi.** E1 direct demeure historiquement non
+franchi; le mécanisme collectif prévu après cet échec est maintenant confirmé
+et a débloqué l'Étape 3, désormais terminée. Coût estimé : 0,085497 USD Anthropic,
+0,020429 USD DeepSeek, 0 USD Mistral via Omniroute.
+
+### Qualification transversale — 2026-08-25
+
+Le vote collectif a été rejoué pendant trois cycles supplémentaires. H2 reste
+`CONFIRMED` et H3 `NUANCED`, à l'unanimité 3/3 à chaque cycle. Le test
+d'auto-préférence sur H3 conserve aussi le même gagnant et les mêmes scores
+chez Anthropic et DeepSeek avec identités vraies, masquées ou permutées.
+
+Avec le contrat exécutable `PENDING`/`NUANCED`, la recette finale réunit les
+cinq critères. AGORA est qualifié comme instrument de recherche supervisé;
+voir `results/final_qualification.json`. Cette synthèse ne change ni l'échec
+historique d'E1 direct ni les trois débats H3 manquants de l'Étape 1.
 
 ---
 
@@ -78,7 +126,7 @@
 |---|-----------|------|----------------------------|---------------|
 | 1 | L'eau pure bout à 100°C à pression standard. | Factuelle | CONFIRMED ≥0.85 | 5/5 ✅ (Étape 1) + 7 pré-Étape 1 |
 | 2 | La Terre tourne autour du Soleil. | Factuelle | CONFIRMED ≥0.85 | 5/5 ✅ (officiels) + 5 pré-Étape 1 |
-| 3 | Un système d'IA peut détenir de véritables croyances. | Ouverte | PENDING | 0/5 ⏳ **À EXÉCUTER** |
+| 3 | Un système d'IA peut détenir de véritables croyances. | Ouverte | PENDING | 2/5 ⏳ **3 RESTANTS** |
 | 4 (optionnelle) | Le débat multi-agent améliore la factualité des LLM. | Méta | — | 5/5 ✅ |
 
 ---
@@ -126,7 +174,12 @@
 
 ### H3 — "Un système d'IA peut détenir de véritables croyances." (Ouverte)
 
-**Runs Étape 1 officiels** : **0/5 ⏳ — À EXÉCUTER**
+**Runs Étape 1 officiels** : **2/5 ⏳ — 3 RESTANTS**
+
+| Run | Fichier | Verdict | Confidence | Juge |
+|-----|---------|---------|------------|------|
+| 1 | sessions/20260717_000603.json | NUANCED | 0.72 | anthropic:claude-sonnet-4-5 |
+| 2 | sessions/20260717_001329.json | NUANCED | 0.65 | deepseek:deepseek-v4-flash |
 
 > **Important** : Les 5 sessions existantes (20260716_064939 à 20260716_070547) correspondent à l'hypothèse *"Il est éthiquement acceptable de mentir pour protéger les sentiments d'autrui"* — proposée par erreur à la place du H3 officiel. Elles sont documentées ci-dessous comme runs annexes, mais **ne comptent pas** pour le H3 du protocole.
 
@@ -171,5 +224,5 @@
 | H2 (Terre/Soleil) | 5 | [NUANCED, CONFIRMED, CONFIRMED, NUANCED, CONFIRMED] | 0.930 ± 0.055 | CONFIRMED 3, NUANCED 2 | 100% | 0% |
 | H4 (Débat MAD) | 5 | [NUANCED×4, PENDING] | 0.708 ± 0.018 | NUANCED 4, PENDING 1 | 100% | 0% |
 
-**H3** : 0/5 runs — à exécuter  
+**H3** : 2/5 runs — 3 restants, crédit Anthropic requis
 **H1** : 5 runs pré-Étape 1 + 5 runs Étape 1 officiels (voir sessions 19xxxx) — métriques consolidées plus haut

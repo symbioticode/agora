@@ -15,18 +15,25 @@
 **Cause** : Pas de ré-ancrage à chaque tour.
 **Fix** : Ré-injecter l'hypothèse dans CHAQUE prompt utilisateur (non-négociable).
 
-## 4. Biais d'auto-préférence du juge (Point ouvert #1)
+## 4. Biais d'auto-préférence du juge
 **Symptôme** : Juge favorise l'agent de son propre provider.
-**Test** : Étape 2 — même transcription, juge 3×, alterner providers.
-**Seuil** : < 80% accord inter-runs → vote multi-juges (3 appels, majorité).
+**Test actuel** : même contenu présenté avec identités vraies, masquées et
+permutées; gagnant invariant et effet d'étiquette ≤5 points chez chaque juge
+payant.
+**Résultat 2026-08-25** : aucun effet chez Anthropic/DeepSeek; limite : une
+seule transcription. Répéter le contrôle lors d'un changement de modèle ou de
+domaine.
 
-## 5. Déterminisme illusoire (Point ouvert #2)
+## 5. Déterminisme illusoire
 **Symptôme** : temperature=0 ne garantit pas reproductibilité.
-**Réalité** : Stabilité du verdict = objet de test, pas acquis.
+**Réalité** : stabilité du verdict = objet de test, pas acquis. Trois cycles
+collectifs H2/H3 sont stables; cette preuve doit être renouvelée après tout
+changement de modèle, prompt ou politique de vote.
 
-## 6. Asymétrie coût/latence (Point ouvert #3)
+## 6. Asymétrie coût/latence
 **Symptôme** : Claude plus cher/plus lent que DeepSeek Flash → biais de verbosité.
-**Observation** : Surveiller à l'Étape 1.
+**Observation** : les expériences enregistrent usage, coût estimé et latence;
+le budget doit rester contrôlé par provider avant chaque appel.
 
 ## 7. Parsing JSON verdict
 **Symptôme** : Juge renvoie JSON invalide ou champs manquants.

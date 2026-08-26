@@ -1,5 +1,10 @@
 # Agora — Clôture Étape 1 (Calibration anti-convergence)
 
+> **Document historique.** Les « prochaines actions » ci-dessous décrivent
+> l'état du 17 juillet 2026. E1 direct a ensuite échoué, son fallback collectif
+> a été franchi, l'Étape 3 et la recette finale ont été terminées le 25 août.
+> État courant : `STATUS.md` et `results/final_qualification.json`.
+
 **Date** : 2026-07-16/17  
 **Commit** : `2011e0f` (main)
 

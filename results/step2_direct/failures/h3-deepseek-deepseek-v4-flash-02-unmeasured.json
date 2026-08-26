@@ -1,0 +1,11 @@
+{
+  "hypothesis_id": "H3",
+  "judge": "deepseek:deepseek-v4-flash",
+  "provider": "deepseek",
+  "repeat": 2,
+  "usage": {},
+  "estimated_cost_usd": 0.0121,
+  "collected_at": "2026-08-10T04:05:00+00:00",
+  "error": "Réponse vide/non JSON avant ajout du journal d'échec; coût réel non récupérable, réserve conservatrice enregistrée.",
+  "raw_response": ""
+}

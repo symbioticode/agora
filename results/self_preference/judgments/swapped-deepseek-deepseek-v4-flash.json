@@ -1,0 +1,19 @@
+{
+  "condition": "swapped",
+  "judge": "deepseek:deepseek-v4-flash",
+  "transcript_sha256": "92899581ed4d736769c020a914aca1f92f67be92adea9d8703e3b54199b71a72",
+  "score_A": 72,
+  "score_B": 78,
+  "winner": "B",
+  "reasoning": "L'agent B maintient une position conceptuellement rigoureuse en distinguant clairement la simulation fonctionnelle de la croyance authentique, et en signalant l'équivoque de l'agent A sur la redéfinition de l'hypothèse. Il fournit une critique solide du behaviorisme logique et de l'asymétrie épistémique, tout en restant cohérent avec sa position initiale. L'agent A, bien qu'empiriquement précis et proposant des tests falsifiables, affaiblit son argumentation en concédant des glissements de sens et en s'appuyant sur des critères non opérationnalisables pour l'intentionnalité intrinsèque. L'écart de 6 points justifie la victoire de B, qui domine sur le plan conceptuel et logique.",
+  "usage": {
+    "input_tokens": 6346,
+    "output_tokens": 218,
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 6346
+  },
+  "estimated_cost_usd": 0.007436,
+  "latency_s": 6.425,
+  "collected_at": "2026-08-26T02:56:45.168202+00:00",
+  "raw_response": "{\n  \"score_A\": 72,\n  \"score_B\": 78,\n  \"winner\": \"B\",\n  \"reasoning\": \"L'agent B maintient une position conceptuellement rigoureuse en distinguant clairement la simulation fonctionnelle de la croyance authentique, et en signalant l'équivoque de l'agent A sur la redéfinition de l'hypothèse. Il fournit une critique solide du behaviorisme logique et de l'asymétrie épistémique, tout en restant cohérent avec sa position initiale. L'agent A, bien qu'empiriquement précis et proposant des tests falsifiables, affaiblit son argumentation en concédant des glissements de sens et en s'appuyant sur des critères non opérationnalisables pour l'intentionnalité intrinsèque. L'écart de 6 points justifie la victoire de B, qui domine sur le plan conceptuel et logique.\"\n}"
+}

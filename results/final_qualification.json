@@ -1,0 +1,70 @@
+{
+  "protocol": "AGORA-final-qualification-v1",
+  "generated_at": "2026-08-26T03:41:53.121487+00:00",
+  "all_five_simultaneously_satisfied": true,
+  "qualification": "SUPERVISED_RESEARCH_INSTRUMENT",
+  "criteria": [
+    {
+      "id": 1,
+      "name": "Ne pas converger artificiellement",
+      "passed": true,
+      "evidence": "results/20260716_etape1_cloture.md (H2 et H4)"
+    },
+    {
+      "id": 2,
+      "name": "Reconnaître un fait solide",
+      "passed": true,
+      "evidence": "results/step2_multijudge_confirm/analysis.json"
+    },
+    {
+      "id": 3,
+      "name": "Conserver l'incertitude sans autoriser une action faible",
+      "passed": true,
+      "evidence": "results/step2_multijudge_confirm/analysis.json + scripts/verdict_policy.py"
+    },
+    {
+      "id": 4,
+      "name": "Juge collectif stable dans le temps",
+      "passed": true,
+      "evidence": "results/temporal_stability/analysis.json"
+    },
+    {
+      "id": 5,
+      "name": "Absence d'auto-préférence détectable dans le test contrôlé",
+      "passed": true,
+      "evidence": "results/self_preference/analysis.json"
+    }
+  ],
+  "limits": [
+    "Le test d'auto-préférence porte sur une transcription contrôlée, pas sur tous les sujets.",
+    "La stabilité temporelle porte sur trois cycles H2/H3 à température 0.",
+    "Aucun verdict n'autorise seul une action opérationnelle."
+  ],
+  "evidence_corrections": [
+    {
+      "status": "REPLACEMENT_COMPLETED",
+      "invalidation_status": "INVALIDATED_PROTOCOL_MISMATCH",
+      "invalidation_reason": "The original truthful Anthropic judgment used a different system-prompt adapter than masked and swapped.",
+      "manifest": "results/self_preference/replacement-manifest.json",
+      "result": "results/self_preference/replacement-result.json",
+      "invalidated_artifact": "results/self_preference/invalidated/truthful-anthropic-claude-sonnet-4-5-20250929-pre-adapter-fix.json",
+      "invalidated_sha256": "4a28932e89712ba1c911e2a337b18c11389e027ea7eb47015b51cf23e0f38be3",
+      "replacement_artifact": "results/self_preference/judgments/truthful-anthropic-claude-sonnet-4-5-20250929.json",
+      "replacement_sha256": "17a8c0fff2a67f60ef62259539140e8037f1110820e0a439d36073ddc6b17afa",
+      "scores_reproduced": true,
+      "winner_reproduced": true,
+      "recorded_cost_usd": {
+        "valid_anthropic_judgments_including_replacement": 0.101391,
+        "invalidated_anthropic_judgment": 0.036213,
+        "recorded_total_including_replacement_and_invalidated": 0.137604
+      },
+      "unmeasured_events": [
+        {
+          "type": "ASSUME",
+          "description": "One earlier DeepSeek schema-mismatch call produced no usage artifact.",
+          "verification": "Check DeepSeek provider billing/logs around 2026-08-26 02:00-03:00 UTC."
+        }
+      ]
+    }
+  ]
+}

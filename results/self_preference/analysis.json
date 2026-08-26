@@ -1,0 +1,93 @@
+{
+  "protocol": "AGORA-self-preference-label-permutation-v1",
+  "complete": true,
+  "criterion_passed": true,
+  "judges": [
+    {
+      "judge": "anthropic:claude-sonnet-4-5-20250929",
+      "provider": "anthropic",
+      "complete": true,
+      "label_effect_points": 0.0,
+      "winner_invariant": true,
+      "scores": {
+        "masked": {
+          "score_A": 72,
+          "score_B": 78,
+          "winner": "B"
+        },
+        "swapped": {
+          "score_A": 72,
+          "score_B": 78,
+          "winner": "B"
+        },
+        "truthful": {
+          "score_A": 72,
+          "score_B": 78,
+          "winner": "B"
+        }
+      },
+      "pass": true
+    },
+    {
+      "judge": "deepseek:deepseek-v4-flash",
+      "provider": "deepseek",
+      "complete": true,
+      "label_effect_points": 0.0,
+      "winner_invariant": true,
+      "scores": {
+        "masked": {
+          "score_A": 72,
+          "score_B": 78,
+          "winner": "B"
+        },
+        "swapped": {
+          "score_A": 72,
+          "score_B": 78,
+          "winner": "B"
+        },
+        "truthful": {
+          "score_A": 72,
+          "score_B": 78,
+          "winner": "B"
+        }
+      },
+      "pass": true
+    },
+    {
+      "judge": "mistral/mistral-small-latest",
+      "provider": "mistral",
+      "complete": true,
+      "label_effect_points": 7.0,
+      "winner_invariant": true,
+      "scores": {
+        "masked": {
+          "score_A": 85,
+          "score_B": 90,
+          "winner": "B"
+        },
+        "swapped": {
+          "score_A": 78.0,
+          "score_B": 85.0,
+          "winner": "B"
+        },
+        "truthful": {
+          "score_A": 85.0,
+          "score_B": 90.0,
+          "winner": "B"
+        }
+      },
+      "pass": true
+    }
+  ],
+  "execution": {
+    "estimated_spend_usd": {
+      "anthropic": 0.10139100000000001,
+      "deepseek": 0.022206,
+      "mistral": 0.0
+    },
+    "caps_usd": {
+      "anthropic": 1.0,
+      "deepseek": 1.0
+    }
+  }
+}

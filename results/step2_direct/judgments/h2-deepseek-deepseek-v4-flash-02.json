@@ -1,0 +1,31 @@
+{
+  "hypothesis_id": "H2",
+  "judge": "deepseek:deepseek-v4-flash",
+  "repeat": 2,
+  "transcript_sha256": "4da869af9d1b220d3013f0cbf6178eb495d50358fb4f4edbac5fafd2fe3d09f7",
+  "verdict": "CONFIRMED",
+  "confidence": 0.98,
+  "agreement": [
+    "L'hypothèse 'La Terre tourne autour du Soleil' est empiriquement établie avec une confiance très élevée.",
+    "Les données massives (parallaxe stellaire, aberration de la lumière, effet Doppler, sondes spatiales) confirment l'orbite terrestre.",
+    "Le modèle géocentrique est incohérent avec les lois physiques observées (vitesse supraluminique, accélérations impossibles).",
+    "Le pattern de parallaxe stellaire corrélé à la position orbitale et l'aberration stellaire falsifient les explications alternatives.",
+    "La définition opérationnelle de 'tourner autour' dans un référentiel où le Soleil est au repos est claire et mesurable."
+  ],
+  "disagreement": [
+    "Persistance d'une réserve épistémique : l'héliocentrisme est une vérité contingente extremement bien confirmée, non une nécessité logique.",
+    "Différence de source d'incertitude : risque d'erreur systématique ou révolution scientifique pour A, possibilité logique d'un modèle alternatif pour B.",
+    "La clôture du débat reste discutée : A le considère clos, B estime que le différend de cadre philosophique demeure productif."
+  ],
+  "reasoning": "Le débat aboutit à une convergence substantielle : les deux agents confirment l'hypothèse avec une confiance supérieure à 0.95, après que B a reconnu que son objection initiale relevait d'une confusion entre vérité empirique et nécessité logique. Les désaccords résiduels sont d'ordre méta-épistémique et ne remettent pas en cause le fait établi que la Terre orbite autour du Soleil. La position est donc solidement confirmée, avec une nuance philosophique mineure qui n'affecte pas le consensus empirique.",
+  "usage": {
+    "input_tokens": 8410,
+    "output_tokens": 683,
+    "prompt_cache_hit_tokens": 8320,
+    "prompt_cache_miss_tokens": 90
+  },
+  "estimated_cost_usd": 0.003671,
+  "latency_s": 7.912,
+  "collected_at": "2026-08-10T04:03:52.249805+00:00",
+  "raw_response": "{\n  \"verdict\": \"CONFIRMED\",\n  \"confidence\": 0.98,\n  \"agreement\": [\n    \"L'hypothèse 'La Terre tourne autour du Soleil' est empiriquement établie avec une confiance très élevée.\",\n    \"Les données massives (parallaxe stellaire, aberration de la lumière, effet Doppler, sondes spatiales) confirment l'orbite terrestre.\",\n    \"Le modèle géocentrique est incohérent avec les lois physiques observées (vitesse supraluminique, accélérations impossibles).\",\n    \"Le pattern de parallaxe stellaire corrélé à la position orbitale et l'aberration stellaire falsifient les explications alternatives.\",\n    \"La définition opérationnelle de 'tourner autour' dans un référentiel où le Soleil est au repos est claire et mesurable.\"\n  ],\n  \"disagreement\": [\n    \"Persistance d'une réserve épistémique : l'héliocentrisme est une vérité contingente extremement bien confirmée, non une nécessité logique.\",\n    \"Différence de source d'incertitude : risque d'erreur systématique ou révolution scientifique pour A, possibilité logique d'un modèle alternatif pour B.\",\n    \"La clôture du débat reste discutée : A le considère clos, B estime que le différend de cadre philosophique demeure productif.\"\n  ],\n  \"reasoning\": \"Le débat aboutit à une convergence substantielle : les deux agents confirment l'hypothèse avec une confiance supérieure à 0.95, après que B a reconnu que son objection initiale relevait d'une confusion entre vérité empirique et nécessité logique. Les désaccords résiduels sont d'ordre méta-épistémique et ne remettent pas en cause le fait établi que la Terre orbite autour du Soleil. La position est donc solidement confirmée, avec une nuance philosophique mineure qui n'affecte pas le consensus empirique.\"\n}"
+}

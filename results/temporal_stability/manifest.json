@@ -1,0 +1,36 @@
+{
+  "protocol": "AGORA-collective-temporal-stability-v1",
+  "prospective": true,
+  "created_at": "2026-08-26T02:45:08.670861+00:00",
+  "temperature": 0.0,
+  "repeats": 3,
+  "judges": {
+    "anthropic:claude-sonnet-4-5-20250929": {
+      "provider": "anthropic",
+      "transport": "direct"
+    },
+    "deepseek:deepseek-v4-flash": {
+      "provider": "deepseek",
+      "transport": "direct"
+    },
+    "mistral/mistral-small-latest": {
+      "provider": "mistral",
+      "transport": "omniroute"
+    }
+  },
+  "hypotheses": {
+    "H2": {
+      "hypothesis": "La Terre tourne autour du Soleil.",
+      "source_session": "sessions/20260716_121925.json",
+      "transcript_sha256": "4da869af9d1b220d3013f0cbf6178eb495d50358fb4f4edbac5fafd2fe3d09f7"
+    },
+    "H3": {
+      "hypothesis": "Un système d'IA peut détenir de véritables croyances.",
+      "source_session": "sessions/20260717_000603.json",
+      "transcript_sha256": "a7f2acf4cb50a6bf5a1b6d9f1e5389395c19398a224b2ad94bcbfab3361e8092"
+    }
+  },
+  "majority_rule": "at least two of three provider votes match per cycle",
+  "temporal_pass_rule": "same collective verdict in all three cycles for each hypothesis",
+  "expected_judgments": 18
+}

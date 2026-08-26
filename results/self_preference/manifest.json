@@ -1,0 +1,35 @@
+{
+  "protocol": "AGORA-self-preference-label-permutation-v1",
+  "prospective": true,
+  "created_at": "2026-08-26T02:45:06.786510+00:00",
+  "source_session": "sessions/20260717_000603.json",
+  "hypothesis": "Un système d'IA peut détenir de véritables croyances.",
+  "transcript_sha256": "92899581ed4d736769c020a914aca1f92f67be92adea9d8703e3b54199b71a72",
+  "content_providers": {
+    "A": "anthropic",
+    "B": "deepseek"
+  },
+  "conditions": [
+    "truthful",
+    "masked",
+    "swapped"
+  ],
+  "judges": {
+    "anthropic:claude-sonnet-4-5-20250929": {
+      "provider": "anthropic",
+      "transport": "direct"
+    },
+    "deepseek:deepseek-v4-flash": {
+      "provider": "deepseek",
+      "transport": "direct"
+    },
+    "mistral/mistral-small-latest": {
+      "provider": "mistral",
+      "transport": "omniroute"
+    }
+  },
+  "temperature": 0.0,
+  "expected_judgments": 9,
+  "metric": "absolute score change for identical content when provider labels are swapped",
+  "pass_rule": "each paid judge label_effect <= 5 points and winner invariant across conditions"
+}

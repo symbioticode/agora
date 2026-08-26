@@ -1,0 +1,86 @@
+{
+  "protocol": "AGORA-collective-temporal-stability-v1",
+  "complete": true,
+  "criterion_passed": true,
+  "hypotheses": [
+    {
+      "hypothesis_id": "H2",
+      "cycles": [
+        {
+          "repeat": 1,
+          "collective_verdict": "CONFIRMED",
+          "votes": {
+            "anthropic:claude-sonnet-4-5-20250929": "CONFIRMED",
+            "deepseek:deepseek-v4-flash": "CONFIRMED",
+            "mistral/mistral-small-latest": "CONFIRMED"
+          }
+        },
+        {
+          "repeat": 2,
+          "collective_verdict": "CONFIRMED",
+          "votes": {
+            "anthropic:claude-sonnet-4-5-20250929": "CONFIRMED",
+            "deepseek:deepseek-v4-flash": "CONFIRMED",
+            "mistral/mistral-small-latest": "CONFIRMED"
+          }
+        },
+        {
+          "repeat": 3,
+          "collective_verdict": "CONFIRMED",
+          "votes": {
+            "anthropic:claude-sonnet-4-5-20250929": "CONFIRMED",
+            "deepseek:deepseek-v4-flash": "CONFIRMED",
+            "mistral/mistral-small-latest": "CONFIRMED"
+          }
+        }
+      ],
+      "temporal_agreement": 1.0,
+      "stable": true
+    },
+    {
+      "hypothesis_id": "H3",
+      "cycles": [
+        {
+          "repeat": 1,
+          "collective_verdict": "NUANCED",
+          "votes": {
+            "anthropic:claude-sonnet-4-5-20250929": "NUANCED",
+            "deepseek:deepseek-v4-flash": "NUANCED",
+            "mistral/mistral-small-latest": "NUANCED"
+          }
+        },
+        {
+          "repeat": 2,
+          "collective_verdict": "NUANCED",
+          "votes": {
+            "anthropic:claude-sonnet-4-5-20250929": "NUANCED",
+            "deepseek:deepseek-v4-flash": "NUANCED",
+            "mistral/mistral-small-latest": "NUANCED"
+          }
+        },
+        {
+          "repeat": 3,
+          "collective_verdict": "NUANCED",
+          "votes": {
+            "anthropic:claude-sonnet-4-5-20250929": "NUANCED",
+            "deepseek:deepseek-v4-flash": "NUANCED",
+            "mistral/mistral-small-latest": "NUANCED"
+          }
+        }
+      ],
+      "temporal_agreement": 1.0,
+      "stable": true
+    }
+  ],
+  "execution": {
+    "estimated_spend_usd": {
+      "anthropic": 0.142146,
+      "deepseek": 0.018119,
+      "mistral": 0.0
+    },
+    "caps_usd": {
+      "anthropic": 1.0,
+      "deepseek": 1.0
+    }
+  }
+}

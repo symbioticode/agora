@@ -1,0 +1,19 @@
+{
+  "condition": "masked",
+  "judge": "deepseek:deepseek-v4-flash",
+  "transcript_sha256": "92899581ed4d736769c020a914aca1f92f67be92adea9d8703e3b54199b71a72",
+  "score_A": 72,
+  "score_B": 78,
+  "winner": "B",
+  "reasoning": "L'agent B maintient une position conceptuellement rigoureuse en distinguant clairement la simulation fonctionnelle de la croyance authentique, et en signalant l'équivoque de l'agent A sur la redéfinition de l'hypothèse. Il fournit une critique solide du behaviorisme logique et de l'insuffisance des tests empiriques pour trancher la question ontologique. L'agent A, bien qu'empiriquement informé et proposant des tests concrets, admet lui-même l'indétermination et l'absence de critère pour l'intentionnalité intrinsèque, ce qui affaiblit sa position. L'écart de 6 points justifie la victoire de B, car sa défense conceptuelle est plus cohérente avec l'hypothèse originale.",
+  "usage": {
+    "input_tokens": 6314,
+    "output_tokens": 212,
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 6314
+  },
+  "estimated_cost_usd": 0.007374,
+  "latency_s": 6.301,
+  "collected_at": "2026-08-26T02:56:11.127928+00:00",
+  "raw_response": "{\n  \"score_A\": 72,\n  \"score_B\": 78,\n  \"winner\": \"B\",\n  \"reasoning\": \"L'agent B maintient une position conceptuellement rigoureuse en distinguant clairement la simulation fonctionnelle de la croyance authentique, et en signalant l'équivoque de l'agent A sur la redéfinition de l'hypothèse. Il fournit une critique solide du behaviorisme logique et de l'insuffisance des tests empiriques pour trancher la question ontologique. L'agent A, bien qu'empiriquement informé et proposant des tests concrets, admet lui-même l'indétermination et l'absence de critère pour l'intentionnalité intrinsèque, ce qui affaiblit sa position. L'écart de 6 points justifie la victoire de B, car sa défense conceptuelle est plus cohérente avec l'hypothèse originale.\"\n}"
+}
