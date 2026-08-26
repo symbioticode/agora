@@ -10,6 +10,11 @@ carte et sonde dans BCP Hub, puis recette contradictoire.
 Cette évolution ne doit pas réintroduire d’appel direct aux providers dans le
 navigateur ni présenter les options expérimentales comme qualifiées.
 
+Avant les appels de recette UI, définir la Phase 0 du plan : corpus factuel
+simple, réponses attendues, métriques et seuils préenregistrés. Cette baseline
+ne remet pas en cause les propriétés déjà qualifiées; elle mesure une propriété
+différente encore non démontrée, la fiabilité factuelle générale du verdict.
+
 ## Fallback multi-juges E1 — terminé
 
 Le protocole de fallback dans `results/step2_multijudge_confirm/manifest.json`

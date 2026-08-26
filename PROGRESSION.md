@@ -18,6 +18,13 @@ commun à la CLI et à l’UI, des sessions persistantes et une carte supervisé
 dans BCP Hub. Aucune nouvelle qualification de modèle ou permission d’action
 n’est induite par cette interface.
 
+L'intention de recherche est également clarifiée : AGORA produit du désaccord
+inter-provider, conserve les expériences et rend ses propres défauts
+observables. La logique formelle reste une perspective ultérieure. La Gate E0
+sur un fait simple ayant historiquement échoué, une baseline factuelle variée
+et préenregistrée devient la priorité de qualification avant de faire confiance
+aux verdicts portant sur des sujets complexes.
+
 ## 2026-08-25 — Trajectoire de qualification après l'Étape 2
 
 À ce point de la trajectoire, le couple n'était pas qualifié comme instrument

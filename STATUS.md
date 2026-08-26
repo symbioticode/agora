@@ -32,9 +32,13 @@
 | H4: Le débat multi-agent améliore la factualité des LLM (optionnelle) | Méta | 5/5 ✅ | 0 | Complétée |
 
 **Prochaines actions** :
-1. Employer la configuration qualifiée sur un premier sujet de recherche supervisé
-2. Étendre ultérieurement l'auto-préférence à plusieurs transcriptions
-3. Dette secondaire : compléter les trois débats H3 de l'Étape 1
+1. Préenregistrer une baseline factuelle simple et diversifiée, puis vérifier
+   la justesse et la calibration du verdict avant les sujets complexes
+2. Construire l'interface sans masquer l'échec historique de la Gate E0
+3. Employer ensuite la configuration qualifiée sur un premier sujet de
+   recherche supervisé
+4. Étendre ultérieurement l'auto-préférence à plusieurs transcriptions
+5. Dette secondaire : compléter les trois débats H3 de l'Étape 1
 
 **Préparation Étape 2 (branche Codex 2026-08-10)** : le manifeste hors-ligne
 et l'analyseur de `scripts/step2_stability.py` ont servi à figer deux
@@ -89,5 +93,5 @@ instrument de recherche supervisé, pas comme autorité d'action autonome.
 
 ---
 
-*Mis à jour le 2026-08-25; `scripts/lab_status.sh` ne doit pas écraser les
+*Mis à jour le 2026-08-26; `scripts/lab_status.sh` ne doit pas écraser les
 résultats des gates Étape 2.*

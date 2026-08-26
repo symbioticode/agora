@@ -1,6 +1,9 @@
 # Environment
 .env
 
+# Notes personnelles hors corpus AGORA
+docs/PROJECT_GUIDE.md
+
 # Sessions (gitignored per AGORA_PROJECT.md)
 sessions/*.json
 !sessions/.gitkeep

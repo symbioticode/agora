@@ -19,6 +19,32 @@ empiriquement robuste (Zhang et al. 2025). Claude×2 = chambre d'écho.
 (Smit et al. ICML 2024 ; Zhang et al. 2025). C'est un labo exploratoire.
 DReaMAD est retracté — ses idées sont utiles, ses chiffres ne sont pas des preuves.
 
+## Intention de recherche
+
+AGORA sert la recherche fondamentale de trois façons concrètes :
+
+1. **Produire un désaccord inaccessible à un interlocuteur unique.** Deux
+   agents de providers différents, guidés par des épistémologies opposées, font
+   apparaître les points où deux raisonnements ne s'accordent pas et les raisons
+   de ce désaccord. La trace obtenue est une matière première de recherche, pas
+   une vérité automatiquement établie.
+2. **Conserver l'expérience et ses propres défauts.** Chaque session associe
+   l'hypothèse, les échanges, le verdict et sa confiance. Le corpus permet de
+   comparer les débats, chercher des motifs et détecter les faiblesses du
+   dispositif lui-même. Une erreur sur un cas élémentaire qualifie d'abord une
+   limite d'AGORA, pas un résultat sur le monde.
+3. **Préparer des contraintes de raisonnement plus strictes.** Des règles de
+   logique formelle pourront être étudiées ultérieurement, après démonstration
+   d'une fiabilité répétable sur des cas simples. Elles ne doivent pas masquer
+   une faiblesse du juge de base.
+
+La qualification actuelle comme instrument de recherche supervisé prouve des
+propriétés ciblées — conservation du désaccord, stabilité collective et absence
+d'effet d'étiquette dans le test contrôlé. Elle ne prouve pas encore une
+fiabilité factuelle générale. La priorité suivante est donc une baseline de cas
+simples, variés et non ambigus. Les sujets de recherche sérieux viennent après
+ce contrôle; la logique formelle vient après leur usage supervisé fiable.
+
 ---
 
 ## Structure GitHub

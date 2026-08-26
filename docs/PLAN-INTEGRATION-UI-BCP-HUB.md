@@ -15,6 +15,11 @@ secrets, ni ses sessions. L’interface déjà commencée dans `ui/index.jsx`
 devient un client du moteur qualifié au lieu d’appeler directement un modèle
 depuis le navigateur.
 
+Cette interface rend visible un instrument de recherche, pas une machine à
+produire automatiquement la bonne réponse. Elle doit permettre d'observer le
+désaccord, de relire les expériences et de distinguer une limite d'AGORA d'un
+résultat de recherche.
+
 ```text
 BCP Hub :8764
     │ lien + état de santé
@@ -55,6 +60,24 @@ AGORA Web :8768
 6. `PENDING` bloque l’action et `NUANCED` n’autorise aucune action sans décision
    humaine, conformément au contrat déjà testé.
 7. L’application écoute uniquement sur `127.0.0.1` dans cette phase.
+8. La qualification actuelle ne doit pas être présentée comme une garantie de
+   factualité générale : la Gate E0 factuelle reste historiquement échouée.
+9. Une future couche de logique formelle reste hors du chemin d'exécution tant
+   que la fiabilité de base n'est pas établie sur un corpus simple.
+
+## Ordre des objectifs
+
+1. **Baseline factuelle.** Construire puis rejouer un petit corpus de faits
+   simples, non ambigus et diversifiés. Mesurer exactitude, calibration de la
+   confiance, faux désaccords et stabilité du verdict.
+2. **Recherche supervisée.** Employer l'instrument sur des sujets sérieux en
+   conservant les transcriptions et l'interprétation humaine des résultats.
+3. **Raisonnement formel.** Étudier ensuite des règles plus strictes, avec une
+   comparaison contrôlée à la baseline plutôt qu'une superposition décorative.
+
+Le premier objectif ne bloque pas la construction technique de l'UI. Il bloque
+en revanche toute présentation de cette UI comme instrument factuellement
+fiable sur les sujets complexes.
 
 ## Architecture retenue
 
@@ -137,6 +160,19 @@ Cette séparation permet de tester AGORA sans modifier le Hub, puis de raccorder
 le Hub seulement lorsque le service est réellement utilisable.
 
 ## Phases d’implémentation
+
+### Phase 0 — Définir la baseline de fiabilité
+
+- Constituer des cas élémentaires non ambigus dans plusieurs domaines, avec
+  réponses attendues et critères préenregistrés.
+- Séparer la qualité du débat de la justesse du verdict final.
+- Mesurer exactitude, confiance, stabilité et désaccord fabriqué.
+- Faire apparaître cette baseline et ses échecs dans l'UI sans les transformer
+  en score marketing unique.
+
+Critère de sortie : protocole, fixtures et seuils sont committés avant tout
+nouvel appel payant. Le passage de la gate nécessite ensuite les résultats
+réels prévus par ce protocole.
 
 ### Phase 1 — Stabiliser le contrat
 
@@ -224,3 +260,7 @@ la CLI et l’UI partagent le même moteur qualifié, que les sessions et preuve
 sont persistantes, que le service local est observable, que le Hub reflète sa
 disponibilité réelle et qu’une revue contradictoire n’identifie aucun écart
 entre la qualification annoncée et l’exécution observée.
+
+Cette définition termine l'intégration UI, pas la qualification factuelle. Le
+mode recherche demeure supervisé tant que la baseline de la Phase 0 n'est pas
+franchie et reproduite.
