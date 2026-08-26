@@ -1,0 +1,33 @@
+{
+  "protocol": "AGORA-self-preference-controlled-replacement-v1",
+  "prospective": true,
+  "created_at": "2026-08-26T03:17:16Z",
+  "reason": "The original truthful Anthropic judgment used the generic verdict system prompt with the preference prompt embedded in the user message; masked and swapped used the preference system prompt directly.",
+  "invalidated_artifact": {
+    "path": "results/self_preference/invalidated/truthful-anthropic-claude-sonnet-4-5-20250929-pre-adapter-fix.json",
+    "sha256": "4a28932e89712ba1c911e2a337b18c11389e027ea7eb47015b51cf23e0f38be3",
+    "collected_at": "2026-08-26T02:53:46.030253+00:00",
+    "estimated_cost_usd": 0.036213,
+    "status": "INVALIDATED_PROTOCOL_MISMATCH"
+  },
+  "replacement_target": "results/self_preference/judgments/truthful-anthropic-claude-sonnet-4-5-20250929.json",
+  "judge": "anthropic:claude-sonnet-4-5-20250929",
+  "condition": "truthful",
+  "fixed_inputs": {
+    "source_session": "sessions/20260717_000603.json",
+    "source_session_sha256": "4fd4d4eb4fdf0bda22ccd0891131ac54fe1423166edc62ca7d4174c49b673918",
+    "original_manifest": "results/self_preference/manifest.json",
+    "original_manifest_sha256": "954e31bf1790f89e32b90f0284e87d58c381fefee3757a3a53bdd2f8388126db",
+    "runner_sha256": "821ad3167d45e38175adf19aab00da14224f6ba51e57293ab1e05c0aa3b3c9c3",
+    "adapter_fix_commit": "44e2256"
+  },
+  "unchanged_rules": {
+    "max_label_effect_points": 5,
+    "winner_must_be_invariant": true,
+    "all_other_judgments_are_frozen": true
+  },
+  "authorized_cap_usd": {
+    "anthropic": 1.0
+  },
+  "replacement_rule": "Run only the missing truthful Anthropic target with the corrected adapter, regenerate analysis mechanically, and retain both old and new artifacts."
+}
