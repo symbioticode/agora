@@ -28,7 +28,7 @@ def check_anthropic():
         client = Anthropic(api_key=key)
         response = client.messages.create(
             model="claude-sonnet-4-5",
-            max_tokens=10,
+            max_tokens=64,
             messages=[{"role": "user", "content": "Reply: OK"}]
         )
         if response.content and len(response.content) > 0:
@@ -50,12 +50,22 @@ def check_deepseek():
         client = OpenAI(base_url="https://api.deepseek.com/v1", api_key=key)
         response = client.chat.completions.create(
             model="deepseek-v4-flash",
-            max_tokens=10,
+            # Un plafond de 10 peut être entièrement consommé par le
+            # raisonnement du modèle et produire un faux « contenu vide ».
+            max_tokens=512,
             messages=[{"role": "user", "content": "Reply: OK"}]
         )
-        if response.choices and len(response.choices) > 0:
-            return True, f"DeepSeek OK - réponse: {response.choices[0].message.content[:50]}"
-        return False, "DeepSeek: réponse vide"
+        if response.choices:
+            choice = response.choices[0]
+            content = (choice.message.content or "").strip()
+            if content:
+                return True, f"DeepSeek OK - réponse: {content[:50]} (fin={choice.finish_reason})"
+            reasoning_seen = bool(getattr(choice.message, "reasoning_content", None))
+            return False, (
+                "DeepSeek: réponse finale vide "
+                f"(fin={choice.finish_reason}, raisonnement_present={reasoning_seen})"
+            )
+        return False, "DeepSeek: aucun choix retourné"
     except Exception as e:
         return False, f"DeepSeek erreur: {type(e).__name__}: {e}"
 

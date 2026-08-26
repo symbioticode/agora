@@ -101,3 +101,26 @@ def test_running_state_is_recovered_as_failed_after_restart(tmp_path):
     finally:
         server.shutdown()
         server.server_close()
+
+
+def test_persistence_failure_creates_failed_experiment(tmp_path, monkeypatch):
+    registry = ExperimentRegistry(tmp_path / "experiments")
+    original = registry._atomic_write
+    def fail_only_runs(path, data):
+        if "runs" in path.parts:
+            raise PermissionError("runtime read-only")
+        return original(path, data)
+    monkeypatch.setattr(registry, "_atomic_write", fail_only_runs)
+    server = create_server(port=0, engine=DebateEngine(FakeGateway()), registry=registry, dist=tmp_path, run_root=tmp_path / "runs")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        base = f"http://127.0.0.1:{server.server_port}"
+        status, _, body = request(base, "/api/v1/experiments", "POST", {"question": "Question"})
+        assert status == 202
+        run = json.loads(body)
+        assert run["status"] == "FAILED"
+        assert run["experiment"]["failure"]["code"] == "RUNTIME_PERSISTENCE_ERROR"
+    finally:
+        server.shutdown()
+        server.server_close()

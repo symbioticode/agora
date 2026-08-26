@@ -69,9 +69,17 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
         experiment_id = registry.reserve_id()
         run_id = uuid.uuid4().hex
         state = {"run_id": run_id, "experiment_id": experiment_id, "status": "RUNNING", "stage": "DEBATE", "transcript": [], "request": body.copy()}
+        try:
+            persist(state)
+        except Exception as exc:
+            error = {"code": "RUNTIME_PERSISTENCE_ERROR", "message": (str(exc).strip() or type(exc).__name__)[:500]}
+            failed = registry.create_failed(experiment_id, body, [], error)
+            state.update({"status": "FAILED", "stage": "FAILED", "error": error["message"], "experiment": failed})
+            with runs_lock:
+                runs[run_id] = state
+            return state.copy()
         with runs_lock:
             runs[run_id] = state
-            persist(state)
 
         def event(item):
             with runs_lock:

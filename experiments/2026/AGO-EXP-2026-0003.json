@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "id": "AGO-EXP-2026-0003",
+  "created_at": "2026-08-26T22:06:49+00:00",
+  "updated_at": "2026-08-26T22:06:49+00:00",
+  "status": "FAILED",
+  "title": "Tentative UI interrompue avant débat",
+  "question": "L'eau pure gèle à 0°C à pression atmosphérique standard",
+  "objective": "Reprise du test factuel supervisé",
+  "context": "",
+  "project": "AGORA",
+  "supervisor": "human-supervisor",
+  "relations": {
+    "replays": "AGO-EXP-2026-0002"
+  },
+  "protocol": {
+    "configuration": {
+      "mode": "QUALIFIED",
+      "rounds": 6
+    }
+  },
+  "observation": {
+    "transcript": []
+  },
+  "machine_judgment": null,
+  "unknowns": [
+    "Le jugement machine n'a pas été produit."
+  ],
+  "supervisor_observations": [],
+  "failure": {
+    "code": "RUNTIME_PERSISTENCE_ERROR",
+    "message": "Le confinement systemd interdisait l’écriture de runtime/runs ; aucun appel LLM ni débat n’a été lancé."
+  },
+  "provenance": {
+    "repository": "symbioticode/agora",
+    "git_revision": "cf170e6b0e3ceb75a986974eeea7c84318856562"
+  },
+  "sync": {
+    "github": "LOCAL",
+    "kbm": "NOT_SYNCHRONIZED"
+  },
+  "evidence_sha256": "c08408f81d5d25f89009366c5cca201355c2912e7ae6f74729c1e279d38fd1f5",
+  "record_sha256": "34147f930b7d5c4d2eeb1996310a521883984c03f8378b2a8fd243e4abe1bb9f"
+}

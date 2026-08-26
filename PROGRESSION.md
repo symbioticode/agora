@@ -52,6 +52,27 @@ sont désormais des erreurs réessayables; tout échec futur est enregistré et
 exportable. Sa projection KBM est poussée sur la branche de fonctionnalité au
 commit `92dd180`; l'import KBM reste à effectuer.
 
+L'analyse contradictoire du chemin historique montre que l'UI ne remplace pas
+le protocole par un autre moteur : CLI et API appellent toutes deux
+`agora.engine`. Deux des huit sessions archivées du Lab initial contiennent déjà
+une prise de parole DeepSeek vide. L'ancien orchestrateur la conservait sans
+erreur; le moteur actuel refuse cette absence de preuve après des reprises
+bornées. Le passage usuel de trois à six tours augmente également le nombre
+d'appels exposés au défaut. La disponibilité historique n'était donc pas de
+100 %, même si les sessions avaient pu aller à leur terme.
+
+Les tentatives `AGO-EXP-2026-0003` et `AGO-EXP-2026-0004` ont échoué avant tout
+appel LLM : le durcissement systemd n'autorisait pas le nouveau répertoire
+`runtime/runs`. Elles sont enregistrées comme tentatives d'infrastructure avec
+zéro tour et ne comptent pas comme débats. L'unité autorise désormais ce chemin;
+le lancement persiste l'état avant de créer le worker et transforme tout défaut
+d'écriture en expérience `FAILED` plutôt qu'en run fantôme. Validation : 65
+tests réussis et 5 tests réseau ignorés.
+
+L'import KBM quotidien n'est pas encore installé. Il sera déclenché par horloge,
+pas après un nombre de débats : les échecs font partie des résultats de
+recherche et doivent être projetés eux aussi.
+
 ## 2026-08-26 — Planification de l’interface locale
 
 L’interface commencée dans `ui/index.jsx` est retenue comme base visuelle, mais

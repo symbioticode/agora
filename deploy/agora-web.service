@@ -15,7 +15,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=read-only
-ReadWritePaths=%h/Projects/61_AGORA/experiments %h/Projects/61_AGORA/sessions
+ReadWritePaths=%h/Projects/61_AGORA/experiments %h/Projects/61_AGORA/sessions %h/Projects/61_AGORA/runtime/runs
 StandardOutput=journal
 StandardError=journal
 

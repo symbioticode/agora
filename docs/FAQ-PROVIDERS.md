@@ -46,6 +46,15 @@ fiable. Les causes possibles sont :
 5. quota, crédit ou limitation de débit ;
 6. réponse tronquée après une production trop longue.
 
+Ce comportement n'est pas propre à l'UI. L'analyse des huit sessions archivées
+du Lab initial retrouve une réponse DeepSeek vide dans deux sessions
+(`20260716_054012` et `20260716_054857`). L'ancien orchestrateur acceptait ces
+chaînes vides et poursuivait silencieusement. Le moteur partagé actuel les
+signale et s'arrête après des reprises bornées afin de ne pas fabriquer un débat
+unilatéral. Le protocole qualifié comporte aussi six tours, contre trois dans la
+plupart des sessions historiques : il expose donc davantage le run aux défauts
+de transport sans en être nécessairement la cause.
+
 AGORA ne publie jamais le raisonnement interne du provider. Il conserve
 uniquement le diagnostic technique : `finish_reason`, présence ou absence de
 raisonnement, et présence ou absence d'un contenu final.
@@ -69,6 +78,12 @@ raisonnement, et présence ou absence d'un contenu final.
   sans exposer ce raisonnement ;
 - les runs actifs sont persistés et récupérés après redémarrage ;
 - une interruption crée une expérience `FAILED` au lieu de disparaître.
+
+Les tentatives `AGO-EXP-2026-0003` et `AGO-EXP-2026-0004` ont révélé une autre
+cause, indépendante des providers : le confinement du service interdisait
+l'écriture dans `runtime/runs`. Aucun appel Anthropic ou DeepSeek n'a été lancé.
+Le chemin est maintenant autorisé par l'unité systemd et une régression future
+doit produire immédiatement une fiche `FAILED`, sans run fantôme.
 
 ## Quand arrêter les essais ?
 
