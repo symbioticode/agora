@@ -1,5 +1,15 @@
 # Travaux en attente
 
+## Interface AGORA et intégration BCP Hub — planifiée
+
+Le plan d’implémentation est enregistré dans
+`docs/PLAN-INTEGRATION-UI-BCP-HUB.md`. L’ordre retenu est : moteur partagé,
+API/persistance, raccordement de `ui/index.jsx`, service local sur le port 8768,
+carte et sonde dans BCP Hub, puis recette contradictoire.
+
+Cette évolution ne doit pas réintroduire d’appel direct aux providers dans le
+navigateur ni présenter les options expérimentales comme qualifiées.
+
 ## Fallback multi-juges E1 — terminé
 
 Le protocole de fallback dans `results/step2_multijudge_confirm/manifest.json`

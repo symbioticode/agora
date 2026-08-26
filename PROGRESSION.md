@@ -6,6 +6,18 @@ les expériences évoluent. Omniroute ne faisait pas partie du plan initial;
 son coût déclaré nul a permis de tester les transports, préparer le code et
 ajouter un troisième regard sans remplacer les expériences directes prévues.
 
+## 2026-08-26 — Planification de l’interface locale
+
+L’interface commencée dans `ui/index.jsx` est retenue comme base visuelle, mais
+pas comme moteur : son prototype appelle directement Anthropic, simule un débat
+Claude × Claude et ne restitue pas les garanties qualifiées d’AGORA.
+
+Le plan `docs/PLAN-INTEGRATION-UI-BCP-HUB.md` prévoit donc un service AGORA
+autonome sur `127.0.0.1:8768`, une API locale sans secrets navigateur, un moteur
+commun à la CLI et à l’UI, des sessions persistantes et une carte supervisée
+dans BCP Hub. Aucune nouvelle qualification de modèle ou permission d’action
+n’est induite par cette interface.
+
 ## 2026-08-25 — Trajectoire de qualification après l'Étape 2
 
 À ce point de la trajectoire, le couple n'était pas qualifié comme instrument
