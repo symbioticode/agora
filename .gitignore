@@ -10,6 +10,7 @@ sessions/*.json
 tokenomics/
 experiments/.sequence.json
 experiments/.sequence.lock
+sync/manifest.json
 
 # Python
 __pycache__/

@@ -6,13 +6,16 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-from agora.registry import ExperimentRegistry, record_sha256
-
 REPO = Path(__file__).resolve().parent.parent
+if str(REPO) not in sys.path:
+    sys.path.insert(0, str(REPO))
+
+from agora.registry import ExperimentRegistry, record_sha256
 
 
 def atomic_text(path: Path, content: str):
@@ -29,7 +32,7 @@ def atomic_text(path: Path, content: str):
             os.unlink(temp_name)
 
 
-def project(source: Path, destination: Path, now: datetime | None = None) -> dict:
+def project(source: Path, destination: Path, now: datetime | None = None, state_path: Path | None = None) -> dict:
     now = now or datetime.now(timezone.utc)
     registry = ExperimentRegistry(source)
     destination.mkdir(parents=True, exist_ok=True)
@@ -40,8 +43,8 @@ def project(source: Path, destination: Path, now: datetime | None = None) -> dic
     for record in registry.list():
         experiment_id = record.get("id", "")
         expected.add(experiment_id)
-        if record.get("status") != "COMPLETED":
-            entries.append({"id": experiment_id, "status": "REFUSED", "reason": "NOT_COMPLETED"})
+        if record.get("status") not in {"COMPLETED", "FAILED"}:
+            entries.append({"id": experiment_id, "status": "REFUSED", "reason": "UNPUBLISHABLE_STATUS"})
             continue
         if record.get("record_sha256") != record_sha256(record):
             entries.append({"id": experiment_id, "status": "REFUSED", "reason": "HASH_MISMATCH"})
@@ -67,6 +70,16 @@ def project(source: Path, destination: Path, now: datetime | None = None) -> dic
         "entries": entries,
     }
     atomic_text(destination / "manifest.json", json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
+    if state_path:
+        sync_state = {
+            "status": "PROJECTED_LOCAL",
+            "generated_at": manifest["generated_at"],
+            "github": "PENDING_PUSH",
+            "kbm": "NOT_IMPORTED",
+            "manifest": "projections/kbm/manifest.json",
+            "entries": len(entries),
+        }
+        atomic_text(state_path, json.dumps(sync_state, indent=2, ensure_ascii=False) + "\n")
     return manifest
 
 
@@ -74,8 +87,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path, default=REPO / "experiments")
     parser.add_argument("--destination", type=Path, default=REPO / "projections" / "kbm")
+    parser.add_argument("--state", type=Path, default=REPO / "sync" / "manifest.json")
     args = parser.parse_args()
-    manifest = project(args.source, args.destination)
+    manifest = project(args.source, args.destination, state_path=args.state)
     print(json.dumps(manifest, indent=2, ensure_ascii=False))
     raise SystemExit(0 if manifest["status"] == "SUCCESS" else 2)
 

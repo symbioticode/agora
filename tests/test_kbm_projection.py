@@ -33,3 +33,14 @@ def test_projection_refuses_modified_record(tmp_path):
     manifest = project(source, tmp_path / "projection")
     assert manifest["status"] == "PARTIAL"
     assert manifest["entries"][0]["reason"] == "HASH_MISMATCH"
+
+
+def test_failed_experiment_is_projected_as_research_evidence(tmp_path):
+    source = tmp_path / "experiments"
+    registry = ExperimentRegistry(source)
+    experiment_id = registry.reserve_id(datetime(2026, 8, 26, tzinfo=timezone.utc))
+    registry.create_failed(experiment_id, {"question": "Question"}, [], {"code": "ProviderError", "message": "vide"}, datetime(2026, 8, 26, tzinfo=timezone.utc))
+    manifest = project(source, tmp_path / "projection")
+    assert manifest["status"] == "SUCCESS"
+    article = (tmp_path / "projection" / f"{experiment_id}.md").read_text(encoding="utf-8")
+    assert "expérience interrompue" in article

@@ -201,7 +201,8 @@ class ExperimentRegistry:
             "",
         ]
         for turn in record["observation"]["transcript"]:
-            lines.extend([f"### Tour {turn['round']} — Agent {turn['agent']}", "", turn["content"], ""])
+            quoted = "\n".join(f"> {line}" if line else ">" for line in turn["content"].splitlines())
+            lines.extend([f"### Tour {turn['round']} — Agent {turn['agent']}", "", quoted or "> *(réponse vide)*", ""])
         lines.extend(["## Jugement machine", ""])
         if verdict:
             lines.extend([f"- Verdict : **{verdict['verdict']}**", f"- Confiance : {verdict['confidence']}", f"- Juge : `{record['protocol']['models']['judge']}`", "", verdict.get("rationale") or verdict.get("reasoning", ""), ""])

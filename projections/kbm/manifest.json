@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-26T13:22:57.414103+00:00",
+  "source": "symbioticode/agora",
+  "destination": "home-kbm/Projets/AGORA/Experiences",
+  "status": "SUCCESS",
+  "entries": [
+    {
+      "id": "AGO-EXP-2026-0001",
+      "status": "UPDATED",
+      "source_sha256": "06c50a7224638a6aa31e20e2a258ba6f9073859e7165de37959b173ba0e1b383",
+      "path": "AGO-EXP-2026-0001.md"
+    }
+  ]
+}
