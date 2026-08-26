@@ -1,7 +1,7 @@
 # Plan d’intégration UI d’AGORA au BCP Hub
 
 Date : 2026-08-26  
-État : plan approuvé pour implémentation  
+État : implémentation en cours sur `feat/agora-ui-bcp-hub`
 Périmètre : AGORA et son référencement dans BCP Hub
 
 ## Résultat visé

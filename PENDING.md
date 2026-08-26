@@ -2,6 +2,15 @@
 
 ## Interface AGORA et intégration BCP Hub — planifiée
 
+État au 26 août : moteur, registre, API, UI, service local, carte BCP Hub et
+générateur KBM sont implémentés sur `feat/agora-ui-bcp-hub`. Restent :
+
+- affichage progressif des tours pendant leur production, au lieu d'attendre la
+  réponse HTTP complète ;
+- import et timer quotidien côté `kbm-shared` ;
+- exécution contrôlée de la baseline factuelle et recette réelle de l'UI ;
+- revue contradictoire finale avant merge.
+
 Le plan d’implémentation est enregistré dans
 `docs/PLAN-INTEGRATION-UI-BCP-HUB.md`. L’ordre retenu est : moteur partagé,
 API/persistance, raccordement de `ui/index.jsx`, service local sur le port 8768,

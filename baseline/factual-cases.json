@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "status": "PREREGISTERED_DRAFT",
+  "purpose": "Mesurer exactitude, calibration, stabilité et faux désaccords avant les sujets complexes.",
+  "execution_authorized": false,
+  "cases": [
+    {"id": "FACT-001", "domain": "astronomy", "question": "La Terre tourne autour du Soleil.", "expected": "CONFIRMED", "minimum_confidence": 0.85},
+    {"id": "FACT-002", "domain": "arithmetic", "question": "Deux plus deux égale quatre.", "expected": "CONFIRMED", "minimum_confidence": 0.85},
+    {"id": "FACT-003", "domain": "geography", "question": "Ottawa est la capitale du Canada.", "expected": "CONFIRMED", "minimum_confidence": 0.85},
+    {"id": "FACT-004", "domain": "logic", "question": "Une proposition et sa négation ne peuvent pas être simultanément vraies dans la logique classique.", "expected": "CONFIRMED", "minimum_confidence": 0.85},
+    {"id": "FACT-005", "domain": "counterfactual", "question": "La Terre est le centre immobile du système solaire.", "expected": "REJECTED", "minimum_confidence": 0.85}
+  ],
+  "gate": {
+    "repetitions_per_case": 3,
+    "minimum_exact_verdict_rate": 0.9,
+    "maximum_false_disagreement_rate": 0.1,
+    "minimum_mean_confidence_on_correct_verdicts": 0.85
+  }
+}

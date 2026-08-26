@@ -29,3 +29,7 @@ Thumbs.db
 # Virtual environment
 venv/
 .venv/
+
+# Frontend dependencies and generated build
+node_modules/
+ui/dist/

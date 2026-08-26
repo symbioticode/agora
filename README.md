@@ -60,6 +60,31 @@ python orchestrator.py \
   --rounds 6
 ```
 
+Chaque exécution aboutie reçoit un identifiant `AGO-EXP-YYYY-NNNN` et est
+conservée dans `experiments/`. La projection destinée à KBM 2.0 se génère sans
+appel externe :
+
+```bash
+python scripts/project_kbm.py
+```
+
+## Interface locale
+
+```bash
+npm install
+npm run build
+systemctl --user enable --now agora-web.service
+```
+
+L'interface répond sur <http://127.0.0.1:8768/> et son état mécanique sur
+<http://127.0.0.1:8768/health>. Elle utilise le même moteur que la CLI : aucune
+clé ni logique de jugement n'est envoyée au navigateur. BCP Hub la référence
+depuis <http://127.0.0.1:8764/>.
+
+Le service installé provient de `deploy/agora-web.service`. Les expériences
+réelles consomment les APIs Anthropic et DeepSeek; les tests ordinaires et le
+build frontend n'effectuent aucun appel payant.
+
 ## Structure du projet
 
 Voir `AGORA_PROJECT.md` pour la spécification complète.
@@ -69,6 +94,7 @@ Voir `AGORA_PROJECT.md` pour la spécification complète.
 ```bash
 python scripts/lab_check.py
 python -m pytest tests/
+npm run build
 ```
 
 Les appels de connectivité sont strictement opt-in : `RUN_API=1 python

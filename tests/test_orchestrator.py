@@ -13,10 +13,11 @@ def test_orchestrator_exists():
 
 
 def test_orchestrator_imports():
-    content = (REPO / "orchestrator.py").read_text(encoding="utf-8")
+    content = (REPO / "agora" / "engine.py").read_text(encoding="utf-8")
+    adapter = (REPO / "orchestrator.py").read_text(encoding="utf-8")
     assert "anthropic" in content, "import anthropic manquant"
     assert "openai" in content, "import openai manquant"
-    assert "dotenv" in content, "import dotenv manquant"
+    assert "dotenv" in adapter, "import dotenv manquant"
 
 
 def test_orchestrator_structure():

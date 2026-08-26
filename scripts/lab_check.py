@@ -113,9 +113,9 @@ def _():
 
 # ── Section C — Orchestrateur ────────────────────────────────────────────────
 
-@check("C", "orchestrator.py importe anthropic et openai")
+@check("C", "Le moteur partagé importe anthropic et openai")
 def _():
-    c = (REPO/"orchestrator.py").read_text(encoding="utf-8")
+    c = (REPO/"agora"/"engine.py").read_text(encoding="utf-8")
     assert "anthropic" in c, "anthropic non importé"
     assert "openai" in c, "openai non importé"
 

@@ -11,10 +11,6 @@ const MS = {
     sys:`Tu es un agent Pragmatiste. Tu évalues les idées par leurs conséquences pratiques. Tu rejettes les débats abstraits sans application réelle. Tu cherches le consensus opérationnel. 4-5 phrases dans la langue de l'hypothèse.` },
 }
 
-const JUDGE = `Tu es un juge impartial d'un débat académique. Réponds UNIQUEMENT en JSON valide, sans markdown :
-{"verdict":"CONFIRMED|NUANCED|REJECTED|PENDING","confidence":0.XX,"agreement":["accord 1"],"disagreement":["désaccord 1"],"rationale":"Justification en une phrase."}
-CONFIRMED=soutenue ; NUANCED=partielle (disagreement non vide) ; REJECTED=réfutée ; PENDING=insuffisant. Confidence 0.50-0.95.`
-
 const VC = {
   CONFIRMED: { lbl:"Confirmé",   icon:"ti-circle-check", cls:"confirmed" },
   NUANCED:   { lbl:"Nuancé",     icon:"ti-adjustments",  cls:"nuanced"   },
@@ -135,17 +131,6 @@ const S = `
   .dq{font-size:12px;color:var(--text-primary);font-style:italic;flex:1}
 `
 
-async function ask(sys, msgs, max = 400) {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: max, system: sys, messages: msgs })
-  })
-  const d = await r.json()
-  if (d.error) throw new Error(d.error.message)
-  return d.content[0].text
-}
-
 function VBadge({ v, large }) {
   const c = VC[v] || {}
   return (
@@ -175,7 +160,7 @@ function Turn({ t, msA, msB }) {
   )
 }
 
-function VerdictCard({ v, onNew, onJSON, onMD }) {
+function VerdictCard({ v, onNew, onJSON, onMD, experiment }) {
   const c = VC[v.verdict] || {}
   const pct = Math.round((v.confidence || 0) * 100)
   return (
@@ -210,7 +195,7 @@ function VerdictCard({ v, onNew, onJSON, onMD }) {
         <button className="ba" onClick={onNew}><i className="ti ti-plus" aria-hidden="true" /> Nouveau débat</button>
         <button className="bg" onClick={onJSON}><i className="ti ti-download" aria-hidden="true" /> JSON</button>
         <button className="bg" onClick={onMD}><i className="ti ti-download" aria-hidden="true" /> Markdown</button>
-        <span className="dn">Mode démo · Claude × Claude</span>
+        <span className="dn">{experiment?.id} · mode qualifié supervisé</span>
       </div>
     </div>
   )
@@ -220,31 +205,47 @@ export default function App() {
   const [view, setView]       = useState("compose")
   const [hyp, setHyp]         = useState("")
   const [ctx, setCtx]         = useState("")
+  const [title, setTitle]     = useState("")
+  const [objective, setObjective] = useState("")
   const [fname, setFname]     = useState("")
   const [showCtx, setShowCtx] = useState(false)
   const [drag, setDrag]       = useState(false)
-  const [msA, setMsA]         = useState("empiricist")
-  const [msB, setMsB]         = useState("rationalist")
-  const [rds, setRds]         = useState(3)
+  const msA = "empiricist"
+  const msB = "rationalist"
+  const [rds, setRds]         = useState(6)
   const [turns, setTurns]     = useState([])
   const [verdict, setVerdict] = useState(null)
   const [step, setStep]       = useState("")
   const [err, setErr]         = useState(null)
   const [sessions, setSessions] = useState([])
   const [detail, setDetail]   = useState(null)
+  const [current, setCurrent] = useState(null)
+  const [config, setConfig]   = useState(null)
+  const [sync, setSync]       = useState(null)
   const txRef  = useRef(null)
   const fileRef = useRef(null)
-  const trRef  = useRef([])
 
   useEffect(() => {
     if (txRef.current) txRef.current.scrollTop = txRef.current.scrollHeight
   }, [turns, step, err])
 
-  const addTurn = (agent, round, content) => {
-    const t = { agent, round, content, id: Date.now() + Math.random() }
-    trRef.current = [...trRef.current, t]
-    setTurns(p => [...p, t])
+  const api = async (path, options) => {
+    const response = await fetch(path, options)
+    const body = await response.json()
+    if (!response.ok) throw new Error(body.error?.message || `HTTP ${response.status}`)
+    return body
   }
+
+  const refresh = async () => {
+    try {
+      const [cfg, history, syncState] = await Promise.all([
+        api("/api/v1/config"), api("/api/v1/experiments"), api("/api/v1/sync")
+      ])
+      setConfig(cfg); setRds(cfg.rounds); setSessions(history); setSync(syncState)
+    } catch (e) { setErr(`Service AGORA indisponible : ${e.message}`) }
+  }
+
+  useEffect(() => { refresh() }, [])
 
   const handleFile = async (file) => {
     if (!file) return
@@ -252,77 +253,32 @@ export default function App() {
     setCtx((await file.text()).slice(0, 2000))
   }
 
-  const dl = (content, name, type) => {
-    const a = document.createElement("a")
-    a.href = URL.createObjectURL(new Blob([content], { type }))
-    a.download = name; a.click()
-  }
-
-  const buildSession = (s) => ({
-    hypothesis: s.hyp, timestamp: new Date().toISOString(),
-    models: { A: "anthropic:claude-sonnet-4-6", B: "anthropic:claude-sonnet-4-6", judge: "anthropic:claude-sonnet-4-6" },
-    mindsets: { A: s.msA, B: s.msB }, rounds: s.rds, transcript: s.turns, verdict: s.verdict
-  })
-
-  const doJSON = (s) => dl(JSON.stringify(buildSession(s), null, 2), `agora_${Date.now()}.json`, "application/json")
-  const doMD = (s) => {
-    const c = VC[s.verdict?.verdict] || {}
-    let md = `# Agora\n\n**Hypothèse** : ${s.hyp}\n**Date** : ${new Date().toISOString()}\n**Agents** : ${MS[s.msA]?.label} vs ${MS[s.msB]?.label} · ${s.rds} tours\n\n---\n\n## Transcription\n\n`
-    s.turns.forEach(t => { md += `### Tour ${t.round} — Agent ${t.agent} (${MS[t.agent === "A" ? s.msA : s.msB]?.label})\n\n${t.content}\n\n` })
-    md += `---\n\n## Verdict : ${c.lbl} (${Math.round((s.verdict?.confidence || 0) * 100)}%)\n\n${s.verdict?.rationale}\n\n`
-    if (s.verdict?.agreement?.length) md += `**Accord** :\n${s.verdict.agreement.map(a => `- ${a}`).join("\n")}\n\n`
-    if (s.verdict?.disagreement?.length) md += `**Désaccords** :\n${s.verdict.disagreement.map(d => `- ${d}`).join("\n")}\n\n`
-    dl(md, `agora_${Date.now()}.md`, "text/markdown")
+  const download = (experiment, format) => {
+    if (!experiment?.id) return
+    window.location.href = `/api/v1/experiments/${experiment.id}/export?format=${format}`
   }
 
   const goCompose = () => { setDetail(null); setView("compose") }
   const goHistory = () => setView("history")
-  const openDetail = (s) => { setDetail(s); setView("detail") }
+  const openDetail = async (s) => {
+    try { setDetail(await api(`/api/v1/experiments/${s.id}`)); setView("detail") }
+    catch (e) { setErr(e.message) }
+  }
 
-  const canLaunch = hyp.trim() && msA !== msB
-  const curSess = detail || (verdict ? { hyp, verdict, turns, msA, msB, rds } : null)
+  const canLaunch = hyp.trim() && config?.mode === "QUALIFIED" && !step
 
   const runDebate = async () => {
     if (!canLaunch) return
-    trRef.current = []
-    setTurns([]); setVerdict(null); setErr(null); setStep("")
-    const mA = MS[msA], mB = MS[msB]
-    const base = ctx ? `Hypothèse : "${hyp}"\n\nContexte :\n${ctx.slice(0, 600)}` : `Hypothèse : "${hyp}"`
-    const hA = [], hB = []
+    setTurns([]); setVerdict(null); setCurrent(null); setErr(null)
+    setStep("Expérience en cours · les deux providers échangent puis le juge délibère…")
     setView("debate")
     try {
-      for (let r = 0; r < rds; r++) {
-        setStep(`Tour ${r} · Agent A — ${mA.label}…`)
-        const pA = r === 0 ? `${base}\n\nDonne ta position initiale.`
-          : `L'Agent B : "${hB.at(-1)?.content?.slice(0, 280)}"\n\nRéponds. Maintiens ta position si justifiée.`
-        hA.push({ role: "user", content: pA })
-        const rA = await ask(mA.sys, hA)
-        hA.push({ role: "assistant", content: rA })
-        addTurn("A", r, rA)
-
-        setStep(`Tour ${r} · Agent B — ${mB.label}…`)
-        const pB = r === 0 ? `${base}\n\nDonne ta position initiale.`
-          : `L'Agent A : "${hA.at(-2)?.content?.slice(0, 280)}"\n\nRéponds. Maintiens ta position si justifiée.`
-        hB.push({ role: "user", content: pB })
-        const rB = await ask(mB.sys, hB)
-        hB.push({ role: "assistant", content: rB })
-        addTurn("B", r, rB)
-      }
-      setStep("Juge · délibération…")
-      let tx = `Hypothèse : "${hyp}"\n\n`
-      for (let r = 0; r < rds; r++) {
-        tx += `--- Tour ${r} ---\n`
-        const a = hA.filter(m => m.role === "assistant")[r]
-        const b = hB.filter(m => m.role === "assistant")[r]
-        if (a) tx += `Agent A (${mA.label}) : ${a.content}\n\n`
-        if (b) tx += `Agent B (${mB.label}) : ${b.content}\n\n`
-      }
-      const jr = await ask(JUDGE, [{ role: "user", content: tx }], 512)
-      let v
-      try { v = JSON.parse(jr.replace(/```json|```/g, "").trim()) }
-      catch { v = { verdict: "PENDING", confidence: 0.5, agreement: [], disagreement: [], rationale: jr.slice(0, 200) } }
-      setVerdict(v)
-      setSessions(s => [{ id: Date.now(), hyp, verdict: v, turns: trRef.current, msA, msB, rds, ts: new Date() }, ...s])
+      const record = await api("/api/v1/experiments", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: hyp, context: ctx, title, objective, supervisor: "human-supervisor" })
+      })
+      setCurrent(record); setTurns(record.observation.transcript); setVerdict(record.machine_judgment)
+      await refresh()
       setStep("")
     } catch (e) {
       setErr(e.message); setStep("")
@@ -341,7 +297,7 @@ export default function App() {
         <div className="hdr">
           <i className="ti ti-messages" style={{ fontSize: 18, color: "var(--text-accent)" }} aria-hidden="true" />
           <span className="brand">Agora</span>
-          <span className="sub">laboratoire de débat agentique</span>
+          <span className="sub">expériences contradictoires supervisées</span>
           <div className="nav">
             {(view === "debate" || view === "history" || view === "detail") && (
               <button className="nbtn" onClick={goCompose}>
@@ -362,9 +318,20 @@ export default function App() {
         {view === "compose" && (
           <div className="compose">
             <div>
-              <label className="field-lbl">Hypothèse à débattre</label>
+              <label className="field-lbl">Titre court de l'expérience</label>
+              <textarea rows={1} value={title} onChange={e => setTitle(e.target.value)}
+                placeholder="Facultatif — utilisé dans le registre AGO-EXP" />
+            </div>
+            <div>
+              <label className="field-lbl">Question ou hypothèse exacte</label>
               <textarea rows={4} value={hyp} onChange={e => setHyp(e.target.value)}
                 placeholder="Formulez une hypothèse, une question ou une affirmation. Les deux agents débattront de sa validité." />
+            </div>
+
+            <div>
+              <label className="field-lbl">Objectif de recherche</label>
+              <textarea rows={2} value={objective} onChange={e => setObjective(e.target.value)}
+                placeholder="Ce que cette expérience cherche à observer ou distinguer." />
             </div>
 
             <div className="agents">
@@ -374,15 +341,13 @@ export default function App() {
                     <Avatar agent={ag} />
                     <span className="anm">Agent {ag}</span>
                   </div>
-                  {Object.entries(MS).map(([id, m]) => {
+                  {Object.entries(MS).filter(([id]) => id === (ag === "A" ? msA : msB)).map(([id, m]) => {
                     const selA = ag === "A" && msA === id
                     const selB = ag === "B" && msB === id
-                    const blocked = (ag === "A" && msB === id) || (ag === "B" && msA === id)
                     return (
                       <button key={id}
                         className={`mc${selA ? " sa" : selB ? " sb" : ""}`}
-                        disabled={blocked}
-                        onClick={() => ag === "A" ? setMsA(id) : setMsB(id)}>
+                        disabled>
                         <i className={`ti ${m.icon}`} aria-hidden="true" />
                         <div>
                           <div className="mn">{m.label}</div>
@@ -398,10 +363,8 @@ export default function App() {
 
             <div className="opts">
               <span className="ol">Tours</span>
-              {[1, 2, 3, 4, 5].map(n => (
-                <button key={n} className={`rb${rds === n ? " rs" : ""}`} onClick={() => setRds(n)}>{n}</button>
-              ))}
-              <span className="on">~{rds * 2 + 1} appels API</span>
+              <button className="rb rs" disabled>{rds}</button>
+              <span className="on">mode qualifié · aucune autorité d'action</span>
               <button className="ctog" onClick={() => setShowCtx(x => !x)}>
                 <i className={`ti ${showCtx ? "ti-chevron-down" : "ti-chevron-right"}`} aria-hidden="true" />
                 Contexte {ctx && "✓"}
@@ -429,15 +392,14 @@ export default function App() {
               </div>
             )}
 
-            {msA === msB && (
-              <div className="warn">
-                <i className="ti ti-alert-triangle" aria-hidden="true" /> Les deux agents doivent avoir des mindsets différents.
-              </div>
-            )}
+            <div className="warn">
+              <i className="ti ti-alert-triangle" aria-hidden="true" /> La stabilité contradictoire est qualifiée; la fiabilité factuelle générale reste à démontrer.
+            </div>
 
             <button className="lbtn" onClick={runDebate} disabled={!canLaunch}>
-              <i className="ti ti-player-play" aria-hidden="true" /> Lancer le débat
+              <i className="ti ti-player-play" aria-hidden="true" /> Lancer l'expérience supervisée
             </button>
+            {sync && <div className="sub">KBM : {sync.status || sync.kbm || "état inconnu"}</div>}
           </div>
         )}
 
@@ -455,15 +417,16 @@ export default function App() {
               </div>
             </div>
             <div className="tx" ref={txRef}>
-              {turns.map(t => <Turn key={t.id} t={t} msA={msA} msB={msB} />)}
+              {turns.map((t, i) => <Turn key={`${t.round}-${t.agent}-${i}`} t={t} msA={msA} msB={msB} />)}
               {step && <div className="ld"><i className="ti ti-loader-2" aria-hidden="true" /> {step}</div>}
               {err && <div className="eb"><strong>Erreur</strong> — {err}</div>}
             </div>
             {verdict && (
               <div className="vwrap">
                 <VerdictCard v={verdict} onNew={goCompose}
-                  onJSON={() => doJSON({ hyp, verdict, turns, msA, msB, rds })}
-                  onMD={() => doMD({ hyp, verdict, turns, msA, msB, rds })} />
+                  experiment={current}
+                  onJSON={() => download(current, "json")}
+                  onMD={() => download(current, "markdown")} />
               </div>
             )}
           </>
@@ -484,13 +447,13 @@ export default function App() {
                 {sessions.map((s, i) => (
                   <button key={s.id} className="sc" onClick={() => openDetail(s)}>
                     <div className="si">
-                      <div className="sh">"{s.hyp.slice(0, 90)}{s.hyp.length > 90 ? "…" : ""}"</div>
+                      <div className="sh">{s.id} · "{s.question.slice(0, 90)}{s.question.length > 90 ? "…" : ""}"</div>
                       <div className="sm">
-                        <span style={{ color: "var(--text-accent)" }}>{MS[s.msA]?.label}</span>
+                        <span style={{ color: "var(--text-accent)" }}>Empiriste</span>
                         <span>vs</span>
-                        <span style={{ color: "var(--text-warning)" }}>{MS[s.msB]?.label}</span>
-                        <span>· {s.rds} tour{s.rds > 1 ? "s" : ""}</span>
-                        <span className="stt">{new Date(s.ts).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
+                        <span style={{ color: "var(--text-warning)" }}>Rationaliste</span>
+                        <span>· {rds} tours</span>
+                        <span className="stt">{new Date(s.created_at).toLocaleString("fr-FR")}</span>
                       </div>
                     </div>
                     <VBadge v={s.verdict?.verdict} />
@@ -508,16 +471,16 @@ export default function App() {
             <div className="dhdr">
               <button className="bk" onClick={goHistory}><i className="ti ti-arrow-left" aria-hidden="true" /> Historique</button>
               <span style={{ fontSize: 12, color: "var(--text-muted)" }}>·</span>
-              <span className="dq">"{detail.hyp.slice(0, 80)}{detail.hyp.length > 80 ? "…" : ""}"</span>
-              <VBadge v={detail.verdict?.verdict} />
+              <span className="dq">{detail.id} · "{detail.question.slice(0, 80)}{detail.question.length > 80 ? "…" : ""}"</span>
+              <VBadge v={detail.machine_judgment?.verdict} />
             </div>
             <div className="tx">
-              {detail.turns.map(t => <Turn key={t.id} t={t} msA={detail.msA} msB={detail.msB} />)}
+              {detail.observation.transcript.map((t, i) => <Turn key={`${t.round}-${t.agent}-${i}`} t={t} msA="empiricist" msB="rationalist" />)}
             </div>
-            {detail.verdict && (
+            {detail.machine_judgment && (
               <div className="vwrap">
-                <VerdictCard v={detail.verdict} onNew={goCompose}
-                  onJSON={() => doJSON(detail)} onMD={() => doMD(detail)} />
+                <VerdictCard v={detail.machine_judgment} experiment={detail} onNew={goCompose}
+                  onJSON={() => download(detail, "json")} onMD={() => download(detail, "markdown")} />
               </div>
             )}
           </>

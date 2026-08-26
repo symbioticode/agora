@@ -1,0 +1,23 @@
+[Unit]
+Description=AGORA supervised experiments web UI (127.0.0.1:8768)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Projects/61_AGORA
+ExecStart=%h/Projects/61_AGORA/.venv/bin/python -m agora.web --host 127.0.0.1 --port 8768
+Restart=on-failure
+RestartSec=3
+EnvironmentFile=-%h/Projects/61_AGORA/.env
+Environment=PYTHONUNBUFFERED=1
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/Projects/61_AGORA/experiments %h/Projects/61_AGORA/sessions
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

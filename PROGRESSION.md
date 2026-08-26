@@ -6,6 +6,29 @@ les expériences évoluent. Omniroute ne faisait pas partie du plan initial;
 son coût déclaré nul a permis de tester les transports, préparer le code et
 ajouter un troisième regard sans remplacer les expériences directes prévues.
 
+## 2026-08-26 — Début d'implémentation de l'UI et du registre
+
+Le `main` de départ est sauvegardé sur la branche distante
+`backup/pre-ui-20260826` à la révision `7a9f658`. L'implémentation se poursuit
+sur `feat/agora-ui-bcp-hub`.
+
+- moteur partagé par la CLI et l'API, avec clients providers chargés à la
+  demande seulement ;
+- registre atomique `AGO-EXP-YYYY-NNNN`, preuve initiale et hash de
+  l'enregistrement courant ;
+- API loopback, exports JSON/Markdown et observations humaines séparées ;
+- UI React raccordée à l'API, sans secret ni appel LLM dans le navigateur ;
+- service `agora-web.service` actif sur `127.0.0.1:8768` ;
+- carte AGORA et sonde relayée par BCP Hub sur `127.0.0.1:8764` ;
+- générateur déterministe de projection KBM avec refus des hashes invalides,
+  idempotence et conservation explicite des orphelins ;
+- baseline factuelle enregistrée comme brouillon préenregistré, sans autoriser
+  son exécution payante.
+
+Validation intermédiaire : 60 tests réussis, 5 tests réseau ignorés, build Vite
+réussi. L'import quotidien côté `kbm-shared`, la progression temps réel des
+tours et la recette avec providers réels restent à terminer.
+
 ## 2026-08-26 — Planification de l’interface locale
 
 L’interface commencée dans `ui/index.jsx` est retenue comme base visuelle, mais
