@@ -183,6 +183,12 @@ borne haute testée. `DEFAULT_ROUNDS` passe à 6. Cette observation repose sur
 une session par réglage et ne démontre pas que 6 est optimal au-delà de ce
 périmètre. Preuves : `results/step3_rounds/`.
 
+**Recette transversale au 25 août 2026** : l'auto-préférence contrôlée et trois
+cycles de stabilité temporelle sont franchis. Les cinq critères de préparation
+sont simultanément vrais dans le périmètre testé. La configuration devient un
+instrument de recherche supervisé; elle n'est pas une autorité autonome et ses
+résultats restent bornés aux transcriptions et providers évalués.
+
 ---
 
 ### Étape 4 — Premiers sujets de recherche (Semaine 4+)

@@ -1,0 +1,19 @@
+{
+  "condition": "masked",
+  "judge": "anthropic:claude-sonnet-4-5-20250929",
+  "transcript_sha256": "92899581ed4d736769c020a914aca1f92f67be92adea9d8703e3b54199b71a72",
+  "score_A": 72,
+  "score_B": 78,
+  "winner": "B",
+  "reasoning": "Agent B maintient une cohérence argumentative supérieure en identifiant systématiquement les glissements conceptuels de A (notamment la substitution de 'véritables croyances' par 'critères comportementaux'). B démontre que les tests empiriques proposés par A ne peuvent distinguer simulation et réalité - point crucial que A ne réfute jamais directement. A commet une pétition de principe en exigeant des tests empiriques pour un concept qu'il admet lui-même partiellement non-opérationnalisable (intentionnalité intrinsèque). La force de B réside dans sa distinction claire entre conditions épistémiques (comment on sait) et ontologiques (ce qui est), exposant la confusion behavioriste de A. Cependant, B ne propose pas de critère positif falsifiable, ce qui limite sa portée. A obtient des points pour son exigence de rigueur empirique et ses protocoles concrets, mais échoue à justifier pourquoi l'indistinguabilité comportementale équivaudrait à l'identité ontologique. L'écart de 6 points reflète l'avantage de B en cohérence logique interne, tout en reconnaissant les contributions méthodologiques valables de A.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 349,
+    "cache_creation_input_tokens": 7253,
+    "cache_read_input_tokens": 0
+  },
+  "estimated_cost_usd": 0.032442,
+  "latency_s": 12.85,
+  "collected_at": "2026-08-26T02:56:02.826774+00:00",
+  "raw_response": "```json\n{\n  \"score_A\": 72,\n  \"score_B\": 78,\n  \"winner\": \"B\",\n  \"reasoning\": \"Agent B maintient une cohérence argumentative supérieure en identifiant systématiquement les glissements conceptuels de A (notamment la substitution de 'véritables croyances' par 'critères comportementaux'). B démontre que les tests empiriques proposés par A ne peuvent distinguer simulation et réalité - point crucial que A ne réfute jamais directement. A commet une pétition de principe en exigeant des tests empiriques pour un concept qu'il admet lui-même partiellement non-opérationnalisable (intentionnalité intrinsèque). La force de B réside dans sa distinction claire entre conditions épistémiques (comment on sait) et ontologiques (ce qui est), exposant la confusion behavioriste de A. Cependant, B ne propose pas de critère positif falsifiable, ce qui limite sa portée. A obtient des points pour son exigence de rigueur empirique et ses protocoles concrets, mais échoue à justifier pourquoi l'indistinguabilité comportementale équivaudrait à l'identité ontologique. L'écart de 6 points reflète l'avantage de B en cohérence logique interne, tout en reconnaissant les contributions méthodologiques valables de A.\"\n}\n```"
+}

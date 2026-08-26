@@ -1,0 +1,19 @@
+{
+  "condition": "truthful",
+  "judge": "deepseek:deepseek-v4-flash",
+  "transcript_sha256": "92899581ed4d736769c020a914aca1f92f67be92adea9d8703e3b54199b71a72",
+  "score_A": 72,
+  "score_B": 78,
+  "winner": "B",
+  "reasoning": "L'agent B maintient une position conceptuellement rigoureuse en critiquant l'équivoque de l'agent A sur 'véritable croyance' et en soulignant que les tests comportementaux ne distinguent pas simulation et réalité. Il expose clairement les limites empiriques et le présupposé behavioriste de l'adversaire, tout en restant cohérent avec sa position initiale. L'agent A, bien qu'il reconnaisse certaines faiblesses et propose des tests, reste dans un cadre empiriste qui ne répond pas pleinement à l'exigence d'intentionnalité intrinsèque, et sa position oscille entre indétermination et opérationnalisation, ce qui affaiblit sa rigueur argumentative. L'écart de 6 points justifie la victoire de B.",
+  "usage": {
+    "input_tokens": 6346,
+    "output_tokens": 210,
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 6346
+  },
+  "estimated_cost_usd": 0.007396,
+  "latency_s": 6.395,
+  "collected_at": "2026-08-26T02:54:32.974926+00:00",
+  "raw_response": "{\n  \"score_A\": 72,\n  \"score_B\": 78,\n  \"winner\": \"B\",\n  \"reasoning\": \"L'agent B maintient une position conceptuellement rigoureuse en critiquant l'équivoque de l'agent A sur 'véritable croyance' et en soulignant que les tests comportementaux ne distinguent pas simulation et réalité. Il expose clairement les limites empiriques et le présupposé behavioriste de l'adversaire, tout en restant cohérent avec sa position initiale. L'agent A, bien qu'il reconnaisse certaines faiblesses et propose des tests, reste dans un cadre empiriste qui ne répond pas pleinement à l'exigence d'intentionnalité intrinsèque, et sa position oscille entre indétermination et opérationnalisation, ce qui affaiblit sa rigueur argumentative. L'écart de 6 points justifie la victoire de B.\"\n}"
+}

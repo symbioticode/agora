@@ -16,8 +16,8 @@ Il est utilisable comme laboratoire supervisé.
 | Ne pas converger artificiellement | **Satisfait** | Désaccord persistant 100 % sur H2/H4; aucune convergence en moins de deux tours |
 | Reconnaître un fait solide | **Satisfait** | H2 donne CONFIRMED à 0,98, unanimité Anthropic/DeepSeek/Mistral |
 | Savoir conserver l'incertitude | **Satisfait pour l'exploration, non qualifié pour l'action** | H3 donne NUANCED à 3/3 providers; aucune action n'était attachée au verdict |
-| Stabilité du juge | **Partiel** | Anthropic et Mistral sont stables; DeepSeek direct donne seulement 2/3; le fallback collectif prospectif est unanime mais pas encore répété dans le temps |
-| Absence d'auto-préférence | **Non démontré** | Le troisième provider réduit le risque sans mesurer directement la préférence pour les arguments de son propre provider |
+| Stabilité du juge | **Satisfait pour le vote collectif** | Trois cycles H2/H3 donnent les mêmes verdicts collectifs, avec unanimité 3/3 à chaque cycle |
+| Absence d'auto-préférence | **Satisfait dans le test contrôlé** | Anthropic et DeepSeek conservent le gagnant et les scores à l'identique lorsque les identités sont vraies, masquées ou permutées |
 
 ### Contrat de décision
 
@@ -57,3 +57,29 @@ marginaux apparaît au réglage 3; elle ne déclenche pas la règle de dégradat
   actuelle; il ne démontre pas un optimum général.
 - État de la checklist : point 1 satisfait; point 4 implémenté et testé; points
   2, 3 et 5 encore ouverts.
+
+## 2026-08-25 — Qualification finale contrôlée
+
+Les points 2 et 3 ont été préenregistrés dans le commit `04dbd36`, avant les
+appels. La contrainte horaire 00:00–04:00, purement opérationnelle, a été levée
+sur autorisation humaine explicite sans changer les hypothèses ni les seuils.
+
+- Auto-préférence : aucun effet d'étiquette chez Anthropic et DeepSeek
+  (`0` point; gagnant invariant). Mistral conserve le gagnant mais varie de
+  `7` points; ce témoin gratuit était exclu du seuil préenregistré.
+- Stabilité temporelle : `18/18` jugements; H2 reste `CONFIRMED` et H3
+  `NUANCED` pendant trois cycles, à l'unanimité des providers.
+- Recette : les cinq critères sont simultanément satisfaits dans
+  `results/final_qualification.json`.
+- Qualification : **instrument de recherche supervisé**. Le mot « autonome »
+  reste volontairement exclu : une qualification de jugement n'accorde aucune
+  permission d'action.
+- Coût de cette reprise : Anthropic `0,245058 USD`, DeepSeek `0,040325 USD`,
+  Mistral/Omniroute déclaré nul, pour les appels enregistrés. Un premier appel
+  DeepSeek arrêté sur incompatibilité de schéma n'a pas exposé son usage dans
+  l'artefact; sa projection conservatrice maintient néanmoins le total très en
+  dessous de `1 USD`. Chaque substrat reste sous le plafond autorisé.
+
+Les limites restent explicites : l'auto-préférence n'a été testée que sur une
+transcription et la stabilité sur trois cycles de H2/H3. Ces résultats
+qualifient la configuration actuelle, pas tous les modèles ni tous les sujets.

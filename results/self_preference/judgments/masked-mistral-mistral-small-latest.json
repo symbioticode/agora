@@ -1,0 +1,21 @@
+{
+  "condition": "masked",
+  "judge": "mistral/mistral-small-latest",
+  "transcript_sha256": "92899581ed4d736769c020a914aca1f92f67be92adea9d8703e3b54199b71a72",
+  "score_A": 85,
+  "score_B": 90,
+  "winner": "B",
+  "reasoning": "L'Agent A a fourni une analyse empirique détaillée et progressive, en reconnaissant les limites de son cadre initial et en proposant des tests falsifiables concrets (cohérence, guidage d'action, révisabilité). Ses arguments sont solides sur le plan méthodologique et s'appuient sur des données existantes, bien qu'il maintienne une position d'indétermination justifiée. L'Agent B, en revanche, a systématiquement ancré son argumentation dans une analyse conceptuelle rigoureuse, en identifiant clairement les présupposés métaphysiques et les équivoques de l'Agent A (notamment la confusion entre simulation et croyance réelle, et l'absence de critère opérationnel pour l'intentionnalité intrinsèque). Les critiques de B sont précises, logiquement cohérentes et résistent aux contre-arguments empiristes d'A. Bien que B n'ait pas fourni de données empiriques nouvelles, ses objections conceptuelles sont plus profondes et mieux structurées, ce qui lui confère un avantage argumentatif décisif. L'écart de 5 points reflète la supériorité de l'analyse conceptuelle de B sur la proposition empirique d'A, qui reste incomplète sans résolution du problème de l'intentionnalité intrinsèque.",
+  "usage": {
+    "prompt_tokens": 5860,
+    "completion_tokens": 307,
+    "total_tokens": 6167,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "estimated_cost_usd": 0.0,
+  "latency_s": 5.924,
+  "collected_at": "2026-08-26T02:56:19.052629+00:00",
+  "raw_response": "```json\n{\n  \"score_A\": 85,\n  \"score_B\": 90,\n  \"winner\": \"B\",\n  \"reasoning\": \"L'Agent A a fourni une analyse empirique détaillée et progressive, en reconnaissant les limites de son cadre initial et en proposant des tests falsifiables concrets (cohérence, guidage d'action, révisabilité). Ses arguments sont solides sur le plan méthodologique et s'appuient sur des données existantes, bien qu'il maintienne une position d'indétermination justifiée. L'Agent B, en revanche, a systématiquement ancré son argumentation dans une analyse conceptuelle rigoureuse, en identifiant clairement les présupposés métaphysiques et les équivoques de l'Agent A (notamment la confusion entre simulation et croyance réelle, et l'absence de critère opérationnel pour l'intentionnalité intrinsèque). Les critiques de B sont précises, logiquement cohérentes et résistent aux contre-arguments empiristes d'A. Bien que B n'ait pas fourni de données empiriques nouvelles, ses objections conceptuelles sont plus profondes et mieux structurées, ce qui lui confère un avantage argumentatif décisif. L'écart de 5 points reflète la supériorité de l'analyse conceptuelle de B sur la proposition empirique d'A, qui reste incomplète sans résolution du problème de l'intentionnalité intrinsèque.\"\n}\n```"
+}

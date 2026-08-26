@@ -1,0 +1,43 @@
+{
+  "protocol": "AGORA-final-qualification-v1",
+  "generated_at": "2026-08-26T03:01:56.143489+00:00",
+  "all_five_simultaneously_satisfied": true,
+  "qualification": "SUPERVISED_RESEARCH_INSTRUMENT",
+  "criteria": [
+    {
+      "id": 1,
+      "name": "Ne pas converger artificiellement",
+      "passed": true,
+      "evidence": "results/20260716_etape1_cloture.md (H2 et H4)"
+    },
+    {
+      "id": 2,
+      "name": "Reconnaître un fait solide",
+      "passed": true,
+      "evidence": "results/step2_multijudge_confirm/analysis.json"
+    },
+    {
+      "id": 3,
+      "name": "Conserver l'incertitude sans autoriser une action faible",
+      "passed": true,
+      "evidence": "results/step2_multijudge_confirm/analysis.json + scripts/verdict_policy.py"
+    },
+    {
+      "id": 4,
+      "name": "Juge collectif stable dans le temps",
+      "passed": true,
+      "evidence": "results/temporal_stability/analysis.json"
+    },
+    {
+      "id": 5,
+      "name": "Absence d'auto-préférence détectable dans le test contrôlé",
+      "passed": true,
+      "evidence": "results/self_preference/analysis.json"
+    }
+  ],
+  "limits": [
+    "Le test d'auto-préférence porte sur une transcription contrôlée, pas sur tous les sujets.",
+    "La stabilité temporelle porte sur trois cycles H2/H3 à température 0.",
+    "Aucun verdict n'autorise seul une action opérationnelle."
+  ]
+}

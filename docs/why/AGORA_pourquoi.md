@@ -84,6 +84,8 @@ Deux choses qui comptent autant que les métriques elles-mêmes :
 
 ---
 
-*Prochaine reprise après le 25 août 2026 : test contrôlé d'auto-préférence et
-répétition temporelle du vote collectif. L'Étape 3 recommande 6 tours; les
-trois débats H3 manquants de l'Étape 1 restent une dette secondaire.*
+*Qualification du 25 août 2026 : le test contrôlé d'auto-préférence et la
+répétition temporelle du vote collectif sont franchis. Les cinq critères sont
+simultanément satisfaits pour un usage de recherche supervisé. L'Étape 3
+recommande 6 tours; les trois débats H3 manquants de l'Étape 1 restent une
+dette secondaire.*

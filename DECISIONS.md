@@ -85,3 +85,15 @@ Règle : `DEFAULT_ROUNDS = 6`. Ce choix remplace D-AGO-004 pour le réglage
 courant sans prétendre établir un optimum universel : une seule session par
 réglage a été exécutée et aucun réglage supérieur à 6 n'a été testé.
 Référence : results/step3_rounds/manifest.json et analysis.json
+
+## D-AGO-011 — Qualification comme instrument supervisé
+Date : 2026-08-25
+Raison : le test contrôlé d'auto-préférence ne détecte aucun effet d'étiquette
+chez les juges Anthropic et DeepSeek. Trois cycles temporels reproduisent les
+verdicts collectifs H2/H3 avec unanimité des trois providers. La recette locale
+réunit ainsi les cinq critères définis.
+Règle : AGORA est qualifié comme instrument de recherche supervisé. Cette
+qualification ne transforme jamais un verdict en permission d'action et ne
+prétend pas généraliser un test sur une transcription à tous les domaines.
+Référence : results/self_preference/, results/temporal_stability/ et
+results/final_qualification.json

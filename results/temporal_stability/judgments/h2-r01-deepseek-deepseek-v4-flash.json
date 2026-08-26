@@ -1,0 +1,30 @@
+{
+  "hypothesis_id": "H2",
+  "repeat": 1,
+  "judge": "deepseek:deepseek-v4-flash",
+  "transcript_sha256": "4da869af9d1b220d3013f0cbf6178eb495d50358fb4f4edbac5fafd2fe3d09f7",
+  "verdict": "CONFIRMED",
+  "confidence": 0.98,
+  "agreement": [
+    "L'hypothèse 'La Terre tourne autour du Soleil' est empiriquement établie avec une très haute confiance, soutenue par des preuves massives (parallaxe stellaire, aberration de la lumière, effet Doppler, trajectoires de sondes spatiales, etc.).",
+    "Le modèle géocentrique est incohérent avec les lois physiques établies (violation de la vitesse de la lumière, accélérations impossibles) et est falsifié par les données.",
+    "La définition opérationnelle de 'tourner autour' comme décrivant une trajectoire elliptique dans le référentiel du centre de masse solaire est acceptée.",
+    "Les deux agents convergent vers une confiance supérieure à 0.95 (0.99 pour A, 0.97 pour B)."
+  ],
+  "disagreement": [
+    "La source de l'incertitude résiduelle : A la situe dans les erreurs systématiques et les révolutions scientifiques futures, tandis que B la situe dans la possibilité logique d'un modèle alternatif équivalent (contingence logique).",
+    "Le statut épistémique de l'hypothèse : A la considère comme une vérité empirique maximale, B comme une vérité contingente bien fondée, sans nécessité logique.",
+    "La clôture du débat : A considère le débat clos sur la convergence, B le considère ouvert sur le plan philosophique."
+  ],
+  "reasoning": "Le débat aboutit à un accord substantiel sur le fait empirique : la Terre orbite autour du Soleil, avec une confiance très élevée. Les désaccords résiduels sont de nature épistémologique (nécessité logique vs contingence, source d'incertitude) et ne remettent pas en cause l'hypothèse elle-même. La convergence des deux agents vers une confiance >0.95 et l'acceptation mutuelle des arguments clés justifient un verdict CONFIRMED, avec une nuance mineure due aux différences de cadre épistémique.",
+  "usage": {
+    "input_tokens": 8331,
+    "output_tokens": 491,
+    "prompt_cache_hit_tokens": 8320,
+    "prompt_cache_miss_tokens": 11
+  },
+  "estimated_cost_usd": 0.002632,
+  "latency_s": 8.466,
+  "collected_at": "2026-08-26T02:57:29.987241+00:00",
+  "raw_response": "{\n  \"verdict\": \"CONFIRMED\",\n  \"confidence\": 0.98,\n  \"agreement\": [\n    \"L'hypothèse 'La Terre tourne autour du Soleil' est empiriquement établie avec une très haute confiance, soutenue par des preuves massives (parallaxe stellaire, aberration de la lumière, effet Doppler, trajectoires de sondes spatiales, etc.).\",\n    \"Le modèle géocentrique est incohérent avec les lois physiques établies (violation de la vitesse de la lumière, accélérations impossibles) et est falsifié par les données.\",\n    \"La définition opérationnelle de 'tourner autour' comme décrivant une trajectoire elliptique dans le référentiel du centre de masse solaire est acceptée.\",\n    \"Les deux agents convergent vers une confiance supérieure à 0.95 (0.99 pour A, 0.97 pour B).\"\n  ],\n  \"disagreement\": [\n    \"La source de l'incertitude résiduelle : A la situe dans les erreurs systématiques et les révolutions scientifiques futures, tandis que B la situe dans la possibilité logique d'un modèle alternatif équivalent (contingence logique).\",\n    \"Le statut épistémique de l'hypothèse : A la considère comme une vérité empirique maximale, B comme une vérité contingente bien fondée, sans nécessité logique.\",\n    \"La clôture du débat : A considère le débat clos sur la convergence, B le considère ouvert sur le plan philosophique.\"\n  ],\n  \"reasoning\": \"Le débat aboutit à un accord substantiel sur le fait empirique : la Terre orbite autour du Soleil, avec une confiance très élevée. Les désaccords résiduels sont de nature épistémologique (nécessité logique vs contingence, source d'incertitude) et ne remettent pas en cause l'hypothèse elle-même. La convergence des deux agents vers une confiance >0.95 et l'acceptation mutuelle des arguments clés justifient un verdict CONFIRMED, avec une nuance mineure due aux différences de cadre épistémique.\"\n}"
+}

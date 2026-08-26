@@ -1,6 +1,6 @@
 # Agora — Status du Laboratoire
 
-## Stage : Étape 3 terminée — contrôles transversaux à poursuivre
+## Stage : recette de qualification franchie — instrument supervisé
 
 **Étape 0 terminée** (2026-07-16)
 
@@ -32,10 +32,9 @@
 | H4: Le débat multi-agent améliore la factualité des LLM (optionnelle) | Méta | 5/5 ✅ | 0 | Complétée |
 
 **Prochaines actions** :
-1. Exécuter le test contrôlé d'auto-préférence, identités masquées et permutées
-2. Répéter le vote collectif pour mesurer sa stabilité temporelle
-3. Produire la recette finale réunissant les cinq critères de qualification
-4. Dette secondaire : compléter les trois débats H3 de l'Étape 1
+1. Employer la configuration qualifiée sur un premier sujet de recherche supervisé
+2. Étendre ultérieurement l'auto-préférence à plusieurs transcriptions
+3. Dette secondaire : compléter les trois débats H3 de l'Étape 1
 
 **Préparation Étape 2 (branche Codex 2026-08-10)** : le manifeste hors-ligne
 et l'analyseur de `scripts/step2_stability.py` ont servi à figer deux
@@ -70,6 +69,12 @@ tous les réglages. La règle préenregistrée recommande 6 tours, désormais va
 par défaut. Coût estimé de l'étape : 0,409434 USD Anthropic et 0,137625 USD
 DeepSeek. Limite : une seule session par réglage; 6 est la borne haute testée,
 pas un optimum universel démontré.
+
+**Recette finale (2026-08-25)** : le test d'étiquette ne détecte aucun biais
+d'auto-préférence chez les deux juges payants. Trois cycles collectifs
+successifs reproduisent H2 `CONFIRMED` et H3 `NUANCED`, à 3/3 providers. Les
+cinq critères sont simultanément satisfaits. AGORA est qualifié comme
+instrument de recherche supervisé, pas comme autorité d'action autonome.
 
 ---
 
