@@ -20,6 +20,11 @@ produire automatiquement la bonne réponse. Elle doit permettre d'observer le
 désaccord, de relire les expériences et de distinguer une limite d'AGORA d'un
 résultat de recherche.
 
+Son objet principal est une collection d'entretiens/expériences supervisés,
+numérotés et comparables. L'interface montre les échanges en cours, puis les
+enregistre dans une structure inspirée de KBM : identité stable, métadonnées,
+provenance, contenu, état, relations et preuves.
+
 ```text
 BCP Hub :8764
     │ lien + état de santé
@@ -96,6 +101,26 @@ Le service porte :
 - persistance atomique de la session ;
 - provenance, modèles, tentatives, durée et métriques d’usage disponibles.
 
+### Registre des expériences
+
+La session technique devient un composant d'une expérience durable identifiée
+par `AGO-EXP-YYYY-NNNN`. Le registre attribue les numéros de façon atomique et
+ne les recycle jamais.
+
+Le schéma sépare :
+
+- **intention** : titre, question, objectif, contexte et liens de recherche ;
+- **protocole** : agents, providers, modèles, mindsets, prompts et réglages ;
+- **observation** : transcription ordonnée, usage, incidents et artefacts ;
+- **jugement machine** : verdict, confiance, accords et désaccords ;
+- **ignorance** : inconnues, questions ouvertes et limites identifiées ;
+- **supervision humaine** : notes, qualification et suites proposées ;
+- **preuve** : timestamps UTC, version Git, hashes et relations avec les runs
+  parents, replays ou remplacements.
+
+Une observation humaine peut être ajoutée après le run sans réécrire la preuve
+brute : elle constitue un événement versionné distinct.
+
 ### API locale
 
 Créer un adaptateur HTTP dans AGORA avec le contrat minimal suivant :
@@ -104,10 +129,11 @@ Créer un adaptateur HTTP dans AGORA avec le contrat minimal suivant :
 |---|---|
 | `GET /health` | disponibilité, version et dernière erreur, sans secret |
 | `GET /api/v1/config` | configuration qualifiée et limites visibles |
-| `POST /api/v1/debates` | lancer un débat contrôlé |
-| `GET /api/v1/sessions` | lister les sessions locales |
-| `GET /api/v1/sessions/{id}` | consulter transcription, verdict et preuves |
-| `GET /api/v1/sessions/{id}/export` | exporter le JSON ou le Markdown |
+| `POST /api/v1/experiments` | créer et lancer une expérience contrôlée |
+| `GET /api/v1/experiments` | rechercher les expériences par date, état ou projet |
+| `GET /api/v1/experiments/{id}` | consulter contexte, transcription, verdict et preuves |
+| `POST /api/v1/experiments/{id}/observations` | ajouter l'observation du superviseur sans altérer le run |
+| `GET /api/v1/experiments/{id}/export` | exporter le JSON ou le Markdown |
 
 Le premier MVP peut traiter une requête de façon synchrone. Si la durée rend
 l’usage inconfortable, la même API évoluera vers un identifiant de run et une
@@ -126,10 +152,12 @@ Conserver le langage visuel de `ui/index.jsx`, mais remplacer :
   désactivée dans le MVP.
 
 L’écran doit montrer avant le lancement : le mode, les agents, les providers,
-le nombre de tours, le coût potentiel et l’absence de permission d’action. Il
+le numéro d'expérience réservé, la question, le contexte, le nombre de tours,
+le coût potentiel et l’absence de permission d’action. Il
 doit montrer après le lancement : la transcription, le verdict, la confiance,
 les accords/désaccords, l’identité du juge, les métriques et l’identifiant de
-preuve.
+preuve. Une vue de registre permet ensuite de retrouver une expérience par
+numéro, date, question, verdict, projet lié ou inconnue conservée.
 
 Ajouter un petit outillage frontend reproductible autour du JSX existant. Les
 dépendances installées et les sorties générées ne deviennent pas des sources de
@@ -179,6 +207,8 @@ réels prévus par ce protocole.
 - Ajouter des tests de caractérisation du schéma produit par la CLI actuelle.
 - Extraire le moteur appelable et conserver la compatibilité CLI.
 - Définir les schémas de requête, session, erreur et santé.
+- Définir le schéma versionné de l'expérience et l'attribution atomique des
+  identifiants `AGO-EXP-YYYY-NNNN`.
 - Refuser les hypothèses vides, les corps excessifs et les paramètres inconnus.
 
 Critère de sortie : CLI et service produisent un artefact équivalent sur des
@@ -188,6 +218,7 @@ providers simulés, sans appel payant.
 
 - Implémenter les routes locales.
 - Écrire les sessions de façon atomique.
+- Conserver séparément la preuve brute et les observations humaines ajoutées.
 - Exposer les erreurs de provider sans fuite de secret.
 - Ajouter durée, tentatives et consommation lorsque le provider les fournit.
 

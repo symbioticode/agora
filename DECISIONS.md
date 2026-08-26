@@ -97,3 +97,16 @@ qualification ne transforme jamais un verdict en permission d'action et ne
 prétend pas généraliser un test sur une transcription à tous les domaines.
 Référence : results/self_preference/, results/temporal_stability/ et
 results/final_qualification.json
+
+## D-AGO-012 — L'expérience supervisée est l'objet durable de l'UI
+Date : 2026-08-26
+Raison : l'interface doit montrer les échanges entre IA et conserver leur
+contexte comme matériau de recherche. Une simple session horodatée ne suffit
+pas pour relier, comparer et auditer ces observations dans le temps.
+Règle : chaque nouvel entretien reçoit un identifiant `AGO-EXP-YYYY-NNNN` et
+conserve séparément question, contexte, configuration, transcription, verdict,
+inconnues et observation humaine. Un replay reçoit un nouvel identifiant et
+référence son parent. Le verdict machine ne remplace jamais l'observation du
+superviseur.
+Référence : docs/PROGRAMME-RECHERCHE-CONNAISSANCE.md et
+docs/PLAN-INTEGRATION-UI-BCP-HUB.md

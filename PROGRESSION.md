@@ -25,6 +25,13 @@ sur un fait simple ayant historiquement échoué, une baseline factuelle variée
 et préenregistrée devient la priorité de qualification avant de faire confiance
 aux verdicts portant sur des sujets complexes.
 
+L'objet durable de l'interface est désormais défini comme une expérience
+supervisée numérotée `AGO-EXP-YYYY-NNNN`, et non comme un simple échange
+éphémère. Question, contexte, protocole, transcription, verdict, inconnues,
+observation humaine et preuves restent distingués. AGORA est replacé dans le
+programme commun sur la connaissance et l'ignorance agentiques avec
+ETAU-CAVEMAN, SUBSTRACT-BENCH, KBM 2.0 et DUO.
+
 ## 2026-08-25 — Trajectoire de qualification après l'Étape 2
 
 À ce point de la trajectoire, le couple n'était pas qualifié comme instrument

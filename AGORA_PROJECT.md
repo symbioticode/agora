@@ -45,6 +45,13 @@ fiabilité factuelle générale. La priorité suivante est donc une baseline de 
 simples, variés et non ambigus. Les sujets de recherche sérieux viennent après
 ce contrôle; la logique formelle vient après leur usage supervisé fiable.
 
+AGORA s'inscrit dans un programme plus large sur la rigueur des LLM et la
+gestion de la connaissance comme de l'ignorance dans une infrastructure
+agentique. ETAU-CAVEMAN, SUBSTRACT-BENCH, KBM 2.0 et DUO y jouent des rôles
+complémentaires sans être absorbés par AGORA. Le périmètre et l'unité
+d'observation commune sont définis dans
+`docs/PROGRAMME-RECHERCHE-CONNAISSANCE.md`.
+
 ---
 
 ## Structure GitHub
