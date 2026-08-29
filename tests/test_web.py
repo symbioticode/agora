@@ -1,6 +1,7 @@
 import json
 import threading
 import time
+from pathlib import Path
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -8,6 +9,17 @@ from agora.engine import DebateEngine
 from agora.registry import ExperimentRegistry
 from agora.web import create_server
 from tests.test_engine import FakeGateway
+
+
+LAB2 = json.loads((Path(__file__).parents[1] / "labs" / "LAB-2" / "manifest.json").read_text(encoding="utf-8"))
+
+
+def lab2_request(**extra):
+    return {
+        "question": LAB2["cases"][0]["hypothesis"],
+        "objective": LAB2["objective"],
+        **extra,
+    }
 
 
 def request(base, path, method="GET", data=None, origin=None):
@@ -36,8 +48,11 @@ def test_web_api_without_network(tmp_path):
     base = f"http://127.0.0.1:{server.server_port}"
     try:
         assert json.loads(request(base, "/health")[2])["status"] == "ok"
-        assert json.loads(request(base, "/api/v1/config")[2])["rounds"] == 6
-        status, _, body = request(base, "/api/v1/experiments", "POST", {"question": "Question test", "title": "Test"})
+        public_config = json.loads(request(base, "/api/v1/config")[2])
+        assert public_config["rounds"] == 6
+        assert public_config["agent_response_limits"] == {"max_words": 300, "max_characters": 2400}
+        assert public_config["provider_token_budgets"] == {"anthropic": 2000, "deepseek": 8000}
+        status, _, body = request(base, "/api/v1/experiments", "POST", lab2_request(title="Test"))
         assert status == 202
         run = json.loads(body)
         for _ in range(30):
@@ -116,7 +131,7 @@ def test_persistence_failure_creates_failed_experiment(tmp_path, monkeypatch):
     thread.start()
     try:
         base = f"http://127.0.0.1:{server.server_port}"
-        status, _, body = request(base, "/api/v1/experiments", "POST", {"question": "Question"})
+        status, _, body = request(base, "/api/v1/experiments", "POST", lab2_request())
         assert status == 202
         run = json.loads(body)
         assert run["status"] == "FAILED"
@@ -126,7 +141,7 @@ def test_persistence_failure_creates_failed_experiment(tmp_path, monkeypatch):
         server.server_close()
 
 
-def test_suspended_gateway_refuses_run_without_reserving_experiment(tmp_path):
+def test_supervised_authorization_overrides_stale_provider_state(tmp_path):
     class SuspendedGateway(FakeGateway):
         def ready(self):
             return False
@@ -139,14 +154,10 @@ def test_suspended_gateway_refuses_run_without_reserving_experiment(tmp_path):
     thread.start()
     try:
         base = f"http://127.0.0.1:{server.server_port}"
-        try:
-            request(base, "/api/v1/experiments", "POST", {"question": "Question"})
-        except HTTPError as exc:
-            assert exc.code == 409
-            assert json.loads(exc.read())["error"]["code"] == "EXECUTION_SUSPENDED"
-        else:
-            raise AssertionError("suspended execution accepted")
-        assert registry.list() == []
+        config = json.loads(request(base, "/api/v1/config")[2])
+        assert config["mode"] == "SUPERVISED_RESEARCH"
+        status, _, _ = request(base, "/api/v1/experiments", "POST", {"question": "Question libre"})
+        assert status == 202
     finally:
         server.shutdown()
         server.server_close()
@@ -177,6 +188,35 @@ def test_probe_is_diagnostic_and_never_creates_experiment(tmp_path):
         assert diagnostic["creates_experiment"] is False
         assert diagnostic["ready"] is True
         assert registry.list() == []
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_supervised_mode_accepts_free_and_lab2_requests(tmp_path):
+    registry = ExperimentRegistry(tmp_path / "experiments")
+    engine = DebateEngine(FakeGateway(), judge_selector=lambda: "deepseek")
+    server = create_server(port=0, engine=engine, registry=registry, dist=tmp_path, run_root=tmp_path / "runs")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    base = f"http://127.0.0.1:{server.server_port}"
+    try:
+        config = json.loads(request(base, "/api/v1/config")[2])
+        assert config["mode"] == "SUPERVISED_RESEARCH"
+        lab = json.loads(request(base, "/api/v1/labs/LAB-2")[2])
+        assert len(lab["cases"]) == 10
+        assert lab["counts"]["L2-PHY-001"] == {"runs": 0, "completed": 0}
+
+        status, _, body = request(base, "/api/v1/experiments", "POST", {"question": "Question libre", "objective": "recherche"})
+        assert status == 202
+        assert json.loads(body)["status"] in {"RUNNING", "COMPLETED"}
+
+        status, _, body = request(base, "/api/v1/experiments", "POST", {
+            "question": lab["cases"][0]["hypothesis"],
+            "objective": lab["objective"],
+        })
+        assert status == 202
+        assert json.loads(body)["status"] == "RUNNING"
     finally:
         server.shutdown()
         server.server_close()

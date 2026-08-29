@@ -17,7 +17,7 @@ REPO = Path(__file__).parent
 
 
 def check_anthropic():
-    """Test Anthropic API avec claude-sonnet-4-5"""
+    """Test Anthropic API avec claude-sonnet-5"""
     from anthropic import Anthropic
 
     key = os.getenv("ANTHROPIC_API_KEY")
@@ -27,7 +27,7 @@ def check_anthropic():
     try:
         client = Anthropic(api_key=key)
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model="claude-sonnet-5",
             max_tokens=64,
             messages=[{"role": "user", "content": "Reply: OK"}]
         )

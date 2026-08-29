@@ -6,6 +6,19 @@ les expériences évoluent. Omniroute ne faisait pas partie du plan initial;
 son coût déclaré nul a permis de tester les transports, préparer le code et
 ajouter un troisième regard sans remplacer les expériences directes prévues.
 
+## 2026-08-27 — Reprise UI du Lab #2
+
+Le verrou circulaire de l'interface a été corrigé : le backend ne produisait
+jamais le mode `SUPERVISED_RESEARCH` exigé par le bouton de lancement. Un mode
+borné `LAB_2_SUPERVISED` expose désormais les dix cas préenregistrés, leur
+compteur de runs et l'objectif canonique. Le serveur refuse dans ce mode toute
+hypothèse ou tout objectif extérieur au manifeste.
+
+La suite locale passe avec 72 tests et 3 skips, le build Vite est valide et le
+service `agora-web` a été redémarré. Aucun appel provider ni run facturable n'a
+été exécuté pendant le débogage. Un état provider historique ne bloque plus le
+mode Lab : tout échec réel éventuel est conservé dans le registre du run.
+
 ## 2026-08-26 — Début d'implémentation de l'UI et du registre
 
 Le `main` de départ est sauvegardé sur la branche distante

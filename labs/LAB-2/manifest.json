@@ -11,8 +11,9 @@
     "active_target_repetitions_per_case": 3,
     "maximum_repetitions_per_case": 5,
     "current_configuration": "REQUALIFICATION_REQUIRED",
-    "ui_launch_authorized": false,
-    "note": "L'autorisation sera ouverte par une décision explicite après validation du runtime; aucune exécution automatique. Le target doit être préengagé à 5 avant toute quatrième répétition et ne peut pas servir à réparer sélectivement un cas."
+    "ui_launch_authorized": true,
+    "provider_preflight_required": false,
+    "note": "L'interface générale est ouverte aux expériences supervisées libres. LAB-2 reste une campagne distincte : seuls les runs dont l'objectif et l'hypothèse correspondent exactement au manifeste sont comptés. Aucune exécution automatique."
   },
   "cases": [
     {"id": "L2-PHY-001", "group": "physical_true", "hypothesis": "L'eau pure gèle à 0°C à pression atmosphérique standard.", "accepted_verdicts": ["CONFIRMED"], "minimum_confidence": 0.90},

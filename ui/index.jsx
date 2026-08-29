@@ -228,6 +228,8 @@ export default function App() {
   const [current, setCurrent] = useState(null)
   const [config, setConfig]   = useState(null)
   const [sync, setSync]       = useState(null)
+  const [lab, setLab]         = useState(null)
+  const [labCase, setLabCase] = useState("")
   const [replayId, setReplayId] = useState(null)
   const txRef  = useRef(null)
   const fileRef = useRef(null)
@@ -245,10 +247,10 @@ export default function App() {
 
   const refresh = async () => {
     try {
-      const [cfg, history, syncState] = await Promise.all([
-        api("/api/v1/config"), api("/api/v1/experiments"), api("/api/v1/sync")
+      const [cfg, history, syncState, labState] = await Promise.all([
+        api("/api/v1/config"), api("/api/v1/experiments"), api("/api/v1/sync"), api("/api/v1/labs/LAB-2")
       ])
-      setConfig(cfg); setRds(cfg.rounds); setSessions(history); setSync(syncState)
+      setConfig(cfg); setRds(cfg.rounds); setSessions(history); setSync(syncState); setLab(labState)
     } catch (e) { setErr(`Service AGORA indisponible : ${e.message}`) }
   }
 
@@ -276,7 +278,18 @@ export default function App() {
     setObjective(record.objective || ""); setReplayId(record.id); setDetail(null); setView("compose")
   }
 
+  const labMode = config?.mode === "LAB_2_SUPERVISED"
   const canLaunch = hyp.trim() && config?.mode === "SUPERVISED_RESEARCH" && !step
+
+  const selectLabCase = (id) => {
+    setLabCase(id)
+    const selected = lab?.cases.find(item => item.id === id)
+    if (!selected) return
+    setHyp(selected.hypothesis)
+    setTitle(`${id} · ${lab.title}`)
+    setObjective(lab.objective)
+    setReplayId(null)
+  }
 
   const probeProviders = async () => {
     setErr(null); setStep("Diagnostic minimal des deux providers…")
@@ -299,7 +312,7 @@ export default function App() {
     try {
       const liveConfig = await api("/api/v1/config")
       setConfig(liveConfig)
-      if (liveConfig.mode !== "SUPERVISED_RESEARCH") {
+      if (!["SUPERVISED_RESEARCH", "LAB_2_SUPERVISED"].includes(liveConfig.mode)) {
         throw new Error("Exécution suspendue avant tout appel — revenez au formulaire et lancez le diagnostic provider.")
       }
       let run = await api("/api/v1/experiments", {
@@ -422,8 +435,8 @@ export default function App() {
             <div className="opts">
               <span className="ol">Tours</span>
               <button className="rb rs" disabled>{rds}</button>
-              <span className={config?.mode === "SUPERVISED_RESEARCH" ? "on" : "off"}>
-                {config?.mode === "SUPERVISED_RESEARCH" ? "configuration qualifiée · exécution disponible" : config?.mode === "REQUALIFICATION_REQUIRED" ? "transport disponible · requalification requise" : "exécution suspendue · diagnostic requis"}
+              <span className={config?.mode === "SUPERVISED_RESEARCH" || labMode ? "on" : "off"}>
+                {labMode ? "LAB-2 supervisé · périmètre préenregistré" : config?.mode === "SUPERVISED_RESEARCH" ? "configuration qualifiée · exécution disponible" : config?.mode === "REQUALIFICATION_REQUIRED" ? "transport disponible · requalification requise" : "exécution suspendue · diagnostic requis"}
               </span>
               <button className="ctog" onClick={() => setShowCtx(x => !x)}>
                 <i className={`ti ${showCtx ? "ti-chevron-down" : "ti-chevron-right"}`} aria-hidden="true" />

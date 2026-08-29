@@ -13,12 +13,25 @@ from anthropic import Anthropic
 from openai import OpenAI
 
 REPO = Path(__file__).resolve().parent.parent
-MODEL_A = "claude-sonnet-4-5"
+MODEL_A = "claude-sonnet-5"
 MODEL_B = "deepseek-v4-flash"
 DEFAULT_ROUNDS = 6
 TEMP_DEBATE = 0.7
 TEMP_JUDGE = 0.0
 CALL_TIMEOUT_SECONDS = 90
+MAX_AGENT_WORDS = 300
+MAX_AGENT_CHARACTERS = 2400
+DEEPSEEK_TOKEN_BUDGET = 8000
+
+AGENT_RESPONSE_CONTRACT = f"""
+
+CONTRAT DE RÉPONSE OBLIGATOIRE :
+- maximum {MAX_AGENT_WORDS} mots ET {MAX_AGENT_CHARACTERS} caractères, Markdown compris ;
+- termine chaque phrase et la conclusion avant d'atteindre ces limites ;
+- privilégie 3 à 5 paragraphes courts, sans répéter le débat ni l'hypothèse ;
+- si tous les arguments ne tiennent pas, conserve seulement ceux qui changent le verdict.
+Une réponse inachevée ou coupée au milieu d'une phrase est invalide.
+""".strip()
 
 MINDSETS = {
     "A": (REPO / "mindsets" / "empiricist.md").read_text(encoding="utf-8"),
@@ -129,15 +142,35 @@ class ProviderGateway:
             self._anthropic = Anthropic(api_key=key)
 
         def invoke() -> str:
-            result = self._anthropic.messages.create(
+            request = dict(
                 model=model,
                 max_tokens=max_tokens,
-                temperature=temp,
                 timeout=CALL_TIMEOUT_SECONDS,
                 system=system,
                 messages=[{"role": "user", "content": user}],
             )
-            text = result.content[0].text if result.content else ""
+            # Sonnet 5 rejects the legacy temperature parameter. Older models
+            # retain the qualified AGORA setting for backward compatibility.
+            if model == "claude-sonnet-5":
+                # Adaptive thinking defaults to high effort and can consume
+                # the complete short-response budget before visible text.
+                request["thinking"] = {"type": "disabled"}
+                request["output_config"] = {"effort": "low"}
+            else:
+                request["temperature"] = temp
+            result = self._anthropic.messages.create(**request)
+            if getattr(result, "stop_reason", None) == "max_tokens":
+                raise RuntimeError("Réponse Anthropic tronquée par max_tokens")
+            # Sonnet 5 may emit a ThinkingBlock before its TextBlock.
+            text = next(
+                (
+                    block.text
+                    for block in (result.content or [])
+                    if isinstance(getattr(block, "text", None), str)
+                    and block.text.strip()
+                ),
+                "",
+            )
             if not text or not text.strip():
                 raise RuntimeError("Réponse Anthropic vide")
             return text
@@ -150,7 +183,7 @@ class ProviderGateway:
             self._failure("anthropic", exc)
             raise
 
-    def deepseek(self, model: str, system: str, user: str, temp: float, max_tokens: int = 4000) -> tuple[str, int]:
+    def deepseek(self, model: str, system: str, user: str, temp: float, max_tokens: int = DEEPSEEK_TOKEN_BUDGET) -> tuple[str, int]:
         if self._deepseek is None:
             key = os.getenv("DEEPSEEK_API_KEY")
             if not key:
@@ -170,9 +203,11 @@ class ProviderGateway:
                 ],
             )
             choice = result.choices[0] if result.choices else None
+            finish = getattr(choice, "finish_reason", "unknown") if choice else "no_choice"
+            if finish == "length":
+                raise RuntimeError("Réponse DeepSeek tronquée par la limite de tokens (finish_reason=length)")
             text = choice.message.content if choice else ""
             if not text or not text.strip():
-                finish = getattr(choice, "finish_reason", "unknown") if choice else "no_choice"
                 reasoning = getattr(choice.message, "reasoning_content", "") if choice else ""
                 reasoning_flag = "yes" if reasoning else "no"
                 raise RuntimeError(f"Réponse DeepSeek vide (finish_reason={finish}, reasoning_present={reasoning_flag})")
@@ -204,10 +239,12 @@ class DebateEngine:
             other = "B" if agent == "A" else "A"
             user = (
                 f"Hypothèse (ré-ancrée): {hypothesis}\n\n"
-                f"Tour {round_num}. L'adversaire ({other}) a répondu:\n{history[-1][other]}\n\n"
+                + (f"Contexte déclaré (ré-ancré):\n{context}\n\n" if context else "")
+                + f"Tour {round_num}. L'adversaire ({other}) a répondu:\n{history[-1][other]}\n\n"
                 "Maintiens, révises ou nuances ta position. "
                 "Cite explicitement ce qui te fait changer d'avis."
             )
+        user += f"\n\n{AGENT_RESPONSE_CONTRACT}"
         if agent == "A":
             return self.gateway.anthropic(MODEL_A, MINDSETS[agent], user, TEMP_DEBATE)
         return self.gateway.deepseek(MODEL_B, MINDSETS[agent], user, TEMP_DEBATE)
@@ -267,7 +304,18 @@ class DebateEngine:
         return {
             "hypothesis": hypothesis,
             "context": context,
-            "configuration": {"mode": "QUALIFIED", "rounds": rounds},
+            "configuration": {
+                "mode": "QUALIFIED",
+                "rounds": rounds,
+                "agent_response_limits": {
+                    "max_words": MAX_AGENT_WORDS,
+                    "max_characters": MAX_AGENT_CHARACTERS,
+                },
+                "provider_token_budgets": {
+                    "anthropic": 2000,
+                    "deepseek": DEEPSEEK_TOKEN_BUDGET,
+                },
+            },
             "models": {"A": f"anthropic:{MODEL_A}", "B": f"deepseek:{MODEL_B}", "judge": judge_model},
             "mindsets": {"A": "empiricist", "B": "rationalist"},
             "retries": retries,

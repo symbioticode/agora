@@ -17,7 +17,7 @@ from urllib.parse import parse_qs, urlparse
 
 from dotenv import load_dotenv
 
-from .engine import DEFAULT_ROUNDS, MODEL_A, MODEL_B, DebateEngine
+from .engine import DEEPSEEK_TOKEN_BUDGET, DEFAULT_ROUNDS, MAX_AGENT_CHARACTERS, MAX_AGENT_WORDS, MODEL_A, MODEL_B, DebateEngine
 from .registry import ExperimentRegistry
 
 REPO = Path(__file__).resolve().parent.parent
@@ -25,11 +25,33 @@ DIST = REPO / "ui" / "dist"
 RUN_ROOT = REPO / "runtime" / "runs"
 MAX_BODY = 32_768
 EXPERIMENT_ID = re.compile(r"^AGO-EXP-\d{4}-\d{4}$")
+LAB2_MANIFEST = REPO / "labs" / "LAB-2" / "manifest.json"
+
+
+def _lab2_manifest() -> dict:
+    try:
+        return json.loads(LAB2_MANIFEST.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
 
 
 def _runtime_mode(engine: DebateEngine) -> str:
+    manifest = _lab2_manifest()
+    if manifest.get("execution", {}).get("ui_launch_authorized") is True:
+        return "SUPERVISED_RESEARCH"
     ready = engine.gateway.ready() if hasattr(engine.gateway, "ready") else True
-    return "REQUALIFICATION_REQUIRED" if ready else "EXECUTION_SUSPENDED"
+    if not ready:
+        return "EXECUTION_SUSPENDED"
+    return "REQUALIFICATION_REQUIRED"
+
+
+def _is_lab2_request(body: dict) -> bool:
+    manifest = _lab2_manifest()
+    hypotheses = {case.get("hypothesis") for case in manifest.get("cases", [])}
+    return (
+        body.get("objective") == manifest.get("objective")
+        and body.get("question") in hypotheses
+    )
 
 
 def _public_record(record: dict, summary: bool = False) -> dict:
@@ -164,6 +186,11 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                     "historical_protocol_qualification": "VALIDATED_FOR_SUPERVISED_RESEARCH",
                     "current_configuration_qualification": "REQUIRED",
                     "rounds": DEFAULT_ROUNDS,
+                    "agent_response_limits": {
+                        "max_words": MAX_AGENT_WORDS,
+                        "max_characters": MAX_AGENT_CHARACTERS,
+                    },
+                    "provider_token_budgets": {"anthropic": 2000, "deepseek": DEEPSEEK_TOKEN_BUDGET},
                     "agents": {
                         "A": {"provider": "anthropic", "model": MODEL_A, "mindset": "empiricist"},
                         "B": {"provider": "deepseek", "model": MODEL_B, "mindset": "rationalist"},
@@ -171,6 +198,30 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                     "providers": engine.gateway.status() if hasattr(engine.gateway, "status") else {},
                     "action_authority": "NONE",
                     "factual_reliability": "NOT_GENERALLY_QUALIFIED",
+                })
+            if path == "/api/v1/labs/LAB-2":
+                manifest = _lab2_manifest()
+                if not manifest:
+                    return self._error(503, "LAB_UNAVAILABLE", "Manifeste LAB-2 indisponible")
+                records = registry.list()
+                counts = {}
+                for case in manifest["cases"]:
+                    matching = [
+                        record for record in records
+                        if record.get("objective") == manifest["objective"]
+                        and record.get("question") == case["hypothesis"]
+                    ]
+                    counts[case["id"]] = {
+                        "runs": len(matching),
+                        "completed": sum(record.get("status") == "COMPLETED" for record in matching),
+                    }
+                return self._json(200, {
+                    "id": manifest["id"],
+                    "title": manifest["title"],
+                    "objective": manifest["objective"],
+                    "execution": manifest["execution"],
+                    "cases": manifest["cases"],
+                    "counts": counts,
                 })
             if path == "/api/v1/experiments":
                 query = parse_qs(parsed.query)
@@ -226,7 +277,8 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                     results = [engine.gateway.probe(provider) for provider in requested]
                     return self._json(200, {"kind": "TRANSPORT_DIAGNOSTIC", "creates_experiment": False, "ready": engine.gateway.ready(), "results": results})
                 if self.path == "/api/v1/experiments":
-                    if hasattr(engine.gateway, "ready") and not engine.gateway.ready():
+                    mode = _runtime_mode(engine)
+                    if mode not in {"SUPERVISED_RESEARCH", "LAB_2_SUPERVISED"} and hasattr(engine.gateway, "ready") and not engine.gateway.ready():
                         return self._error(409, "EXECUTION_SUSPENDED", "Un provider n'a pas franchi le diagnostic; aucun identifiant ni appel de débat n'a été créé")
                     allowed = {"question", "context", "title", "objective", "supervisor", "relations", "unknowns"}
                     unknown = set(body) - allowed
@@ -235,6 +287,8 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                     question = body.get("question", "").strip()
                     if not question:
                         raise ValueError("L'hypothèse est obligatoire")
+                    if mode == "REQUALIFICATION_REQUIRED":
+                        return self._error(409, "REQUALIFICATION_REQUIRED", "LAB-2 n'est pas encore autorisé au lancement dans le manifeste")
                     return self._json(HTTPStatus.ACCEPTED, launch(body))
                 match = re.fullmatch(r"/api/v1/experiments/(AGO-EXP-\d{4}-\d{4})/observations", self.path)
                 if match:

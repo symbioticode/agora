@@ -111,6 +111,43 @@ superviseur.
 Référence : docs/PROGRAMME-RECHERCHE-CONNAISSANCE.md et
 docs/PLAN-INTEGRATION-UI-BCP-HUB.md
 
+## D-AGO-014 — Reprise UI bornée au Lab #2
+
+Date : 2026-08-27
+Raison : l'UI exigeait `SUPERVISED_RESEARCH`, alors que le runtime corrigé ne
+pouvait exposer que `EXECUTION_SUSPENDED` ou `REQUALIFICATION_REQUIRED`. Même
+avec un diagnostic provider réussi, aucun lancement de requalification n'était
+donc mécaniquement possible.
+Règle : lorsque les deux providers sont disponibles, l'UI peut entrer en
+`LAB_2_SUPERVISED`. Dans ce mode, l'API accepte uniquement une hypothèse et
+l'objectif exacts du manifeste LAB-2; toute recherche libre reste bloquée.
+L'autorisation n'entraîne aucun lancement automatique et chaque run demeure
+supervisé. Un statut provider restauré d'une ancienne session reste affiché à
+titre diagnostique mais ne bloque pas ce mode borné; seul un appel réellement
+échoué crée une preuve d'échec.
+Référence : `labs/LAB-2/manifest.json`, `agora/web.py` et `ui/index.jsx`.
+
+## D-AGO-015 — Ouverture des questions supervisées libres
+
+Date : 2026-08-27
+Raison : le périmètre LAB-2 ne doit plus empêcher l'utilisateur de créer une
+expérience générale depuis l'interface.
+Règle : le mode `SUPERVISED_RESEARCH` accepte toute question non vide. LAB-2
+reste mesuré séparément par correspondance exacte de l'objectif et de
+l'hypothèse; il ne constitue plus une restriction de saisie ou de lancement.
+
+## D-AGO-016 — Réponses agent bornées et complètes
+
+Date : 2026-08-27
+Raison : plusieurs prises de parole de `AGO-EXP-2026-0005` ont atteint la
+limite de génération provider et se terminent au milieu d'un mot.
+Règle : chaque prompt agent impose au maximum 300 mots et 2400 caractères,
+Markdown compris, avec conclusion complète. Les plafonds provider de 2000 et
+8000 tokens restent une marge technique et ne sont plus la longueur cible.
+Le budget DeepSeek inclut son raisonnement interne non affiché. Une réponse
+signalée `max_tokens` ou `finish_reason=length` est refusée et ne peut plus être
+enregistrée silencieusement comme une prise de parole complète.
+
 ## D-AGO-013 — AGORA canonique, KBM 2.0 comme projection quotidienne
 Date : 2026-08-26
 Raison : les expériences doivent rester proches du code et de leurs preuves,
