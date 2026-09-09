@@ -4,6 +4,7 @@ type: faq
 project: AGORA
 status: ACTIVE
 date: 2026-08-26
+updated: 2026-09-09
 audience: human-agent
 scope: home
 maturity: operational
@@ -16,6 +17,7 @@ tags:
   - diagnostic
   - anthropic
   - deepseek
+  - nvidia
 ---
 
 # FAQ AGORA — État et diagnostic des providers LLM
@@ -99,3 +101,112 @@ réponse finale non vide. Le 26 août, Anthropic a réussi une sonde et DeepSeek
 quatre sondes consécutives, toutes sans retry. Comme la correction DeepSeek
 emploie désormais `reasoning_effort=low`, la configuration courante reste
 `REQUALIFICATION_REQUIRED` jusqu'au replay borné des contrôles pertinents.
+
+## Premier run qualifié avec NVIDIA NIM 11B
+
+Le 9 septembre 2026, le crédit Anthropic insuffisant a interrompu deux revues
+H0005 après plusieurs tours mais avant jugement. Ces expériences
+`AGO-EXP-2026-0029` et `AGO-EXP-2026-0030` sont `FAILED` : elles ne portent
+aucun verdict et ne doivent pas être transformées en `NON_TESTABLE`.
+
+Une reconfiguration supervisée a alors introduit le couple suivant :
+
+```text
+Agent A empiriste  = nvidia:meta/llama-3.2-11b-vision-instruct
+Agent B rationaliste = deepseek:deepseek-v4-flash
+Juge               = deepseek:deepseek-v4-flash
+```
+
+Le secret NVIDIA reste dans un fichier d'environnement local ignoré par Git.
+Ni sa valeur ni une copie du fichier ne sont publiées dans AGORA ou KBM.
+
+### Qualification technique préalable
+
+La qualification a séparé quatre niveaux :
+
+1. tests unitaires du routage NVIDIA et du transport OpenAI-compatible ;
+2. Ruff et compilation Python ;
+3. probes NVIDIA et DeepSeek, toutes deux positives sans retry ;
+4. débat complet de six tours plus jugement JSON.
+
+Résultats :
+
+```text
+AGORA commits = 8e120c9, puis correctif 10a4dbd
+tests         = 79 passed, 5 skipped
+probes        = NVIDIA OK / DeepSeek OK / ready=true / retries=0
+calibration   = AGO-EXP-2026-0031 / COMPLETED / 14 tours / retries=0
+```
+
+La calibration utilisait l'énoncé borné « dans les entiers usuels,
+`2 + 2 = 4` ». Elle a démontré que le pipeline complet pouvait produire et
+sérialiser un jugement. Son verdict `NUANCED` montre aussi une limite utile :
+le transport est qualifié, mais le modèle 11B peut conserver des nuances
+épistémologiques superflues. `ON` et `COMPLETED` ne prouvent donc toujours pas
+la qualité factuelle générale.
+
+Le modèle NVIDIA 90B annoncé par le catalogue a également été essayé, mais n'a
+produit aucune réponse dans le délai AGORA. Il n'a pas été retenu ni présenté
+comme qualifié.
+
+### Exemple réel : revue H0005
+
+H0005 évaluait un modèle comptable short canonique. La Critique et la
+Contradictoire ont été lancées comme deux expériences distinctes sur le même
+corpus déterministe :
+
+```text
+paquet H0005 = 6f046418aa5e205af03d5d41f95b9d5cff530dce
+contexte SHA-256 = fb49e5e91de96f55a981dcd92be8559c9221fa641f5a14f8fb4699e4f08f8008
+Critique = AGO-EXP-2026-0034
+Contradictoire aveugle = AGO-EXP-2026-0033
+```
+
+La Contradictoire a gelé son jugement avant lecture de la Critique. Les deux
+runs ont utilisé NVIDIA 11B et DeepSeek, mais des mandats différents. Cette
+séparation est **procédurale** : elle ne constitue ni IV&V organisationnelle,
+ni indépendance statistique, d'auteur ou de famille de modèles.
+
+Résultats :
+
+| Revue | Verdict AGORA | Traduction protocolaire | Point central |
+|---|---|---|---|
+| Critique `0034` | `REJECTED`, confiance `0.95` | `REJECT` | ordre des écritures contradictoire entre hypothèse et attendu machine |
+| Contradictoire `0033` | `NUANCED`, confiance `0.72` | `ACCEPT_WITH_LIMITS` | divergence interprétée comme ordre de présentation résolu par la clé locale |
+
+Le désaccord concernait exactement :
+
+```text
+HYPOTHESIS.md                  : REALIZED_PNL puis FEE
+ORACLE_EXPECTATIONS + code     : FEE puis REALIZED_PNL
+```
+
+AGORA n'a pas aplati ce désaccord en moyenne. Le protocole a correctement
+laissé H0005 `REFUTED` et `P1 NOT_PASSED`, en attente d'une décision humaine et
+d'un éventuel nouveau paquet. C'est le principal enseignement du premier run :
+NVIDIA NIM 11B est utilisable comme voix contradictoire bornée, mais ses sorties
+doivent rester confrontées aux artefacts mécaniques et aux gates fail-closed.
+
+### Incident de juge et correction
+
+La première Critique reconfigurée, `AGO-EXP-2026-0032`, avait achevé ses 14
+tours mais l'ancien alternateur avait choisi Anthropic comme juge. Elle a donc
+échoué avant verdict. Le commit `10a4dbd` impose désormais, pour la
+configuration NVIDIA + DeepSeek, un juge appartenant aux fournisseurs
+sélectionnés : DeepSeek. La Critique a ensuite été rejouée sous un nouvel ID,
+`0034`; l'historique `0032` reste conservé comme échec d'infrastructure.
+
+### Politique opératoire NVIDIA
+
+- vérifier le modèle réellement accessible au compte, pas seulement présent
+  dans un catalogue ;
+- exécuter les probes NVIDIA et DeepSeek avant un lot de revues ;
+- exiger un débat complet et un jugement JSON avant de qualifier le pipeline ;
+- conserver chaque échec sous son propre identifiant ;
+- ne jamais convertir une panne provider en verdict scientifique ;
+- ne jamais présenter NVIDIA 11B comme équivalent à Claude ;
+- pour une décision importante, vérifier mécaniquement les objections citées ;
+- un désaccord Critique/Contradictoire bloque l'admission au lieu d'être moyenné.
+
+Le fallback d'urgence d'Omniroute reste un mécanisme distinct, documenté dans
+[KB001 — Fallback d'urgence NVIDIA NIM](http://192.168.100.200:8000/projets/etau-caveman/docs/kb-001-fallback-nvidia/).
