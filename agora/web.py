@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import mimetypes
+import os
 import re
 import threading
 import uuid
@@ -51,6 +52,12 @@ def _is_lab2_request(body: dict) -> bool:
         body.get("objective") == manifest.get("objective")
         and body.get("question") in hypotheses
     )
+
+
+def _configured_judge_provider(agent_a_provider: str, experiment_count: int) -> str:
+    if agent_a_provider == "nvidia":
+        return "deepseek"
+    return "deepseek" if experiment_count % 2 == 0 else "anthropic"
 
 
 def _public_record(record: dict, summary: bool = False) -> dict:
@@ -329,7 +336,16 @@ def create_server(host="127.0.0.1", port=8768, engine=None, registry=None, dist=
     if host not in {"127.0.0.1", "localhost"}:
         raise ValueError("AGORA web doit rester sur l'interface loopback")
     registry = registry or ExperimentRegistry(REPO / "experiments")
-    engine = engine or DebateEngine(judge_selector=lambda: "deepseek" if len(registry.list()) % 2 == 0 else "anthropic")
+    if engine is None:
+        agent_a_provider = os.getenv("AGORA_AGENT_A_PROVIDER", "anthropic")
+        judge_provider = _configured_judge_provider(
+            agent_a_provider,
+            len(registry.list()),
+        )
+        engine = DebateEngine(
+            judge_selector=lambda: judge_provider,
+            agent_a_provider=agent_a_provider,
+        )
     records = registry.list()
     if records and hasattr(engine.gateway, "restore_from_experiment"):
         for record in reversed(records):

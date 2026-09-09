@@ -7,7 +7,7 @@ from urllib.request import Request, urlopen
 
 from agora.engine import DebateEngine
 from agora.registry import ExperimentRegistry
-from agora.web import create_server
+from agora.web import _configured_judge_provider, create_server
 from tests.test_engine import FakeGateway
 
 
@@ -191,6 +191,16 @@ def test_probe_is_diagnostic_and_never_creates_experiment(tmp_path):
     finally:
         server.shutdown()
         server.server_close()
+
+
+def test_nvidia_configuration_never_selects_unavailable_anthropic_judge(
+    tmp_path,
+):
+    registry = ExperimentRegistry(tmp_path / "experiments")
+    registry.reserve_id()
+    assert _configured_judge_provider("nvidia", len(registry.list())) == "deepseek"
+    assert _configured_judge_provider("nvidia", 2) == "deepseek"
+    assert _configured_judge_provider("anthropic", 1) == "anthropic"
 
 
 def test_supervised_mode_accepts_free_and_lab2_requests(tmp_path):
