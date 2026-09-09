@@ -1,13 +1,13 @@
 from types import SimpleNamespace
 
-from agora.engine import DEEPSEEK_TOKEN_BUDGET, DEFAULT_ROUNDS, MAX_AGENT_CHARACTERS, MAX_AGENT_WORDS, DebateEngine
+from agora.engine import DEEPSEEK_TOKEN_BUDGET, DEFAULT_ROUNDS, JUDGE_PROMPT, MAX_AGENT_CHARACTERS, MAX_AGENT_WORDS, DebateEngine
 
 
 class FakeGateway:
     def __init__(self):
         self.agent_prompts = []
 
-    def ready(self):
+    def ready(self, providers=("anthropic", "deepseek")):
         return True
 
     def anthropic(self, model, system, user, temp):
@@ -21,6 +21,10 @@ class FakeGateway:
             return '{"verdict":"CONFIRMED","confidence":0.9,"agreement":[],"disagreement":[],"reasoning":"ok"}', 0
         self.agent_prompts.append(user)
         return "réponse rationaliste", 0
+
+    def nvidia(self, model, system, user, temp):
+        self.agent_prompts.append(user)
+        return "réponse empiriste NVIDIA", 0
 
 
 def test_engine_qualified_path_without_network():
@@ -60,11 +64,32 @@ def test_engine_rejects_unqualified_round_count():
         raise AssertionError("non-qualified rounds accepted")
 
 
+def test_engine_routes_agent_a_to_nvidia_without_anthropic():
+    gateway = FakeGateway()
+    result = DebateEngine(
+        gateway,
+        judge_selector=lambda: "deepseek",
+        agent_a_provider="nvidia",
+    ).run("question")
+    assert result["models"]["A"] == "nvidia:meta/llama-3.2-11b-vision-instruct"
+    assert result["models"]["B"].startswith("deepseek:")
+    assert result["configuration"]["provider_token_budgets"] == {
+        "nvidia": 4096,
+        "deepseek": DEEPSEEK_TOKEN_BUDGET,
+    }
+
+
 def test_context_is_reanchored_at_every_round():
     gateway = FakeGateway()
     DebateEngine(gateway).run("question", context="SOURCE EXACTE")
     assert len(gateway.agent_prompts) == (DEFAULT_ROUNDS + 1) * 2
     assert all("SOURCE EXACTE" in prompt for prompt in gateway.agent_prompts)
+
+
+def test_judge_contract_bounds_json_output():
+    assert "uniquement avec l'objet JSON" in JUDGE_PROMPT
+    assert "au maximum 3 éléments" in JUDGE_PROMPT
+    assert "au maximum 600 caractères" in JUDGE_PROMPT
 
 
 def test_gateway_status_can_be_restored_from_failed_experiment(monkeypatch):
@@ -108,3 +133,51 @@ def test_sonnet5_request_omits_deprecated_temperature(monkeypatch):
     assert "temperature" not in captured
     assert captured["thinking"] == {"type": "disabled"}
     assert captured["output_config"] == {"effort": "low"}
+
+
+def test_nvidia_uses_openai_compatible_transport(monkeypatch):
+    monkeypatch.setenv("NVIDIA_API_KEY", "configured")
+    from agora.engine import ProviderGateway
+
+    captured = {}
+
+    class Completions:
+        @staticmethod
+        def create(**kwargs):
+            captured.update(kwargs)
+            choice = SimpleNamespace(
+                finish_reason="stop",
+                message=SimpleNamespace(content="OK"),
+            )
+            return SimpleNamespace(choices=[choice])
+
+    gateway = ProviderGateway()
+    gateway._nvidia = SimpleNamespace(
+        chat=SimpleNamespace(completions=Completions()),
+    )
+    text, retries = gateway.nvidia(
+        "meta/llama-3.2-11b-vision-instruct",
+        "system",
+        "user",
+        0.7,
+        max_tokens=64,
+    )
+
+    assert text == "OK"
+    assert retries == 0
+    assert captured["model"] == "meta/llama-3.2-11b-vision-instruct"
+    assert captured["temperature"] == 0.7
+    assert gateway.status()["nvidia"]["status"] == "ON"
+
+
+def test_readiness_can_target_nvidia_and_deepseek(monkeypatch):
+    monkeypatch.setenv("NVIDIA_API_KEY", "configured")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "configured")
+    from agora.engine import ProviderGateway
+
+    gateway = ProviderGateway()
+    gateway._state["nvidia"]["status"] = "ON"
+    gateway._state["deepseek"]["status"] = "ON"
+
+    assert gateway.ready(("nvidia", "deepseek"))
+    assert not gateway.ready(("anthropic", "deepseek"))

@@ -143,7 +143,7 @@ def test_persistence_failure_creates_failed_experiment(tmp_path, monkeypatch):
 
 def test_supervised_authorization_overrides_stale_provider_state(tmp_path):
     class SuspendedGateway(FakeGateway):
-        def ready(self):
+        def ready(self, providers=("anthropic", "deepseek")):
             return False
         def status(self):
             return {"anthropic": {"status": "ON"}, "deepseek": {"status": "DEGRADED"}}
@@ -166,7 +166,7 @@ def test_supervised_authorization_overrides_stale_provider_state(tmp_path):
 def test_probe_is_diagnostic_and_never_creates_experiment(tmp_path):
     class ProbeGateway(FakeGateway):
         available = False
-        def ready(self):
+        def ready(self, providers=("anthropic", "deepseek")):
             return self.available
         def status(self):
             status = "ON" if self.available else "DEGRADED"

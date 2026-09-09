@@ -5,7 +5,6 @@ from __future__ import annotations
 import argparse
 import json
 import mimetypes
-import os
 import re
 import threading
 import uuid
@@ -17,7 +16,7 @@ from urllib.parse import parse_qs, urlparse
 
 from dotenv import load_dotenv
 
-from .engine import DEEPSEEK_TOKEN_BUDGET, DEFAULT_ROUNDS, MAX_AGENT_CHARACTERS, MAX_AGENT_WORDS, MODEL_A, MODEL_B, DebateEngine
+from .engine import DEEPSEEK_TOKEN_BUDGET, DEFAULT_ROUNDS, MAX_AGENT_CHARACTERS, MAX_AGENT_WORDS, MODEL_A, MODEL_B, MODEL_NVIDIA, NVIDIA_TOKEN_BUDGET, DebateEngine
 from .registry import ExperimentRegistry
 
 REPO = Path(__file__).resolve().parent.parent
@@ -39,7 +38,7 @@ def _runtime_mode(engine: DebateEngine) -> str:
     manifest = _lab2_manifest()
     if manifest.get("execution", {}).get("ui_launch_authorized") is True:
         return "SUPERVISED_RESEARCH"
-    ready = engine.gateway.ready() if hasattr(engine.gateway, "ready") else True
+    ready = engine.ready() if hasattr(engine, "ready") else True
     if not ready:
         return "EXECUTION_SUSPENDED"
     return "REQUALIFICATION_REQUIRED"
@@ -190,9 +189,16 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                         "max_words": MAX_AGENT_WORDS,
                         "max_characters": MAX_AGENT_CHARACTERS,
                     },
-                    "provider_token_budgets": {"anthropic": 2000, "deepseek": DEEPSEEK_TOKEN_BUDGET},
+                    "provider_token_budgets": {
+                        engine.agent_a_provider: NVIDIA_TOKEN_BUDGET if engine.agent_a_provider == "nvidia" else 2000,
+                        "deepseek": DEEPSEEK_TOKEN_BUDGET,
+                    },
                     "agents": {
-                        "A": {"provider": "anthropic", "model": MODEL_A, "mindset": "empiricist"},
+                        "A": {
+                            "provider": engine.agent_a_provider,
+                            "model": MODEL_NVIDIA if engine.agent_a_provider == "nvidia" else MODEL_A,
+                            "mindset": "empiricist",
+                        },
                         "B": {"provider": "deepseek", "model": MODEL_B, "mindset": "rationalist"},
                     },
                     "providers": engine.gateway.status() if hasattr(engine.gateway, "status") else {},
@@ -272,10 +278,10 @@ def make_handler(engine: DebateEngine, registry: ExperimentRegistry, dist: Path 
                     if not hasattr(engine.gateway, "probe"):
                         return self._error(501, "PROBE_UNAVAILABLE", "La gateway ne fournit pas de diagnostic")
                     requested = body.get("providers", ["anthropic", "deepseek"])
-                    if not isinstance(requested, list) or not requested or set(requested) - {"anthropic", "deepseek"}:
-                        raise ValueError("providers doit contenir anthropic et/ou deepseek")
+                    if not isinstance(requested, list) or not requested or set(requested) - {"anthropic", "deepseek", "nvidia"}:
+                        raise ValueError("providers doit contenir anthropic, deepseek et/ou nvidia")
                     results = [engine.gateway.probe(provider) for provider in requested]
-                    return self._json(200, {"kind": "TRANSPORT_DIAGNOSTIC", "creates_experiment": False, "ready": engine.gateway.ready(), "results": results})
+                    return self._json(200, {"kind": "TRANSPORT_DIAGNOSTIC", "creates_experiment": False, "ready": engine.ready(), "results": results})
                 if self.path == "/api/v1/experiments":
                     mode = _runtime_mode(engine)
                     if mode not in {"SUPERVISED_RESEARCH", "LAB_2_SUPERVISED"} and hasattr(engine.gateway, "ready") and not engine.gateway.ready():

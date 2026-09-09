@@ -15,6 +15,7 @@ from openai import OpenAI
 REPO = Path(__file__).resolve().parent.parent
 MODEL_A = "claude-sonnet-5"
 MODEL_B = "deepseek-v4-flash"
+MODEL_NVIDIA = "meta/llama-3.2-11b-vision-instruct"
 DEFAULT_ROUNDS = 6
 TEMP_DEBATE = 0.7
 TEMP_JUDGE = 0.0
@@ -22,6 +23,7 @@ CALL_TIMEOUT_SECONDS = 90
 MAX_AGENT_WORDS = 300
 MAX_AGENT_CHARACTERS = 2400
 DEEPSEEK_TOKEN_BUDGET = 8000
+NVIDIA_TOKEN_BUDGET = 4096
 
 AGENT_RESPONSE_CONTRACT = f"""
 
@@ -55,6 +57,9 @@ Règles:
 - PENDING: irresolvable avec les arguments présents
 - confidence ≥ 0.50, ≤ 1.00
 - agreement/disagreement: listes de strings, peuvent être vides
+- réponds uniquement avec l'objet JSON, sans clôture Markdown
+- au maximum 3 éléments par liste, 180 caractères par élément
+- reasoning: au maximum 600 caractères
 """
 
 
@@ -80,9 +85,11 @@ class ProviderGateway:
         self.max_retries = max_retries
         self._anthropic = None
         self._deepseek = None
+        self._nvidia = None
         self._state = {
             "anthropic": {"status": "READY" if os.getenv("ANTHROPIC_API_KEY") else "UNCONFIGURED", "last_success": None, "last_error": None},
             "deepseek": {"status": "READY" if os.getenv("DEEPSEEK_API_KEY") else "UNCONFIGURED", "last_success": None, "last_error": None},
+            "nvidia": {"status": "READY" if os.getenv("NVIDIA_API_KEY") else "UNCONFIGURED", "last_success": None, "last_error": None},
         }
 
     def status(self) -> dict:
@@ -96,7 +103,7 @@ class ProviderGateway:
         if any(turn.get("agent") == "B" and turn.get("content", "").strip() for turn in transcript):
             self._state["deepseek"]["status"] = "ON"
         failure = " ".join(str(value) for value in record.get("failure", {}).values()).lower()
-        for provider in ("anthropic", "deepseek"):
+        for provider in ("anthropic", "deepseek", "nvidia"):
             if provider in failure:
                 self._state[provider].update({"status": "DEGRADED", "last_error": record["failure"].get("message")})
 
@@ -116,9 +123,9 @@ class ProviderGateway:
                 time.sleep(2**attempt)
         raise RuntimeError("retry loop exhausted")
 
-    def ready(self) -> bool:
-        """A full run is allowed only after both providers proved usable."""
-        return all(item["status"] == "ON" for item in self._state.values())
+    def ready(self, providers: tuple[str, ...] = ("anthropic", "deepseek")) -> bool:
+        """A full run is allowed only after its selected providers proved usable."""
+        return all(self._state[provider]["status"] == "ON" for provider in providers)
 
     def probe(self, provider: str) -> dict:
         """Minimal paid transport probe, never an AGORA experiment."""
@@ -128,6 +135,8 @@ class ProviderGateway:
                 text, retries = self.anthropic(MODEL_A, "Réponds brièvement.", "Réponds uniquement: OK", 0.0, max_tokens=64)
             elif provider == "deepseek":
                 text, retries = self.deepseek(MODEL_B, "Réponds brièvement.", "Réponds uniquement: OK", 0.0, max_tokens=512)
+            elif provider == "nvidia":
+                text, retries = self.nvidia(MODEL_NVIDIA, "Réponds brièvement.", "Réponds uniquement: OK", 0.0, max_tokens=64)
             else:
                 raise ValueError(f"Provider inconnu: {provider}")
             return {"provider": provider, "ok": True, "latency_seconds": round(time.monotonic() - started, 3), "retries": retries, "content_present": bool(text.strip())}
@@ -221,13 +230,58 @@ class ProviderGateway:
             self._failure("deepseek", exc)
             raise
 
+    def nvidia(self, model: str, system: str, user: str, temp: float, max_tokens: int = NVIDIA_TOKEN_BUDGET) -> tuple[str, int]:
+        if self._nvidia is None:
+            key = os.getenv("NVIDIA_API_KEY")
+            if not key:
+                raise RuntimeError("NVIDIA_API_KEY absent")
+            self._nvidia = OpenAI(base_url="https://integrate.api.nvidia.com/v1", api_key=key)
+
+        def invoke() -> str:
+            result = self._nvidia.chat.completions.create(
+                model=model,
+                max_tokens=max_tokens,
+                temperature=temp,
+                timeout=CALL_TIMEOUT_SECONDS,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+            )
+            choice = result.choices[0] if result.choices else None
+            finish = getattr(choice, "finish_reason", "unknown") if choice else "no_choice"
+            if finish == "length":
+                raise RuntimeError("Réponse NVIDIA tronquée par la limite de tokens (finish_reason=length)")
+            text = choice.message.content if choice else ""
+            if not text or not text.strip():
+                raise RuntimeError(f"Réponse NVIDIA vide (finish_reason={finish})")
+            return text
+
+        try:
+            result = self._retry(invoke)
+            self._success("nvidia")
+            return result
+        except Exception as exc:
+            self._failure("nvidia", exc)
+            raise
+
 
 class DebateEngine:
     """Qualified two-provider debate configuration."""
 
-    def __init__(self, gateway=None, judge_selector: Callable[[], str] | None = None):
+    def __init__(self, gateway=None, judge_selector: Callable[[], str] | None = None, agent_a_provider: str | None = None):
         self.gateway = gateway or ProviderGateway()
         self.judge_selector = judge_selector or (lambda: "deepseek")
+        self.agent_a_provider = agent_a_provider or os.getenv("AGORA_AGENT_A_PROVIDER", "anthropic")
+        if self.agent_a_provider not in {"anthropic", "nvidia"}:
+            raise ValueError(f"Provider A non supporté: {self.agent_a_provider}")
+
+    @property
+    def required_providers(self) -> tuple[str, ...]:
+        return (self.agent_a_provider, "deepseek")
+
+    def ready(self) -> bool:
+        return self.gateway.ready(self.required_providers)
 
     def _agent_turn(self, agent: str, hypothesis: str, context: str, history: list, round_num: int):
         if round_num == 0:
@@ -246,6 +300,8 @@ class DebateEngine:
             )
         user += f"\n\n{AGENT_RESPONSE_CONTRACT}"
         if agent == "A":
+            if self.agent_a_provider == "nvidia":
+                return self.gateway.nvidia(MODEL_NVIDIA, MINDSETS[agent], user, TEMP_DEBATE)
             return self.gateway.anthropic(MODEL_A, MINDSETS[agent], user, TEMP_DEBATE)
         return self.gateway.deepseek(MODEL_B, MINDSETS[agent], user, TEMP_DEBATE)
 
@@ -312,11 +368,15 @@ class DebateEngine:
                     "max_characters": MAX_AGENT_CHARACTERS,
                 },
                 "provider_token_budgets": {
-                    "anthropic": 2000,
+                    self.agent_a_provider: NVIDIA_TOKEN_BUDGET if self.agent_a_provider == "nvidia" else 2000,
                     "deepseek": DEEPSEEK_TOKEN_BUDGET,
                 },
             },
-            "models": {"A": f"anthropic:{MODEL_A}", "B": f"deepseek:{MODEL_B}", "judge": judge_model},
+            "models": {
+                "A": f"{self.agent_a_provider}:{MODEL_NVIDIA if self.agent_a_provider == 'nvidia' else MODEL_A}",
+                "B": f"deepseek:{MODEL_B}",
+                "judge": judge_model,
+            },
             "mindsets": {"A": "empiricist", "B": "rationalist"},
             "retries": retries,
             "duration_seconds": round(time.monotonic() - started, 3),
